@@ -69,7 +69,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `plasma-loonggpu-compat` | desktop-plasma | KWin/Plasma 的 wl_drm、DRM lease、EGL 窗口兼容 shim | ✅ |
 | `vkgl-loonggpu` | graphics-drivers | Vulkan 1.0 → GL 2.1 的最小 ICD（vkcube/vulkaninfo/capsviewer 可用） | ✅ |
 | `mesa-vulkan-loonggpu` | graphics-drivers | RADV LG110 实验移植；**已废弃**，见第 5 节 | ⚠️ 仅存档 |
-| `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT，gcc -O3 / clang full-LTO 双版本 | 🚧 构建中 |
+| `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT，gcc -O3 已发布（clang full-LTO 构建中） | ✅ |
 
 ---
 
