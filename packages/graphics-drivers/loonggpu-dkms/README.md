@@ -5,6 +5,7 @@ AOSC 的 `loonggpu-kernel-dkms` 包把厂商源码装到 `/usr/src/loonggpu-1.0.
 
 | 补丁 | 作用 |
 |---|---|
+| `patches/0003-clang-kernel-support.patch` | 让厂商模块支持 **clang 编译的内核**：① `dkms` 调用时环境里没有 `CONFIG_CC_IS_CLANG`，改为从 `/lib/modules/$(KERNEL_UNAME)/build/.config` 判断，否则会用 gcc 编 clang 内核而报 `unrecognized option '-fexperimental-late-parse-attributes'`；② 新内核 `lg_drm_do_get_edid()` 返回 `const struct edid *`，clang `-Werror` 下需把局部变量改 const 并在 `drm_add_edid_modes()` 处显式转换。 |
 | `patches/0002-workqueue-flags-unbound.patch` | `kcd_process_wq` 用 `alloc_workqueue(name, 0, 0)` 创建，7.x 内核会告警 `using neither WQ_PERCPU nor WQ_UNBOUND`；`KCD IH` 同样补 `WQ_UNBOUND`。 |
 | `patches/0001-trace-ring-name-as-string.patch` | 把两个 tracepoint 里的 `char *ring_name` 改成 `__string(...)` + `__get_str()`。原写法是裸指针，新内核的 tracepoint 安全校验会在 dmesg 里报警：`event 'loonggpu_sched_run_job' has unsafe pointer field 'ring_name'`。 |
 
