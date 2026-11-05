@@ -86,6 +86,18 @@ Thus descriptor creation/update/bind alone is insufficient in this no-sampling
 control. The frame-matched counts and limits are cataloged in
 [`vktest-gradient-descriptor-differential.md`](vktest-gradient-descriptor-differential.md).
 
+The following [`vktest-gradient-sample.c`](vktest-gradient-sample.c) control kept
+that descriptor and draw unchanged, but its
+[`vktest-gradient-sample.frag`](vktest-gradient-sample.frag) executes one live
+fixed-UV sample and adds a small sampled contribution to the gradient. SPIR-V
+inspection confirmed one `ImageSampleImplicitLod` and an output dependency. All
+121 submissions completed with full dumps; every GFX IB changed to 400 dwords
+and reproduced texture's third `0x89` block. The sample/texture absolute
+comparison was 386 equal and 14 different across all 400 words. Thus actual
+sampling, not descriptor binding alone, was sufficient for this layout in the
+tested variant. Full counts, shader evidence, and limitations are in
+[`vktest-gradient-sample-differential.md`](vktest-gradient-sample-differential.md).
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
