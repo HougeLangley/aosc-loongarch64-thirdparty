@@ -71,9 +71,11 @@ steady-state frame pairs, texture's third observed `0x89` block aligns more
 strongly with gradient's second block (114 always-equal and 16
 always-different positions) than texture's second block does (97/33). See
 [`vktest-texture-gradient-differential.md`](vktest-texture-gradient-differential.md).
-The gradient comparison predates 0.1.15, so that version skew is an explicit
-confound; the next step is a same-version gradient recapture, not a semantic
-claim about descriptors or packets.
+A same-version gradient recapture on 0.1.15 also completed all 121 submissions;
+its 121 IB data arrays are identical dword-for-dword to the earlier capture, so
+all differential counts remain unchanged and the version-skew confound is
+removed. This is still an observed alignment, not a descriptor or packet
+semantic claim.
 
 ## Verified ABI detail
 
