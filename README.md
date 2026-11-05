@@ -64,12 +64,12 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | 包 | 分类 | 说明 | 状态 |
 |---|---|---|---|
 | `ruby` | runtime-ruby | Ruby 4.0.9，AOSC 主线版本过旧，`brew` 需要 | ✅ |
-| `v2raya` | app-net | 上游 tag 2.5.13，修正 `CGO_ENABLED` 以启用 SQLite | ✅ |
+| `v2raya` | app-net | 上游 2.5.13-2，启用 SQLite，并在 RT 内核下默认使用原生 nftables | ✅ |
 | `zerotier-one` | app-net | 上游 1.16.2 | ✅ |
 | `plasma-loonggpu-compat` | desktop-plasma | KWin/Plasma 的 wl_drm、DRM lease、EGL 窗口兼容 shim | ✅ |
-| `vkgl-loonggpu` | graphics-drivers | Vulkan 1.0 → GL 2.1 的最小 ICD（vkcube/vulkaninfo/capsviewer 可用） | ✅ |
+| `vkgl-loonggpu` | graphics-drivers | Vulkan 1.0 → GL 2.1 ICD 0.1.11；dmabuf 零拷贝、wl_shm 回退、5/5 GPU 回归 | ✅ |
 | `mesa-vulkan-loonggpu` | graphics-drivers | RADV LG110 实验移植；**已废弃**，见第 5 节 | ⚠️ 仅存档 |
-| `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT，gcc -O3 已发布（clang full-LTO 构建中） | ✅ |
+| `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT；gcc -O3 桌面已验证，clang full-LTO 已构建、桌面验证中 | ✅ |
 
 ---
 
@@ -153,7 +153,7 @@ GSPKT(op, n) = op & 0xff | (n & 0xffff) << 16
 
 * **RADV / mesa-vulkan-loonggpu 这条路线在 LG110 上不可能成功**（本仓库保留它仅作存档）。
 * 我们的做法是 **vkgl**：把 Vulkan 1.0 翻译到厂商的 OpenGL 2.1 驱动上。
-  - 用 EGL/GBM 离屏渲染，`wl_shm` 呈现（KWin 直接合成）；
+  - 用 EGL/GBM 离屏渲染，优先线性 dmabuf 零拷贝呈现，失败时逐图像回退 `wl_shm`；
   - SPIR-V 经 SPIRV-Cross 翻译成 GLSL 1.20（UBO 扁平化为 `uniform vec4 name[N]`）；
   - `gl_VertexID` 用顶点属性模拟；
   - Vulkan 的 Y 向下 NDC 与 GL 的 Y 向上约定通过“GL 行序直接写 wl_shm”抵消；
