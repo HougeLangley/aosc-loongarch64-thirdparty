@@ -2,8 +2,8 @@
 
 `lg110-iotrace.c` is a bounded, passive `LD_PRELOAD` tracer for the vendor
 LoongGPU DRM interface. It associates GEM creation, VA mapping and DRM mmap
-with command submissions, then logs IB metadata and at most 32 dwords from a
-tracked userspace mapping. It forwards every original ioctl/mmap unchanged.
+with command submissions, then logs IB metadata and a configurable number of
+dwords (32 by default, capped at 512) from a tracked userspace mapping. It forwards every original ioctl/mmap unchanged.
 
 This is a reverse-engineering tool, not a Vulkan driver. It does not submit
 packets, program registers, or change the desktop/driver configuration.
@@ -36,6 +36,8 @@ timeout 3s env -u VK_ICD_FILENAMES \
 
 Exit 124 is expected from `timeout`. `LG110_TRACE_MAX` defaults to 64 and is
 capped; `LG110_TRACE_AUX_MAX` separately enables bounded VA diagnostics.
+`LG110_TRACE_IB_DWORDS=512` selects full IB logging for the samples below;
+invalid or out-of-range values retain the 32-dword default.
 Do not run an unbounded trace on a production workload.
 
 The included `vktest-clear.log` was captured from the local `vktest-clear`
@@ -46,6 +48,21 @@ The published source was also rebuilt with no warnings and run against the
 published copy-texture workload: all four bounded dumps resolved; its first
 four submissions were 64-byte `XDMA_COPY` IBs on `ip_type=2`, demonstrating
 that the capture is workload-dependent rather than a hard-coded sample.
+
+## Full-IB differential
+
+With `LG110_TRACE_MAX=512` and `LG110_TRACE_IB_DWORDS=512`, both local tests
+completed all 120 frames with zero unresolved or truncated dumps:
+
+- clear: 120 GFX submissions, every 576-byte IB dumped in full (144 dwords);
+- gradient: one 64-byte XDMA submission plus 120 GFX submissions, every
+  1088-byte GFX IB dumped in full (272 dwords).
+
+The first clear and gradient GFX IBs match through word 133; their shared
+range differs only at words 134–143, and gradient adds words 144–271. The
+complete observed header and varying-offset catalog is in
+[`vktest-full-differential.md`](vktest-full-differential.md). Unknown opcodes
+remain unnamed; the differential does not assign packet semantics.
 
 ## Verified ABI detail
 
