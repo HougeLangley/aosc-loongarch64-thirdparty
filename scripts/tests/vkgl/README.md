@@ -52,3 +52,18 @@ PASS: red=153600 blue=153600
 
 The vkgl 0.1.13 control produces `red=0 blue=0`; the fixed version preserves
 both copied pixels and padded-row layout.
+
+## Paired clear fast-path benchmark
+
+`clear-ab.py` alternates two ICD manifests over vertex, texture and shading,
+writing machine-readable JSON Lines. Example:
+
+```sh
+python3 clear-ab.py --base /path/to/0.1.14.json \
+  --candidate /path/to/0.1.15.json --rounds 6 --duration 5 \
+  --output clear-ab-0.1.15.jsonl
+```
+
+The checked-in `clear-ab-0.1.15.jsonl` records the final integrated 0.1.15
+build against the installed 0.1.14 control. Small single-run differences are
+not valid performance claims; use the paired rounds and report medians.
