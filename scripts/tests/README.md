@@ -12,3 +12,6 @@ gcc -O2 -o vkexec-test vkexec-test.c -lvulkan && ./vkexec-test
 ```
 
 两个测试都不需要窗口系统（无 surface），可在无桌面环境时运行。
+
+Wayland acquire/fence 与 padded `CopyBufferToImage` 的源码、shader 和像素校验见
+[`vkgl/README.md`](vkgl/README.md)。这些测试需要活动 Wayland 桌面，并分别覆盖 dmabuf 与 wl_shm。
