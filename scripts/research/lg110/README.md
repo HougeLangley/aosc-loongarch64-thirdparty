@@ -77,6 +77,15 @@ all differential counts remain unchanged and the version-skew confound is
 removed. This is still an observed alignment, not a descriptor or packet
 semantic claim.
 
+The next control, [`vktest-gradient-descriptor.c`](vktest-gradient-descriptor.c),
+kept the gradient shaders and draw unchanged while adding the texture test's
+combined-image-sampler layout, a valid image/view/sampler, descriptor update,
+and bind. It also completed 121/121 submissions with full IB dumps, but retained
+the 272-dword gradient layout and did not produce texture's third `0x89` block.
+Thus descriptor creation/update/bind alone is insufficient in this no-sampling
+control. The frame-matched counts and limits are cataloged in
+[`vktest-gradient-descriptor-differential.md`](vktest-gradient-descriptor-differential.md).
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
