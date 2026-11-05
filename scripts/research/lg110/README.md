@@ -64,6 +64,17 @@ complete observed header and varying-offset catalog is in
 [`vktest-full-differential.md`](vktest-full-differential.md). Unknown opcodes
 remain unnamed; the differential does not assign packet semantics.
 
+A subsequent texture capture used installed vkgl 0.1.15 and completed all 120
+frames: one 64-byte XDMA IB plus 120 GFX IBs, each dumped in full at 1600
+bytes/400 dwords, with zero unresolved or truncated submissions. Across 119
+steady-state frame pairs, texture's third observed `0x89` block aligns more
+strongly with gradient's second block (114 always-equal and 16
+always-different positions) than texture's second block does (97/33). See
+[`vktest-texture-gradient-differential.md`](vktest-texture-gradient-differential.md).
+The gradient comparison predates 0.1.15, so that version skew is an explicit
+confound; the next step is a same-version gradient recapture, not a semantic
+claim about descriptors or packets.
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
