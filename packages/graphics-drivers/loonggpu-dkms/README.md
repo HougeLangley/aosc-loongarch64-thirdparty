@@ -5,6 +5,8 @@ AOSC 的 `loonggpu-kernel-dkms` 包把厂商源码装到 `/usr/src/loonggpu-1.0.
 
 | 补丁 | 作用 |
 |---|---|
+| `patches/0005-linux-7.3-wayland-dc-compat.patch` | 汇总本机已验证的 Linux 7.2/7.3 API 与 Wayland DC 修复：`drm_atomic_commit` 类型迁移、`vma_is_cow_mapping`、`dma_fence_array_create` 参数变化，以及 GBM 私有 tiling/primary stride 同步。 |
+| `patches/0004-ttm-buddy-cursor-init.patch` | 修复 DRM buddy TTM 复制的真实未初始化 UB：每轮从 `src_mm/dst_mm.start` 计算地址与页内偏移，按偏移限制 XDMA 复制长度，并给临时 GTT 窗口补页内偏移。原 clang 模块会把临时 GTT 映射页数优化成 0，导致 `ring xdma0 timeout`；非 buddy 路径保留原有单次偏移语义。 |
 | `patches/0003-clang-kernel-support.patch` | 让厂商模块支持 **clang 编译的内核**：① `dkms` 调用时环境里没有 `CONFIG_CC_IS_CLANG`，改为从 `/lib/modules/$(KERNEL_UNAME)/build/.config` 判断，否则会用 gcc 编 clang 内核而报 `unrecognized option '-fexperimental-late-parse-attributes'`；② 新内核 `lg_drm_do_get_edid()` 返回 `const struct edid *`，clang `-Werror` 下需把局部变量改 const 并在 `drm_add_edid_modes()` 处显式转换。 |
 | `patches/0002-workqueue-flags-unbound.patch` | `kcd_process_wq` 用 `alloc_workqueue(name, 0, 0)` 创建，7.x 内核会告警 `using neither WQ_PERCPU nor WQ_UNBOUND`；`KCD IH` 同样补 `WQ_UNBOUND`。 |
 | `patches/0001-trace-ring-name-as-string.patch` | 把两个 tracepoint 里的 `char *ring_name` 改成 `__string(...)` + `__get_str()`。原写法是裸指针，新内核的 tracepoint 安全校验会在 dmesg 里报警：`event 'loonggpu_sched_run_job' has unsafe pointer field 'ring_name'`。 |
@@ -27,3 +29,17 @@ sudo dkms install loonggpu/1.0.2 -k "$(uname -r)" --force
 `/usr/src/linux-headers-<rel>/tools/objtool/objtool`。本仓库的内核 headers
 打包脚本已经把它包含进去（`package-kernel-*.sh` 里的 `tools/objtool`）。
 缺少时 DKMS 会报 `/bin/sh: .../tools/objtool/objtool: No such file or directory`。
+
+## 构建完整修订版 deb
+
+本目录同时是 abbs 风格配方：`spec` 下载 AOSC 原始上游 deb，`autobuild/build`
+依次应用 AOSC 的 49 个 `patches.deferred` 与本目录 5 个追加补丁。本地基础设施中运行：
+
+```bash
+bash ~/infra/scripts/abbs-lite.sh ~/infra/pkg/loonggpu-kernel-dkms
+```
+
+产物为 `loonggpu-kernel-dkms_1.0.2+lnd25.1-2_loongarch64.deb`（control 版本为
+`2:1.0.2+lnd25.1-2`）。postinst 会为每个完整 headers 树构建模块；若旧 headers 的
+objtool 已有动态库缺失则明确跳过，其他内核真实构建失败会在处理完所有内核、更新
+initramfs 后统一报错，不会静默成功。clang-LTO 内核包要求至少此 DKMS 修订版。
