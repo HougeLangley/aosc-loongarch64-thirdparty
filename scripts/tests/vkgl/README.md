@@ -67,3 +67,17 @@ python3 clear-ab.py --base /path/to/0.1.14.json \
 The checked-in `clear-ab-0.1.15.jsonl` records the final integrated 0.1.15
 build against the installed 0.1.14 control. Small single-run differences are
 not valid performance claims; use the paired rounds and report medians.
+
+Repeat at 1080p with `--size 1920x1080 --rounds 4`. The checked-in
+`clear-ab-0.1.15-1080p.jsonl` has 24 successful runs and all 12 pairs improved:
+
+| Scene | 0.1.14 median FPS | 0.1.15 median FPS | Change |
+| --- | ---: | ---: | ---: |
+| vertex | 21.5 | 27.5 | +27.9% |
+| texture | 20.5 | 26.0 | +26.8% |
+| shading | 21.0 | 25.0 | +19.0% |
+
+Both variants mapped the vendor gsgpu EGL stack, had three zero-copy dmabuf
+swapchain images, and had no llvmpipe mapping. `clear-ab-0.1.15-1080p-metadata.json`
+records unchanged binary hashes throughout the matrix. These results apply
+only to the measured scenes and settings.
