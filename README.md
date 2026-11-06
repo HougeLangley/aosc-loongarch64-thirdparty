@@ -147,7 +147,7 @@ GSPKT(op, n) = op & 0xff | (n & 0xffff) << 16
 
 我们做过直接实验（[`gspkt-probe`](docs/VULKAN.md)）：从用户态提交 `GSPKT_WRITE` 能真正写进显存，
 说明 CS/VM 通路完好；而 RADV 提交的 PM4 命令流被 CP 静默丢弃——IB 被接受、fence 正常返回、
-显存一个字节都没变。
+显存一个字节都没变。后续完整 IB 对照见 [descriptor-only](scripts/research/lg110/vktest-gradient-descriptor-differential.md)、[实际采样](scripts/research/lg110/vktest-gradient-sample-differential.md) 与 [texelFetch 前置失败](scripts/research/lg110/vktest-gradient-texel-fetch-differential.md)。
 
 因此：
 
@@ -162,6 +162,7 @@ GSPKT(op, n) = op & 0xff | (n & 0xffff) << 16
 能力边界：Vulkan 1.0 常用子集（无 compute / MRT / 实例化 / 时间戳），
 `vkcube`、`vulkaninfo`、`vulkanCapsViewer` 以及简单 3D 应用可用；
 DXVK / vkd3d / 重度游戏仍不具备条件。详见 [docs/VULKAN.md](docs/VULKAN.md)。
+`texelFetch` 目前在 GLSL 编译前失败；实际硬件仅有 GLSL 1.20，且无 `GL_EXT_gpu_shader4`，不能靠强制扩展或 GLSL 130 修复。证据见 [兼容性报告](scripts/research/lg110/vkgl-texel-fetch-compatibility.md)。
 
 ---
 
