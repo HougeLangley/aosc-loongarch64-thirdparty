@@ -57,6 +57,27 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## 0.1.26 coherent upload coalescing
+
+Build the controlled persistent-mapping test and all earlier strict tests:
+
+```sh
+./build-0.1.26-tests.sh /tmp/vkgl-0.1.26-tests
+```
+
+`../../research/lg110/vktest-coherent-upload.c` changes a persistently mapped
+coherent texture between submissions and validates second-frame pixels without
+Flush/Unmap. Exact 0.1.25 and 0.1.26 return `007f40ff`; the deliberately broken
+revision-only control returns stale `007f00ff` and fails.
+
+`../../research/lg110/coherent-upload-ab.py` runs the alternating N-draw scaling
+benchmark. With 64 draws per 256x256-texture submission, median FPS increased
+from 21.683 to 114.972 (+430.24%, 5/5); the one-draw control changed only +1.57%.
+This is an upload-heavy controlled result, not a universal Vulkan speedup.
+Ordinary vkmark data remains published and is not claimed to improve.
+
+See [vkgl-0.1.26.md](vkgl-0.1.26.md) for commands, raw evidence and release hashes.
+
 ## 0.1.25 dispatchable lifetime
 
 Build and run the 64-cycle lifecycle regression:
