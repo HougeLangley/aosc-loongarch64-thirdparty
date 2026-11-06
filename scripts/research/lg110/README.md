@@ -98,6 +98,18 @@ sampling, not descriptor binding alone, was sufficient for this layout in the
 tested variant. Full counts, shader evidence, and limitations are in
 [`vktest-gradient-sample-differential.md`](vktest-gradient-sample-differential.md).
 
+The [`vktest-gradient-sample-readback.c`](vktest-gradient-sample-readback.c) A/B
+control then changed only the texture bytes. The installed 0.1.15 copy command was
+an empty execution case, so both buffers retained their `a5a5a5a5` sentinel. The
+0.1.16 implementation reads the actual render FBO; installed A/B pixels are
+`00 7f 00 ff` and `00 7f 40 ff`, with only red changing by the expected 64. All
+119 steady-state pairs contain 400/400 dwords and all 47,600 dwords match. The
+first 672-dword readback IB exceeds the 512-dword capture and is excluded. See
+[`vkgl-copy-image-to-buffer-dev.md`](vkgl-copy-image-to-buffer-dev.md), the
+[minimal patch](vkgl-readback-dev.patch), and the raw installed
+[A](vktest-gradient-sample-readback-installed-A.rgba)/[B](vktest-gradient-sample-readback-installed-B.rgba)
+pixels. This establishes the tested sampling/readback path, not native Vulkan.
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
