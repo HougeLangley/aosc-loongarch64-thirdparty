@@ -57,6 +57,27 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## 0.1.22 format capabilities and validation reduction
+
+Build the strict format test plus existing upload/fence tests without running a
+GPU:
+
+```sh
+./build-0.1.22-tests.sh /tmp/vkgl-0.1.22-tests
+VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/vkgl_loonggpu.json \
+VK_DRIVER_FILES="$VK_ICD_FILENAMES" \
+  /tmp/vkgl-0.1.22-tests/vktest-format-properties
+```
+
+The same binary fails on 0.1.21 and passes on 0.1.22. Four RGBA8 formats now
+report actual linear-filter/color-blend support, four SFLOAT vertex formats
+report vertex-buffer support, and core FormatProperties2 agrees. Both public
+smoke paths fall from 59 events/eight VUID classes to 28/four; exactly 31
+format-related events disappear with no new diagnostics. Validation remains not
+clean: application image-layout/anisotropy inputs and binary-semaphore reuse are
+documented separately. Full pixels, topology, fences, acquire and package hashes
+are in [vkgl-0.1.22.md](vkgl-0.1.22.md). No performance claim is made.
+
 ## 0.1.21 topology and honest smoke diagnostics
 
 `run-vkgl-smoke.sh ICD_JSON LABEL [OUTPUT_DIR]` runs vulkaninfo, 60 vkcube
