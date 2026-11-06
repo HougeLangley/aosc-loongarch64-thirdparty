@@ -21,7 +21,8 @@ cc -std=c11 -O2 -g -fPIC -shared -Wall -Wextra -Wpedantic \
 
 ### Readback A/B tests
 
-Build the published tight, padded, and CopyImage sources from this directory.
+Build the published tight, padded, CopyImage, and ClearAttachments sources from
+this directory.
 The shader paths are relative to this directory, and the Wayland protocol
 implementation is shared with the public vkgl tests:
 
@@ -38,15 +39,19 @@ cc -std=c11 -O2 -Wall -Wextra -Werror -I../../tests/vkgl \
   -o /tmp/vktest-copy-image vktest-gradient-copy-image.c \
   ../../tests/vkgl/xdg-shell-protocol.c \
   $(pkg-config --cflags --libs wayland-client) -lvulkan
+cc -std=c11 -O2 -Wall -Wextra -Werror -I../../tests/vkgl \
+  -o /tmp/vktest-clear-attachments vktest-clear-attachments.c \
+  ../../tests/vkgl/xdg-shell-protocol.c \
+  $(pkg-config --cflags --libs wayland-client) -lvulkan
 LG110_TEXTURE_VARIANT=A LG110_READBACK_PIXEL=/tmp/readback-A.rgba \
   XDG_RUNTIME_DIR=/run/user/1000 WAYLAND_DISPLAY=wayland-0 \
   /tmp/vktest-readback
 ```
 
-Use variant B and the padded/CopyImage binaries for the other controls. The raw
-pixels, not just process status or a successful fence, are the acceptance
-criterion. All three published sources were rebuilt with these commands and
-passed their installed A/B pixel comparisons.
+Use variant B and the padded/CopyImage/ClearAttachments binaries for the other
+controls. The raw pixels, not just process status or a successful fence, are the
+acceptance criterion. All four published sources were rebuilt with these commands
+and passed their installed A/B pixel comparisons.
 
 ## Capture
 
@@ -157,6 +162,21 @@ or truncated dwords. See [`vkgl-copy-image-dev.md`](vkgl-copy-image-dev.md), the
 [A](vktest-gradient-copy-image-installed-A.bin)/[B](vktest-gradient-copy-image-installed-B.bin)
 buffers. The optional third comparator argument selects the first GFX dword
 count, for example `compare-readback-full-1024.py A.log B.log 800`.
+
+Version 0.1.19 adds bounded in-render-pass color `ClearAttachments` using
+`glScissor` and `glClear`, with FBO/scissor/clear-color/color-mask restoration.
+The test deliberately disables the pipeline blue write mask, yet the clear still
+writes blue=64. Separate padded buffers prove both the cleared 2x2 region and an
+uncleared neighbor; all bytes and guards match in installed A/B runs. The
+[`lg110-iotrace-2048.c`](lg110-iotrace-2048.c) variant captured 121 physical GFX
+submissions for 120 frames, including the split first frame (800+272 dwords), for
+48,672 equal and zero different/truncated dwords. Use
+[`compare-clear-attachments-full.py`](compare-clear-attachments-full.py) for this
+strict layout; the generic comparator intentionally rejects its 122 successful
+CS. See [`vkgl-clear-attachments-dev.md`](vkgl-clear-attachments-dev.md), the
+[patch](vkgl-clear-attachments-dev.patch), and the installed raw A/B clear and
+neighbor buffers. Multiple attachments/rectangles are implemented but only the
+1x1 combination is pixel-tested.
 
 ## Verified ABI detail
 
