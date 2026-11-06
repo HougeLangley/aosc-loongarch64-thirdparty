@@ -102,13 +102,20 @@ The [`vktest-gradient-sample-readback.c`](vktest-gradient-sample-readback.c) A/B
 control then changed only the texture bytes. The installed 0.1.15 copy command was
 an empty execution case, so both buffers retained their `a5a5a5a5` sentinel. The
 0.1.16 implementation reads the actual render FBO; installed A/B pixels are
-`00 7f 00 ff` and `00 7f 40 ff`, with only red changing by the expected 64. All
-119 steady-state pairs contain 400/400 dwords and all 47,600 dwords match. The
-first 672-dword readback IB exceeds the 512-dword capture and is excluded. See
+`00 7f 00 ff` and `00 7f 40 ff`, with only red changing by the expected 64. The
+initial 512-dword trace covered 119 steady-state pairs. The independent 1024-dword
+tracer subsequently captured all 120 GFX pairs completely: 672/672 for readback,
+400/400 thereafter, with all 48,272 dwords equal and zero truncation. See
 [`vkgl-copy-image-to-buffer-dev.md`](vkgl-copy-image-to-buffer-dev.md), the
 [minimal patch](vkgl-readback-dev.patch), and the raw installed
 [A](vktest-gradient-sample-readback-installed-A.rgba)/[B](vktest-gradient-sample-readback-installed-B.rgba)
-pixels. This establishes the tested sampling/readback path, not native Vulkan.
+pixels.
+
+Version 0.1.17 adds padded `bufferRowLength`. The valid 2×2, rowLength=4,
+bufferOffset=4 A/B buffers match all 32 expected bytes exactly; four pixels are
+valid and every guard/padding byte remains `a5`. Formula, raw buffers, and patch
+are in [`vkgl-buffer-row-length-readback-dev.md`](vkgl-buffer-row-length-readback-dev.md).
+These establish the tested sampling/readback paths, not native Vulkan.
 
 ## Verified ABI detail
 
