@@ -57,6 +57,28 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## 0.1.25 dispatchable lifetime
+
+Build and run the 64-cycle lifecycle regression:
+
+```sh
+./build-0.1.25-tests.sh /tmp/vkgl-0.1.25-tests
+VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/vkgl_loonggpu.json \
+VK_DRIVER_FILES="$VK_ICD_FILENAMES" \
+  /tmp/vkgl-0.1.25-tests/vktest-dispatch-lifetime
+```
+
+Vulkan loaders replace the first word of dispatchable objects with a dispatch
+table. 0.1.25 avoids dispatching C++ virtual destructors through that word for
+Instance, Device, Queue and CommandBuffer. The minimal test also passes on older
+releases and is not a standalone negative control; the rendered crash, gdb first
+word and ASan differential are documented in
+[vkgl-0.1.25.md](vkgl-0.1.25.md).
+
+This is a correctness release, not a performance improvement. Rejected debug-
+cache/alignment/cold combinations and the final unfavorable paired FPS data are
+all retained in the report.
+
 ## 0.1.24 compiler comparison
 
 0.1.24 keeps the 0.1.23 source and changes only the build flags to
