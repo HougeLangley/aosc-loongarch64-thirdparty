@@ -231,6 +231,15 @@ unassigned. Adjacency/PATCH are rejected rather than misdrawn. See
 [`lg110-draw-topology-field.md`](lg110-draw-topology-field.md), the extended
 tracer/test, and `draw-topology-*` raw evidence.
 
+## Sampler capability is not sufficient proof
+
+LG110 exposes `GL_EXT_texture_filter_anisotropic` and maximum 16 on the hardware
+Wayland GLES2 context. An isolated vkgl prototype successfully set/read back 16x,
+but a controlled magnification sample changed from the correct LINEAR raw
+`007f22ff` to the NEAREST value `007f40ff`. The feature therefore remains off in
+0.1.23. See [`lg110-sampler-anisotropy.md`](lg110-sampler-anisotropy.md) for the
+state/pixel evidence and the future magnification-plus-minification gate.
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),

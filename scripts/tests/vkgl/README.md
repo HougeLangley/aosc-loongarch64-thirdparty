@@ -57,6 +57,37 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## 0.1.23 real sampler state
+
+Build without running a GPU:
+
+```sh
+./build-0.1.23-tests.sh /tmp/vkgl-0.1.23-tests
+/tmp/vkgl-0.1.23-tests/vktest-sampler-create
+```
+
+For the split-texture pixel oracle, run from `scripts/research/lg110` with the
+installed ICD and active Wayland session:
+
+```sh
+LG110_TEXTURE_VARIANT=B LG110_SAMPLER_PATTERN=split \
+LG110_FRAGMENT_SHADER=/tmp/vkgl-0.1.23-tests/vktest-sampler-offset.frag.spv \
+LG110_FRAME_LIMIT=1 LG110_SAMPLER_FILTER=linear LG110_SAMPLER_WRAP=clamp \
+LG110_READBACK_PIXEL=/tmp/sampler-linear.rgba \
+  /tmp/vkgl-0.1.23-tests/vktest-gradient-sample-readback
+```
+
+Use `LG110_SAMPLER_FILTER=nearest` for the other oracle. LINEAR must produce raw
+`007f22ff`; NEAREST produces `007f40ff`. The same linear test fails on 0.1.22.
+Wrap can be `clamp`, `repeat` or `mirrored`; `VKGL_DEBUG=1` adds actual GL state
+readback. Three draws with unchanged state must log only one `sampler applied`.
+
+Anisotropy remains feature=0/max=1 because the 16x prototype failed its pixel
+gate. Validation stays at 28 events/four classes. See
+[vkgl-0.1.23.md](vkgl-0.1.23.md) and
+[the anisotropy negative result](../../research/lg110/lg110-sampler-anisotropy.md).
+Raw high-load performance data is published without an improvement claim.
+
 ## 0.1.22 format capabilities and validation reduction
 
 Build the strict format test plus existing upload/fence tests without running a
