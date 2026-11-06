@@ -178,6 +178,20 @@ CS. See [`vkgl-clear-attachments-dev.md`](vkgl-clear-attachments-dev.md), the
 neighbor buffers. Multiple attachments/rectangles are implemented but only the
 1x1 combination is pixel-tested.
 
+## Native clear-field causal control
+
+The separate, opt-in [`lg110-native-mutation.c`](lg110-native-mutation.c)
+performed the first active pre-CS experiment on 2026-11-06. With an exact
+15-word signature, full writable mapping coverage, and original word 87 = 0,
+it changed only that dword to `0x3f800000` before the unchanged original ioctl.
+The clear-only readback changed from `66 33 00 ff` to `66 33 ff ff`; all other
+IB dwords and pixel channels were identical. This establishes causal control
+of clear red in this stream, not full packet semantics or native Vulkan. See
+[the experiment report](lg110-native-clear-mutation.md), raw traces/pixels, and
+[`build-native-mutation.sh`](build-native-mutation.sh). The earlier passive
+tracer remains unchanged; do not run this mutation as an unbounded or repeated
+workload.
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),

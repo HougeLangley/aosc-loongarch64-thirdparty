@@ -67,9 +67,9 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `v2raya` | app-net | 上游 2.5.13-2，启用 SQLite，并在 RT 内核下默认使用原生 nftables | ✅ |
 | `zerotier-one` | app-net | 上游 1.16.2 | ✅ |
 | `plasma-loonggpu-compat` | desktop-plasma | KWin/Plasma 的 wl_drm、DRM lease、EGL 窗口兼容 shim | ✅ |
-| `vkgl-loonggpu` | graphics-drivers | Vulkan 1.0 → GL 2.1 ICD 0.1.11；dmabuf 零拷贝、wl_shm 回退、5/5 GPU 回归 | ✅ |
+| `vkgl-loonggpu` | graphics-drivers | Vulkan 1.0 → GL 2.1 ICD 0.1.20；dmabuf/wl_shm、tight 上传与真实 EGL fence，双路径 5/5 GPU 回归 | ✅ |
 | `mesa-vulkan-loonggpu` | graphics-drivers | RADV LG110 实验移植；**已废弃**，见第 5 节 | ⚠️ 仅存档 |
-| `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT；gcc -O3 桌面已验证，clang full-LTO 已构建、桌面验证中 | ✅ |
+| `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT；gcc -O3 与 clang full-LTO 桌面均已验证 | ✅ |
 
 ---
 

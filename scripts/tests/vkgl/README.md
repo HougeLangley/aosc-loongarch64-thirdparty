@@ -53,6 +53,33 @@ PASS: red=153600 blue=153600
 The vkgl 0.1.13 control produces `red=0 blue=0`; the fixed version preserves
 both copied pixels and padded-row layout.
 
+The test presents 30 frames with 100 ms sleeps. Start it in the background and
+capture after about one second, then wait for it; capturing after three seconds
+can photograph the closed window and is not a driver failure.
+
+## 0.1.20 tight-upload and real submission-fence tests
+
+Build without initializing a GPU:
+
+```sh
+./build-0.1.20-tests.sh /tmp/vkgl-0.1.20-tests
+/tmp/vkgl-0.1.20-tests/vktest-submit-fence
+/tmp/vkgl-0.1.20-tests/vktest-tight-upload --check
+```
+
+`vktest-tight-upload` checks optimal/linear padded references against tight
+`bufferRowLength=0` and `=width`, with nonzero buffer/image offsets and exact
+border pixels. `--bench 64 1024 1024 7` measures seven batches of 64 1024²
+RGBA uploads. `vktest-submit-fence` runs 11 deterministic host-only cases;
+`vktest-submit-fence-gpu` additionally checks real vendor EGL submission,
+reset/reuse, waitAll/waitAny, zero-timeout behavior, and exact readback in the
+active Wayland session.
+
+The installed 0.1.19-to-0.1.20 paired result is **+6.67% tight-upload
+throughput, 5/5 pairs**, with a **-0.53% padded control**. This is not an FPS
+or native-Vulkan claim. See [the full release report](vkgl-0.1.20.md) and the
+raw `tight-upload-installed-ab-0.1.20.{log,json}` files.
+
 ## Paired clear fast-path benchmark
 
 `clear-ab.py` alternates two ICD manifests over vertex, texture and shading,
