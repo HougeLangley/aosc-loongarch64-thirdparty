@@ -197,7 +197,8 @@ sudo apt install linux-kernel-mainline-16k-rt-7.3.1-clang-lto
 
 发布器会做四件事：pool 原子收编 → `dists/stable/main/binary-loongarch64/Packages(.gz)` 重建 →
 用既有仓库身份重新签发 `Release`/`InRelease` → 本地/远端 MD5、HTTPS、隔离 apt 三重验证。
-详见 [docs/PUBLISHING.md](docs/PUBLISHING.md)。
+详见 [docs/PUBLISHING.md](docs/PUBLISHING.md)。操作系统更新审查与回归记录见
+[docs/MAINTENANCE.md](docs/MAINTENANCE.md)。
 
 ---
 
