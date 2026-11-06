@@ -204,6 +204,20 @@ rejected with zero IB changes. Full guards, raw evidence, and commands are in
 [`build-clear-color-mutation.sh`](build-clear-color-mutation.sh). These remain
 single-stream field proofs, not draw/replay or native-Vulkan support.
 
+## Native draw-count causal control
+
+A one-frame passive draw3/draw2 differential captured identical 16-dword XDMA
+IBs and complete 672-dword GFX IBs. Only word270 (`3→2`) and word276 (`2→1`)
+changed; the center changed from gradient `007f00ff` to clear `663300ff`.
+The opt-in [`lg110-draw-count-mutation.c`](lg110-draw-count-mutation.c) then
+changed **only word270** in a draw3 stream, leaving word276=2. The draw was
+suppressed and raw became byte-identical to passive draw2. This establishes
+vertex-count causality for word270 in this stream; word276 remains unnamed.
+An already-draw2 input is rejected with zero IB changes. Public strict rebuild
+repeated all four passive/active/guard cases. See
+[`lg110-draw-count-field.md`](lg110-draw-count-field.md) and
+[`build-draw-count-mutation.sh`](build-draw-count-mutation.sh).
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
