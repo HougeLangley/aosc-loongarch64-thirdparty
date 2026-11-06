@@ -19,6 +19,35 @@ cc -std=c11 -O2 -g -fPIC -shared -Wall -Wextra -Wpedantic \
   -o lg110-iotrace.so lg110-iotrace.c -ldl -lpthread
 ```
 
+### Readback A/B tests
+
+Build the published tight, padded, and CopyImage sources from this directory.
+The shader paths are relative to this directory, and the Wayland protocol
+implementation is shared with the public vkgl tests:
+
+```sh
+cc -std=c11 -O2 -Wall -Wextra -Werror -I../../tests/vkgl \
+  -o /tmp/vktest-readback vktest-gradient-sample-readback.c \
+  ../../tests/vkgl/xdg-shell-protocol.c \
+  $(pkg-config --cflags --libs wayland-client) -lvulkan
+cc -std=c11 -O2 -Wall -Wextra -Werror -I../../tests/vkgl \
+  -o /tmp/vktest-readback-padded vktest-gradient-sample-readback-padded.c \
+  ../../tests/vkgl/xdg-shell-protocol.c \
+  $(pkg-config --cflags --libs wayland-client) -lvulkan
+cc -std=c11 -O2 -Wall -Wextra -Werror -I../../tests/vkgl \
+  -o /tmp/vktest-copy-image vktest-gradient-copy-image.c \
+  ../../tests/vkgl/xdg-shell-protocol.c \
+  $(pkg-config --cflags --libs wayland-client) -lvulkan
+LG110_TEXTURE_VARIANT=A LG110_READBACK_PIXEL=/tmp/readback-A.rgba \
+  XDG_RUNTIME_DIR=/run/user/1000 WAYLAND_DISPLAY=wayland-0 \
+  /tmp/vktest-readback
+```
+
+Use variant B and the padded/CopyImage binaries for the other controls. The raw
+pixels, not just process status or a successful fence, are the acceptance
+criterion. All three published sources were rebuilt with these commands and
+passed their installed A/B pixel comparisons.
+
 ## Capture
 
 Run a known small Wayland/vkgl workload in an active hardware-rendered desktop.
@@ -116,6 +145,18 @@ bufferOffset=4 A/B buffers match all 32 expected bytes exactly; four pixels are
 valid and every guard/padding byte remains `a5`. Formula, raw buffers, and patch
 are in [`vkgl-buffer-row-length-readback-dev.md`](vkgl-buffer-row-length-readback-dev.md).
 These establish the tested sampling/readback paths, not native Vulkan.
+
+Version 0.1.18 adds a bounded same-format 2D `CopyImage` path using the source
+FBO and `glCopyTexSubImage2D`. The test reads the offscreen destination, not the
+source: four copied pixels and all guards/padding match exactly in A/B. The first
+1024-dword tracer exposed a separate 8192-byte log-line cap (733 of 800 words);
+[`lg110-iotrace-fullline.c`](lg110-iotrace-fullline.c) fixes that bound. Its A/B
+runs captured all 120 GFX IBs completely, with 48,400 equal and zero different
+or truncated dwords. See [`vkgl-copy-image-dev.md`](vkgl-copy-image-dev.md), the
+[patch](vkgl-copy-image-dev.patch), and the raw installed
+[A](vktest-gradient-copy-image-installed-A.bin)/[B](vktest-gradient-copy-image-installed-B.bin)
+buffers. The optional third comparator argument selects the first GFX dword
+count, for example `compare-readback-full-1024.py A.log B.log 800`.
 
 ## Verified ABI detail
 
