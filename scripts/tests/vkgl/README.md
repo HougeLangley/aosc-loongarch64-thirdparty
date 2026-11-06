@@ -57,6 +57,20 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## 0.1.24 compiler comparison
+
+0.1.24 keeps the 0.1.23 source and changes only the build flags to
+`-O3 -march=loongarch64 -mtune=la664 -flto`. The ISA remains the LoongArch64
+baseline; LA664 is tuning only. The package library is byte-identical to the
+measured candidate.
+
+Five paired rounds under recorded Homebrew build load gave LTO median gains of
+7.07% vertex, 5.83% texture and 2.00% shading. O3 without LTO was rejected
+because vertex fell 6.15% despite a larger shading gain. Both favorable and
+unfavorable JSONL results, load records, exact pixels and smoke logs are in
+[vkgl-0.1.24.md](vkgl-0.1.24.md). This is a limited small-scene result, not a
+universal or maximum-performance claim.
+
 ## 0.1.23 real sampler state
 
 Build without running a GPU:
