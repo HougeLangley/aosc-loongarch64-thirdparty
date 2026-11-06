@@ -70,7 +70,7 @@ VUID classes per path with identical per-class counters. Rendering is GPU-only,
 but validation is not clean and remains follow-up work. Six basic topology pixel
 checks, native word268 causality, unsupported-topology rejection, and release
 hashes are documented in [vkgl-0.1.21.md](vkgl-0.1.21.md) and
-[the native topology report](../research/lg110/lg110-draw-topology-field.md).
+[the native topology report](../../research/lg110/lg110-draw-topology-field.md).
 No performance improvement is claimed.
 
 ## 0.1.20 tight-upload and real submission-fence tests
