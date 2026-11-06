@@ -192,6 +192,18 @@ of clear red in this stream, not full packet semantics or native Vulkan. See
 tracer remains unchanged; do not run this mutation as an unbounded or repeated
 workload.
 
+The follow-up [`lg110-clear-color-mutation.c`](lg110-clear-color-mutation.c)
+adds independent green (word88), blue (word89), and alpha (word90) controls.
+RGB each produced exactly one changed IB dword and one corresponding changed
+swapchain pixel byte. Swapchain alpha readback stayed 0xff even for a passive
+alpha=0.5 clear, so a separate 272-dword headless optimal RGBA workload was
+used: active word90 `1.0→0.5` changed only raw alpha `ff→80`. Public-source
+rebuild repeated green and offscreen alpha; an offscreen red request was
+rejected with zero IB changes. Full guards, raw evidence, and commands are in
+[`lg110-clear-color-fields.md`](lg110-clear-color-fields.md); build with
+[`build-clear-color-mutation.sh`](build-clear-color-mutation.sh). These remain
+single-stream field proofs, not draw/replay or native-Vulkan support.
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
