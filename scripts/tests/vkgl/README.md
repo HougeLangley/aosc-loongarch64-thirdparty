@@ -57,6 +57,22 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## 0.1.21 topology and honest smoke diagnostics
+
+`run-vkgl-smoke.sh ICD_JSON LABEL [OUTPUT_DIR]` runs vulkaninfo, 60 vkcube
+frames, and five two-second FIFO vkmark scenes on dmabuf and wl_shm. It rejects
+software rendering/crashes and prints `validation_errors=N`; it does not silently
+treat a failing `! grep` as a clean validation gate. Use
+`REQUIRE_VALIDATION_CLEAN=1` to make diagnostics fatal.
+
+The exact 0.1.20 baseline and installed 0.1.21 each produce 59 events in eight
+VUID classes per path with identical per-class counters. Rendering is GPU-only,
+but validation is not clean and remains follow-up work. Six basic topology pixel
+checks, native word268 causality, unsupported-topology rejection, and release
+hashes are documented in [vkgl-0.1.21.md](vkgl-0.1.21.md) and
+[the native topology report](../research/lg110/lg110-draw-topology-field.md).
+No performance improvement is claimed.
+
 ## 0.1.20 tight-upload and real submission-fence tests
 
 Build without initializing a GPU:

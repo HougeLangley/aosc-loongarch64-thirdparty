@@ -218,6 +218,19 @@ repeated all four passive/active/guard cases. See
 [`lg110-draw-count-field.md`](lg110-draw-count-field.md) and
 [`build-draw-count-mutation.sh`](build-draw-count-mutation.sh).
 
+## Native draw-topology causal control
+
+Installed 0.1.20 first gave a negative control: point and triangle requests had
+identical IBs/pixels because vkgl hardcoded `GL_TRIANGLES`. The 0.1.21 fix maps
+all six basic topologies. Passive full-IB differentials then isolated word268
+to values `0x40000000`, `…0100`, `…0300`, `…0400`, `…0500`, `…0600` for
+point/line/line-strip/triangle/strip/fan respectively. Active triangle→point
+changed only word268 and exactly reproduced passive point raw; count regression
+and already-point rejection passed. Word273 does not track topology and remains
+unassigned. Adjacency/PATCH are rejected rather than misdrawn. See
+[`lg110-draw-topology-field.md`](lg110-draw-topology-field.md), the extended
+tracer/test, and `draw-topology-*` raw evidence.
+
 ## Verified ABI detail
 
 The installed vendor userspace issues GEM_VA as request `0xc0286448` (IOWR),
