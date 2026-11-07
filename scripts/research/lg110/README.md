@@ -241,6 +241,16 @@ a limited first-vertex causal proof, not vertex addressing or replay. See
 [`lg110-first-vertex-field.md`](lg110-first-vertex-field.md) and
 `draw-first-public-*` evidence.
 
+## Indexed and indirect native differential
+
+With installed vkgl 0.1.27, Vulkan indirect recording expands to the same GL draw:
+direct→indirect changes only 12 GPU-VA-bearing positions. Indexed adds a six-byte
+XDMA upload and changes four additional GFX fields: word268 gains `0x2`, word276
+becomes `0xffffffff`, word280 equals the traced index GEM VA, and word281 is 1 on
+this UINT16 path. These are passive associations, not active indexed causality or
+word281 type proof. See [`lg110-indexed-draw-field.md`](lg110-indexed-draw-field.md)
+and `draw-indexed-public-*` complete traces.
+
 ## Sampler capability is not sufficient proof
 
 LG110 exposes `GL_EXT_texture_filter_anisotropic` and maximum 16 on the hardware
