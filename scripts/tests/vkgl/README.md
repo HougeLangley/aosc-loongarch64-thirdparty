@@ -66,6 +66,16 @@ initial layouts and capability-clamped anisotropy. Its five-scene smoke dropped
 from 28 to **0 validation events** on both dmabuf and wl_shm without changing
 vkgl 0.1.26. See [vkmark-2025.01-4-wsi-validation.md](vkmark-2025.01-4-wsi-validation.md).
 
+## 0.1.31 instance-rate attributes
+
+Build all tests with `./build-0.1.31-tests.sh /tmp/vkgl-0.1.31-tests` and run the
+new test from `instance-rate/`. Twelve cases cover indexed/indirect paths,
+two-instance stepping, firstInstance=1 and zero instances. Exact 0.1.30 fails the
+eight red expectations; 0.1.31 passes candidate and installed matrices with zero
+validation events, plus 36 prior functional and 21 native regressions. Raw BGRA
+red is `0000ffff`; do not interpret it as RGBA blue. See
+[vkgl-0.1.31.md](vkgl-0.1.31.md).
+
 ## 0.1.30 independent vertex bindings
 
 Build all tests with `./build-0.1.30-tests.sh /tmp/vkgl-0.1.30-tests` and run the
