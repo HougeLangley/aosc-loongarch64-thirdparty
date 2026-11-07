@@ -66,6 +66,22 @@ initial layouts and capability-clamped anisotropy. Its five-scene smoke dropped
 from 28 to **0 validation events** on both dmabuf and wl_shm without changing
 vkgl 0.1.26. See [vkmark-2025.01-4-wsi-validation.md](vkmark-2025.01-4-wsi-validation.md).
 
+## 0.1.27 software instancing
+
+Build the strict direct/indexed/indirect instance matrix and all earlier tests:
+
+```sh
+./build-0.1.27-tests.sh /tmp/vkgl-0.1.27-tests
+```
+
+Run `vktest-draw-instance` from `/tmp/vkgl-0.1.27-tests/instance`. The 16-case
+matrix covers instanceCount=0/1/2 and firstInstance=0/1 across direct, indexed,
+indirect and indexed-indirect recording. Installed 0.1.27 passes every raw-pixel
+case with zero validation events. The vendor GL context has no instancing
+extension, so vkgl uses an internal instance uniform and repeated GL draws; this
+is not native Vulkan or hardware instancing. Noninstanced paired benchmarks show
+only noise-level differences. See [vkgl-0.1.27.md](vkgl-0.1.27.md).
+
 ## 0.1.26 coherent upload coalescing
 
 Build the controlled persistent-mapping test and all earlier strict tests:
