@@ -276,6 +276,21 @@ no active VBO mutation is attempted. See
 [`lg110-vertex-binding-stream.md`](lg110-vertex-binding-stream.md) and
 `draw-vertex-binding-public-*` traces.
 
+## Vertex-state auxiliary BOs and CPU profile
+
+Constant-pixel offset/stride controls leave both XDMA IBs and the 672-dword GFX
+IB unchanged. A new opt-in tracer can temporarily map one explicitly selected,
+tracked BO read-only; the first 64 dwords of two GFX-referenced auxiliary BOs are
+also unchanged. This is a bounded negative result, not a vertex decoder. Default
+and invalid-VA guards are tested. See
+[`lg110-vertex-state-bo.md`](lg110-vertex-state-bo.md).
+
+Long cpu-clock profiles show vkgl at only 5.4–5.6% of sampled CPU, versus 23–28%
+in `gsgpu_dri.so`; unknown samples are not misassigned. No new CPU micro-
+optimization was released on these small samples. See
+[`lg110-cpu-profile-0.1.31.md`](lg110-cpu-profile-0.1.31.md) for textual flat,
+DSO and call-graph evidence (binary perf.data excluded).
+
 ## Sampler capability is not sufficient proof
 
 LG110 exposes `GL_EXT_texture_filter_anisotropic` and maximum 16 on the hardware
