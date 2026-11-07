@@ -247,9 +247,13 @@ With installed vkgl 0.1.27, Vulkan indirect recording expands to the same GL dra
 direct→indirect changes only 12 GPU-VA-bearing positions. Indexed adds a six-byte
 XDMA upload and changes four additional GFX fields: word268 gains `0x2`, word276
 becomes `0xffffffff`, word280 equals the traced index GEM VA, and word281 is 1 on
-this UINT16 path. These are passive associations, not active indexed causality or
-word281 type proof. See [`lg110-indexed-draw-field.md`](lg110-indexed-draw-field.md)
-and `draw-indexed-public-*` complete traces.
+this UINT16 path. The UINT32 follow-up leaves word281 unchanged and isolates
+word268 `0x40000402↔0x40000404`; a guarded active reverse mutation exactly
+reproduces the old UINT32-as-UINT16 clear pixel. This proves index-width
+causality for word268, while word281 remains unassigned. See
+[`lg110-indexed-draw-field.md`](lg110-indexed-draw-field.md),
+[`lg110-index-type-field.md`](lg110-index-type-field.md), and the
+`draw-indexed-public-*` / `draw-index-type-public-*` complete traces.
 
 ## Sampler capability is not sufficient proof
 

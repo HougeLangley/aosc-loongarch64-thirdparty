@@ -66,6 +66,16 @@ initial layouts and capability-clamped anisotropy. Its five-scene smoke dropped
 from 28 to **0 validation events** on both dmabuf and wl_shm without changing
 vkgl 0.1.26. See [vkmark-2025.01-4-wsi-validation.md](vkmark-2025.01-4-wsi-validation.md).
 
+## 0.1.28 UINT16/UINT32 index types
+
+Build the updated matrix with `./build-0.1.28-tests.sh /tmp/vkgl-0.1.28-tests`.
+The 16 indexed direct/indirect cases cover both index widths and the four
+instance controls. Exact 0.1.27 fails both UINT32 pixel cases; installed 0.1.28
+passes all 16 with zero validation events. The native differential and guarded
+active mutation also identify word268's 16/32-bit encoding effect. See
+[vkgl-0.1.28.md](vkgl-0.1.28.md) and
+[../../research/lg110/lg110-index-type-field.md](../../research/lg110/lg110-index-type-field.md).
+
 ## 0.1.27 software instancing
 
 Build the strict direct/indexed/indirect instance matrix and all earlier tests:
