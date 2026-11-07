@@ -285,6 +285,13 @@ also unchanged. This is a bounded negative result, not a vertex decoder. Default
 and invalid-VA guards are tested. See
 [`lg110-vertex-state-bo.md`](lg110-vertex-state-bo.md).
 
+The follow-up A/B/A test removes cross-process noise and second-pipeline lazy
+initialization. After initialization, stride 16 -> 8 differs from the same
+control only by GFX words 338/362 selecting different state BOs; the selected
+16K BO pairs are content-identical, so these are not numeric stride fields.
+Offset adds no small-BO difference. Same-state cross-process hashes are retained
+as a negative control. See [`lg110-vertex-state-aba.md`](lg110-vertex-state-aba.md).
+
 Long cpu-clock profiles show vkgl at only 5.4–5.6% of sampled CPU, versus 23–28%
 in `gsgpu_dri.so`; unknown samples are not misassigned. No new CPU micro-
 optimization was released on these small samples. See
