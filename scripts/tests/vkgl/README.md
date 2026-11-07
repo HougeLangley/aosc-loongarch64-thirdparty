@@ -66,6 +66,16 @@ initial layouts and capability-clamped anisotropy. Its five-scene smoke dropped
 from 28 to **0 validation events** on both dmabuf and wl_shm without changing
 vkgl 0.1.26. See [vkmark-2025.01-4-wsi-validation.md](vkmark-2025.01-4-wsi-validation.md).
 
+## 0.1.29 signed vertexOffset and firstIndex
+
+Build the full matrix with `./build-0.1.29-tests.sh /tmp/vkgl-0.1.29-tests` and
+run offset cases from `offset/`. UINT16/UINT32, direct/indirect and
+base/positive/negative/firstIndex give 16 installed cases with zero validation
+events. Exact 0.1.28 fails both positive and negative offset controls. Native
+word269 and word274 have independent active causal proofs. See
+[vkgl-0.1.29.md](vkgl-0.1.29.md) and
+[../../research/lg110/lg110-index-offset-field.md](../../research/lg110/lg110-index-offset-field.md).
+
 ## 0.1.28 UINT16/UINT32 index types
 
 Build the updated matrix with `./build-0.1.28-tests.sh /tmp/vkgl-0.1.28-tests`.

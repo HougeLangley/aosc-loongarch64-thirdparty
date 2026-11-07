@@ -255,6 +255,17 @@ causality for word268, while word281 remains unassigned. See
 [`lg110-index-type-field.md`](lg110-index-type-field.md), and the
 `draw-indexed-public-*` / `draw-index-type-public-*` complete traces.
 
+## Native firstIndex and signed base vertex
+
+The 0.1.29 four-vertex indexed test separates firstIndex from vertexOffset.
+Passive streams isolate word269 `0→3` for firstIndex and word274 for base vertex;
+word274 is 1 for +1 and `0xffffffff` for -1. Guarded active mutations of word269
+alone, word274 0→1, and word274 -1→0 each produce the exact corresponding clear
+pixel with no XDMA change and only the target GFX dword changed. Two wrong-input
+guards reject with zero changes. See
+[`lg110-index-offset-field.md`](lg110-index-offset-field.md) and
+`draw-index-offset-public-*` traces. This is not arbitrary packet/replay proof.
+
 ## Sampler capability is not sufficient proof
 
 LG110 exposes `GL_EXT_texture_filter_anisotropic` and maximum 16 on the hardware
