@@ -57,6 +57,15 @@ The test presents 30 frames with 100 ms sleeps. Start it in the background and
 capture after about one second, then wait for it; capturing after three seconds
 can photograph the closed window and is not a driver failure.
 
+## vkmark 2025.01-4: validation cleanup
+
+`vktest-wsi-semaphore.c` isolates legal acquire-semaphore reuse with submit
+fences; both present paths have zero acquire/signal VUIDs. The corrected vkmark
+package separately adds per-image render-finished semaphores, valid OPTIMAL
+initial layouts and capability-clamped anisotropy. Its five-scene smoke dropped
+from 28 to **0 validation events** on both dmabuf and wl_shm without changing
+vkgl 0.1.26. See [vkmark-2025.01-4-wsi-validation.md](vkmark-2025.01-4-wsi-validation.md).
+
 ## 0.1.26 coherent upload coalescing
 
 Build the controlled persistent-mapping test and all earlier strict tests:
