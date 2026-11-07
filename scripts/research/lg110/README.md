@@ -266,6 +266,16 @@ guards reject with zero changes. See
 [`lg110-index-offset-field.md`](lg110-index-offset-field.md) and
 `draw-index-offset-public-*` traces. This is not arbitrary packet/replay proof.
 
+## Independent vertex bindings
+
+The 0.1.30 test supplies positions and UVs from different VBOs, offsets and
+strides. Four direct/indexed/indirect captures pass and show separate XDMA
+uploads, but neither VBO base VA occurs literally in the 672-dword GFX stream;
+only the index VA still maps to word280. No vertex-address field is guessed and
+no active VBO mutation is attempted. See
+[`lg110-vertex-binding-stream.md`](lg110-vertex-binding-stream.md) and
+`draw-vertex-binding-public-*` traces.
+
 ## Sampler capability is not sufficient proof
 
 LG110 exposes `GL_EXT_texture_filter_anisotropic` and maximum 16 on the hardware

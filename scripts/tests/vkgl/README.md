@@ -66,6 +66,16 @@ initial layouts and capability-clamped anisotropy. Its five-scene smoke dropped
 from 28 to **0 validation events** on both dmabuf and wl_shm without changing
 vkgl 0.1.26. See [vkmark-2025.01-4-wsi-validation.md](vkmark-2025.01-4-wsi-validation.md).
 
+## 0.1.30 independent vertex bindings
+
+Build all tests with `./build-0.1.30-tests.sh /tmp/vkgl-0.1.30-tests` and run the
+new test from `bindings/`. Binding 0 positions use offset 8/stride 8; binding 1
+UVs use stride 16. Four indexed/indirect combinations pass with zero validation
+events, while exact 0.1.29 fails both nonindexed controls. All 32 prior functional
+and 21 prior native causal/guard regressions pass. See
+[vkgl-0.1.30.md](vkgl-0.1.30.md) and
+[../../research/lg110/lg110-vertex-binding-stream.md](../../research/lg110/lg110-vertex-binding-stream.md).
+
 ## 0.1.29 signed vertexOffset and firstIndex
 
 Build the full matrix with `./build-0.1.29-tests.sh /tmp/vkgl-0.1.29-tests` and
