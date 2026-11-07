@@ -231,6 +231,16 @@ unassigned. Adjacency/PATCH are rejected rather than misdrawn. See
 [`lg110-draw-topology-field.md`](lg110-draw-topology-field.md), the extended
 tracer/test, and `draw-topology-*` raw evidence.
 
+## Native firstVertex causal control
+
+A safe four-vertex shader avoids out-of-bounds vertex indices. Passive first0→1
+changes words274/275/276, but active separation shows that word274 alone exactly
+reproduces the passive first1 pixel, while word275 or word276 alone does not.
+The already-first1 guard and all count/topology/word276 regressions pass. This is
+a limited first-vertex causal proof, not vertex addressing or replay. See
+[`lg110-first-vertex-field.md`](lg110-first-vertex-field.md) and
+`draw-first-public-*` evidence.
+
 ## Sampler capability is not sufficient proof
 
 LG110 exposes `GL_EXT_texture_filter_anisotropic` and maximum 16 on the hardware
