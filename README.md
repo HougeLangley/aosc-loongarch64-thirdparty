@@ -163,6 +163,7 @@ GSPKT(op, n) = op & 0xff | (n & 0xffff) << 16
 `vkcube`、`vulkaninfo`、`vulkanCapsViewer` 以及简单 3D 应用可用；
 DXVK / vkd3d / 重度游戏仍不具备条件。详见 [docs/VULKAN.md](docs/VULKAN.md)。
 `texelFetch` 目前在 GLSL 编译前失败；实际硬件仅有 GLSL 1.20，且无 `GL_EXT_gpu_shader4`，不能靠强制扩展或 GLSL 130 修复。证据见 [兼容性报告](scripts/research/lg110/vkgl-texel-fetch-compatibility.md)。
+顶点 stride 的原始 UAPI、属性敏感 A/B/A、shader 选择器及同步全 VA 差分见 [LG110 UAPI/全 VA 审计](scripts/research/lg110/lg110-vertex-state-uapi-all-va.md)：已测 GFX 与全部已映射 VA 均未携带该差异，尚未定位 vendor 内部派生路径，也不据此虚构原生字段。
 
 ---
 
