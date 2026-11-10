@@ -60,22 +60,18 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 ---
 
-## 2. 完整 deb 包清单
+## 2. 最新 deb 包清单
 
 <!-- BEGIN GENERATED DEB PACKAGE INDEX -->
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
-`dists/stable/main/binary-loongarch64/Packages` 生成，**不能只列最新版或手工挑选**。
-当前共 **39 个 deb 文件条目、15 个不同包名**。仓库保留已发布的多个历史版本；
-APT 默认选择可安装的最新版本，表中历史条目不表示它们都是当前推荐版本。
+`dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
+当前列出 **15 个最新 deb 条目、15 个不同包名**；索引共保留 19 个 deb。
+旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
 | 软件包 | 版本 | 架构 | SHA-256 | deb |
 |---|---|---|---|---|
-| `brew-ui-linux` | `0.1.0-1` | `loongarch64` | `ae0ce398bf73aaa46d3ca9cc02b9b0f87280047817e91555c4d2adfe028083e7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-1_loongarch64.deb) |
-| `brew-ui-linux` | `0.1.0-2` | `loongarch64` | `33a371da29e6985c2b411a53f2646da5e23eb61bf87a29d544a2f6e5742e0927` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-2_loongarch64.deb) |
-| `brew-ui-linux` | `0.1.0-3` | `loongarch64` | `f122a3768fc86a3b1e5e4a1f88a0e57ce9a4472543f6052fc40067532369f5e8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-3_loongarch64.deb) |
-| `brew-ui-linux` | `0.1.0-4` | `loongarch64` | `7c4ed634592c6abb1b4a91cf2d6e82b16593e7920efbc907aaf046484f8fa271` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-4_loongarch64.deb) |
 | `brew-ui-linux` | `0.1.0-5` | `loongarch64` | `f31a56110f420390f32cb2f795b8984109f41187382cbd4cc7e374184c30f481` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-5_loongarch64.deb) |
 | `greeter` | `0.2.0-1` | `loongarch64` | `e076fa0e64256c51c8fc8c749cde6375536825f501a4957362524410599cb05e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/greeter/greeter_0.2.0-1_loongarch64.deb) |
 | `hello` | `1.0.0-1` | `loongarch64` | `5394a85cc56c50e8ec5a2593c23089755fd376e786a1e09d2d97f25f7b443952` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hello/hello_1.0.0-1_loongarch64.deb) |
@@ -87,28 +83,8 @@ APT 默认选择可安装的最新版本，表中历史条目不表示它们都�
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.3-1` | `loongarch64` | `b2c1a945a155d4b72abd3c9a68f144cc89bf766ad5b48e5cbab648171322f766` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.3-1_loongarch64.deb) |
 | `ruby` | `4.0.9-1` | `all` | `31eeca670cc0a5415b7a7265f8196573ef2285a2cc45b191a6bb48b4ca5a0ce1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-1_all.deb) |
-| `v2raya` | `2.5.13-2` | `loongarch64` | `85c1f7608b6020b6040050987bd3b1b1cfee339f1c0c2c2bd18dc2689ddf2ede` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.13-2_loongarch64.deb) |
 | `v2raya` | `2.5.14-1` | `loongarch64` | `5eaf29d7ffac7cfd0d0acee04576029bc19541cae309f32007783311021fbaae` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.14-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.14-1` | `loongarch64` | `e498ebd1c7f108128338af421b0eb507c24a31161c273583459f5670a87c434d` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.14-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.15-1` | `loongarch64` | `74d388fe0a383e5c2a67028384d9734dc31b793c5be9d47574a7dbdd2a4f10ef` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.15-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.16-1` | `loongarch64` | `7e2775b954bc1a81ed632f1e25fd78050e78878cc59e9567e722ca98db2b868e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.16-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.17-1` | `loongarch64` | `5bbfe12eea46eb2d8de7ea9b3eaa27d95fee7581dca8d6ca5c3144f5e4b9fb04` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.17-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.18-1` | `loongarch64` | `84bb92c0770d99e1646cc6a483547b864fe9e1002121d7265a727669bd680b2c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.18-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.19-1` | `loongarch64` | `37cf04fa22ab83bbdfede86590d6e2ef0f71f7725b9cd69884fc7b722722fa79` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.19-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.20-1` | `loongarch64` | `1665530c2b600172cbd2ee00ed882f92bb10458078a36265d2357e9d404184a7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.20-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.21-1` | `loongarch64` | `ec99119b9bb4aaa4ce44dfcc357d3fe14fda0de32049c1ef1c624bf2ad979bed` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.21-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.22-1` | `loongarch64` | `74316cc6d4574cef6e62584cee567ee4bdbf8aef0078c27f5e4d57eb3ef5d72f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.22-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.23-1` | `loongarch64` | `444d76daf4b4fd7229d1410285b18ad192f175828fda8623eeace73a163b76f7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.23-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.24-1` | `loongarch64` | `7b39464c262fdb3c46bd5bb74202de15706e2fb154321fba67476952c307a00a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.24-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.25-1` | `loongarch64` | `a630b3b3e6bcefb90c9cd59703d9a0df49327cc824cd1c74b02b9315e322e57e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.25-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.26-1` | `loongarch64` | `81ffef20abcdf2acd529609378999b6597ae1273329426e76e6f36eace500970` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.26-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.27-1` | `loongarch64` | `6c3a48f42eb6f046255698df0f709b649b052c47eadd097e2d701fef6b54b86c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.27-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.28-1` | `loongarch64` | `ebd7df024274e783a665e786088496a579ea8fc3a60b3f5c10e64a2e3eab4a0d` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.28-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.29-1` | `loongarch64` | `01067fc80517c5f99d51eee559e4aa13e5b85fc14fa461c61328ac4b376da7fb` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.29-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.30-1` | `loongarch64` | `1226bdeabffdc69083862a02b6f05c1aaffa18adc7aa8810ca3c3dab81eb22f7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.30-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.31-1` | `loongarch64` | `938aebc08a494b2b5b01c3d970bacf48633d7874c8e09831a46ceb30a8e90b12` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.31-1_loongarch64.deb) |
 | `vkgl-loonggpu` | `0.1.32-1` | `loongarch64` | `f5da94650e4cf4c61488a46c64906836bbfabf2eb50bd91dbb26b3130699dc06` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.32-1_loongarch64.deb) |
-| `vkmark` | `2025.01-3` | `loongarch64` | `607b895267f1eb039dc2c6431023d23d0af094ce71b270f2edcb66cc63fdc865` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkmark/vkmark_2025.01-3_loongarch64.deb) |
 | `vkmark` | `2025.01-4` | `loongarch64` | `5cbda2cb85b902f590b6fdf0d2e8ad4cd1f84887c8f27020b6596d6a5085356a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkmark/vkmark_2025.01-4_loongarch64.deb) |
 | `zerotier-one` | `1.16.2-1` | `loongarch64` | `a21e556042be743970ab9ac1a7f14c3d739e227007778b3d28bb1c4fe9ae39f4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/z/zerotier-one/zerotier-one_1.16.2-1_loongarch64.deb) |
 
