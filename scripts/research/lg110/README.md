@@ -369,6 +369,18 @@ patch but was not installed or released. See
 [`vkgl-primitive-restart-cache.md`](vkgl-primitive-restart-cache.md); the scan
 reduction is not an FPS claim.
 
+## Fragment uniform lives outside the captured IB
+
+A same-driver red/blue UpdateBuffer workload produced exact distinct pixels but
+zero differences in the complete 16-dword XDMA, 544-dword GFX draw, and
+272-dword readback IBs. Bounded mapped-BO hashes then isolated a 16 MiB handle-8
+state mapping. Its red/blue snapshots differed only inside the vec4 at offset
+`0x3cb0`. A separate opt-in, old-value-guarded mutation of that vector from red
+to green before submission 2 produced exact green/black output, while the
+passive control stayed red. This is causal evidence for one tested fragment
+uniform field, not a portable descriptor/UAPI or performance result. See
+[`lg110-uniform-state.md`](lg110-uniform-state.md).
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
