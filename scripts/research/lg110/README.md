@@ -354,7 +354,8 @@ all 672 GFX dwords, confirming that vkgl drops `primitiveRestartEnable`. Althoug
 the vendor advertises `GL_NV_primitive_restart` and its index setter,
 `glEnable(GL_PRIMITIVE_RESTART_NV)` returns `GL_INVALID_ENUM` and the state stays
 disabled. An isolated forwarding candidate reproduced that error inside vkgl and
-changed no IB dword, so it was rejected and not installed. Word276 remains
+changed no IB dword, so it was rejected and not installed. Core and fixed-index
+restart enables also return `GL_INVALID_ENUM` with enabled=0. Word276 remains
 unassigned. See [`lg110-primitive-restart.md`](lg110-primitive-restart.md).
 
 ## Limitations
