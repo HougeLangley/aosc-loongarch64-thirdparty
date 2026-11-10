@@ -84,7 +84,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `plasma-loonggpu-compat` | `1.0.3-1` | `loongarch64` | `b2c1a945a155d4b72abd3c9a68f144cc89bf766ad5b48e5cbab648171322f766` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.3-1_loongarch64.deb) |
 | `ruby` | `4.0.9-1` | `all` | `31eeca670cc0a5415b7a7265f8196573ef2285a2cc45b191a6bb48b4ca5a0ce1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-1_all.deb) |
 | `v2raya` | `2.5.14-1` | `loongarch64` | `5eaf29d7ffac7cfd0d0acee04576029bc19541cae309f32007783311021fbaae` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.14-1_loongarch64.deb) |
-| `vkgl-loonggpu` | `0.1.34-1` | `loongarch64` | `f881c78245ec88335c59b49b845dbeb3d24e1d047f8e0771e773281074bb93b2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.34-1_loongarch64.deb) |
+| `vkgl-loonggpu` | `0.1.35-1` | `loongarch64` | `25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.35-1_loongarch64.deb) |
 | `vkmark` | `2025.01-4` | `loongarch64` | `5cbda2cb85b902f590b6fdf0d2e8ad4cd1f84887c8f27020b6596d6a5085356a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkmark/vkmark_2025.01-4_loongarch64.deb) |
 | `zerotier-one` | `1.16.2-1` | `loongarch64` | `a21e556042be743970ab9ac1a7f14c3d739e227007778b3d28bb1c4fe9ae39f4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/z/zerotier-one/zerotier-one_1.16.2-1_loongarch64.deb) |
 
