@@ -336,6 +336,17 @@ word273 alone is not sufficient for the count effect and is not named a second
 count field. This is a bounded negative causal result, not proof that it is
 unused. See [`lg110-draw-word273-field.md`](lg110-draw-word273-field.md).
 
+## Indexed word281 also remains unassigned
+
+The 0.1.32 indexed UINT16 stream keeps a valid nonzero index VA while a guarded
+mode changes only word281 `1→0`. Both 16-dword XDMA IBs are unchanged, the full
+672-dword GFX diff contains only word281, and the center remains `663300ff`.
+Nonindexed input is rejected with zero mutations. A paired UINT32 control and
+the existing index32-to16 regression still differ only at word268 and change
+`007f00ff→663300ff`. Word281 alone is therefore insufficient for this output;
+it is not called unused, firstInstance, or index width. See
+[`lg110-draw-word281-field.md`](lg110-draw-word281-field.md).
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
