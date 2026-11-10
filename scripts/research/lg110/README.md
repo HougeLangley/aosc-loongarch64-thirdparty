@@ -381,6 +381,13 @@ passive control stayed red. This is causal evidence for one tested fragment
 uniform field, not a portable descriptor/UAPI or performance result. See
 [`lg110-uniform-state.md`](lg110-uniform-state.md).
 
+A follow-up resolved GFX words 240/241 as the exact little-endian VA of that
+vec4. Writing green into an unused following BO slot while leaving the IB
+unchanged still rendered red; additionally changing only word240 to the new VA
+rendered green, with no other differences across all 832 IB dwords. This is a
+causal pointer result for this stream, not a generic packet format. See
+[`lg110-uniform-pointer.md`](lg110-uniform-pointer.md).
+
 A content-keyed uniform-upload cache passed exact UpdateBuffer/vertex/fragment
 regressions but recorded **zero hits** in vertex (360 uploads), texture (240),
 and shading (240). It skipped no GL calls and was rejected without a paired FPS
