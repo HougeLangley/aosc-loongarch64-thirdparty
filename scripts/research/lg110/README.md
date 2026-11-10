@@ -381,6 +381,11 @@ passive control stayed red. This is causal evidence for one tested fragment
 uniform field, not a portable descriptor/UAPI or performance result. See
 [`lg110-uniform-state.md`](lg110-uniform-state.md).
 
+A content-keyed uniform-upload cache passed exact UpdateBuffer/vertex/fragment
+regressions but recorded **zero hits** in vertex (360 uploads), texture (240),
+and shading (240). It skipped no GL calls and was rejected without a paired FPS
+claim or installation. See [`vkgl-uniform-cache.md`](vkgl-uniform-cache.md).
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
