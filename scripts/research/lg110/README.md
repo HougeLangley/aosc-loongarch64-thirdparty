@@ -347,6 +347,16 @@ the existing index32-to16 regression still differ only at word268 and change
 it is not called unused, firstInstance, or index width. See
 [`lg110-draw-word281-field.md`](lg110-draw-word281-field.md).
 
+## Primitive restart remains a real compatibility gap
+
+Restart-off/on indexed strip captures on installed 0.1.32 have identical XDMA and
+all 672 GFX dwords, confirming that vkgl drops `primitiveRestartEnable`. Although
+the vendor advertises `GL_NV_primitive_restart` and its index setter,
+`glEnable(GL_PRIMITIVE_RESTART_NV)` returns `GL_INVALID_ENUM` and the state stays
+disabled. An isolated forwarding candidate reproduced that error inside vkgl and
+changed no IB dword, so it was rejected and not installed. Word276 remains
+unassigned. See [`lg110-primitive-restart.md`](lg110-primitive-restart.md).
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
