@@ -347,7 +347,7 @@ the existing index32-to16 regression still differ only at word268 and change
 it is not called unused, firstInstance, or index width. See
 [`lg110-draw-word281-field.md`](lg110-draw-word281-field.md).
 
-## Primitive restart remains a real compatibility gap
+## Primitive restart: broken GL enables, software fix
 
 Restart-off/on indexed strip captures on installed 0.1.32 have identical XDMA and
 all 672 GFX dwords, confirming that vkgl drops `primitiveRestartEnable`. Although
@@ -356,7 +356,11 @@ the vendor advertises `GL_NV_primitive_restart` and its index setter,
 disabled. An isolated forwarding candidate reproduced that error inside vkgl and
 changed no IB dword, so it was rejected and not installed. Core and fixed-index
 restart enables also return `GL_INVALID_ENUM` with enabled=0. Word276 remains
-unassigned. See [`lg110-primitive-restart.md`](lg110-primitive-restart.md).
+unassigned. 0.1.33 instead splits the existing CPU index shadow at real
+UINT16/UINT32 sentinels; strip/fan and direct/indirect pixel tests pass, while
+no-sentinel native IBs remain identical. See
+[`lg110-primitive-restart.md`](lg110-primitive-restart.md) and the
+[0.1.33 release report](../../tests/vkgl/vkgl-0.1.33.md).
 
 ## Limitations
 
