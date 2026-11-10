@@ -43,6 +43,7 @@ sudo apt install v2raya            # Web GUI 代理客户端（含 SQLite 修复
 sudo apt install zerotier-one      # ZeroTier 1.16
 sudo apt install plasma-loonggpu-compat   # KDE Plasma Wayland + LG110 GPU 渲染
 sudo apt install vkgl-loonggpu     # 可用的 Vulkan ICD（LG110，GPU 渲染）
+sudo apt install brew-ui-linux     # 非官方 Qt 6 Homebrew 图形管理前端
 ```
 
 安装 `vkgl-loonggpu` 后：
@@ -70,6 +71,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `vkgl-loonggpu` | graphics-drivers | Vulkan 1.0 → GL 2.1 ICD 0.1.20；dmabuf/wl_shm、tight 上传与真实 EGL fence，双路径 5/5 GPU 回归 | ✅ |
 | `mesa-vulkan-loonggpu` | graphics-drivers | RADV LG110 实验移植；**已废弃**，见第 5 节 | ⚠️ 仅存档 |
 | `linux-kernel-mainline-16k-rt` | kernel | 主线 7.3.1 + AOSC 补丁 + 16K 页 + PREEMPT_RT；gcc -O3 与 clang full-LTO 桌面均已验证 | ✅ |
+| `brew-ui-linux` | app-admin | 0.1.0-3，非官方 Qt 6 Homebrew 前端；formula 安装/卸载/升级、透明命令与输出 | ✅ |
 
 ---
 
@@ -102,6 +104,7 @@ aosc-loongarch64-thirdparty/
 │   ├── BUILDING.md                # 从零构建环境与依赖
 │   ├── PUBLISHING.md              # 签名、索引、rsync、回滚
 │   ├── KERNEL.md                  # 主线 RT 内核：AOSC 补丁、配置、LTO
+│   ├── HOMEBREW.md                # brew 7.0.13、双 lane 与 Linux GUI 维护
 │   ├── GPU-WAYLAND.md             # LG110 的 Wayland 兼容层原理
 │   └── VULKAN.md                  # 为什么 RADV 不行、vkgl 怎么做的
 └── repo/
