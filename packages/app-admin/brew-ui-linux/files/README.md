@@ -36,6 +36,17 @@ separately installed and authoritative. This initial version manages formulae
 only; casks, services, tap editing and authentication helpers are not yet
 implemented.
 
+For a real, read-only end-to-end check (including QProcess, Homebrew 7.x, JSON
+parsing and table population), run:
+
+```sh
+QT_QPA_PLATFORM=offscreen brew-ui-linux \
+  --brew /home/houge/infra/brew-build/bin/brew --check-inventory
+```
+
+It exits 0 only after a valid inventory response, 1 on command/parse failure and
+124 after a 60-second timeout; it never installs or removes packages.
+
 Upstream reference: <https://github.com/Homebrew/BrewUI>. This independent
 frontend is distributed under AGPL-3.0-or-later to remain license-compatible
 with the official project.
