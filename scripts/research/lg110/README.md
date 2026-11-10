@@ -362,6 +362,13 @@ no-sentinel native IBs remain identical. See
 [`lg110-primitive-restart.md`](lg110-primitive-restart.md) and the
 [0.1.33 release report](../../tests/vkgl/vkgl-0.1.33.md).
 
+A segment-cache candidate eliminated 119 of 120 static scans and correctly
+rescanned mapped UINT16/32 updates, but both Buffer-local and external-map
+revisions had negative paired default-path results. It is reproducible as a
+patch but was not installed or released. See
+[`vkgl-primitive-restart-cache.md`](vkgl-primitive-restart-cache.md); the scan
+reduction is not an FPS claim.
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
