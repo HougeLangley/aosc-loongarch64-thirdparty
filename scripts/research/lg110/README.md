@@ -325,6 +325,17 @@ The supplied GSPKT list does not name opcode `0x88`, so it remains UNKNOWN.
 The kernel header only comments `DRAW 0x89`; these observations are not yet a
 packet disassembler or proof of payload semantics.
 
+## word273 remains unassigned after active separation
+
+On installed 0.1.32, a newly guarded `word273` mode changes only that dword from
+3 to 2 in the original nonindexed 672-dword stream. The XDMA is unchanged, the
+complete GFX differential contains only word273, and the center remains the base
+`007f00ff`. Input draw2 is rejected with zero mutations; the existing word270
+count regression still changes only word270 and produces `663300ff`. Therefore
+word273 alone is not sufficient for the count effect and is not named a second
+count field. This is a bounded negative causal result, not proof that it is
+unused. See [`lg110-draw-word273-field.md`](lg110-draw-word273-field.md).
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
