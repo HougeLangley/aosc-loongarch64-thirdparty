@@ -393,6 +393,17 @@ regressions but recorded **zero hits** in vertex (360 uploads), texture (240),
 and shading (240). It skipped no GL calls and was rejected without a paired FPS
 claim or installation. See [`vkgl-uniform-cache.md`](vkgl-uniform-cache.md).
 
+## Clean offscreen uniform controls; range candidates rejected
+
+Independent headless clear and changing-uniform tests pass all three exact
+frames on installed vkgl 0.1.35. They supersede the driver-anomaly interpretation
+of the older array harness; that harness's red/red/red result is not production
+driver evidence. Range and coalesced uniform uploads both pass the clean test
+and five additional exact regressions, but six-round paired vkmark runs show a
+vertex regression for range and a shading regression for coalescing. Neither was
+installed or packaged. See
+[`lg110-offscreen-uniform.md`](lg110-offscreen-uniform.md).
+
 ## Limitations
 
 - Same-process intercepted calls only; direct syscalls and unobserved imports,
