@@ -66,7 +66,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **15 个最新 deb 条目、15 个不同包名**；索引共保留 19 个 deb。
+当前列出 **15 个最新 deb 条目、15 个不同包名**；索引共保留 20 个 deb。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -79,7 +79,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `linux-headers-mainline-16k-rt-7.3.1-gcc-o3` | `7.3.1-1` | `loongarch64` | `a37f12183c8b4bb52e342b41e255be62ef2566f4b7d3617b17cdb453c3712771` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.1-gcc-o3/linux-headers-mainline-16k-rt-7.3.1-gcc-o3_7.3.1-1_loongarch64.deb) |
 | `linux-kernel-mainline-16k-rt-7.3.1-clang-lto` | `7.3.1-1` | `loongarch64` | `e8f63db9bb4e41c2abe1354b98a7afb037173a6b91cdaf21de585d0f5ac824fa` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.1-clang-lto/linux-kernel-mainline-16k-rt-7.3.1-clang-lto_7.3.1-1_loongarch64.deb) |
 | `linux-kernel-mainline-16k-rt-7.3.1-gcc-o3` | `7.3.1-1` | `loongarch64` | `b56f2e2d37fc2b9db45687f5ee6d064f3782fb875c085e4bb5fccc7088604988` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.1-gcc-o3/linux-kernel-mainline-16k-rt-7.3.1-gcc-o3_7.3.1-1_loongarch64.deb) |
-| `loonggpu-kernel-dkms` | `2:1.0.2+lnd25.1-2` | `loongarch64` | `004b62abaefa183e1aeb3fe4d828e46824d85c4b1d08aa99fa9f980570cbc728` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loonggpu-kernel-dkms/loonggpu-kernel-dkms_1.0.2%2Blnd25.1-2_loongarch64.deb) |
+| `loonggpu-kernel-dkms` | `2:1.0.2+lnd25.1-3` | `loongarch64` | `6c9dee5ee696f7ceb8c5bfbae4fc140c60131e08cf99650eb4703129a9509116` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loonggpu-kernel-dkms/loonggpu-kernel-dkms_1.0.2%2Blnd25.1-3_loongarch64.deb) |
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.3-1` | `loongarch64` | `b2c1a945a155d4b72abd3c9a68f144cc89bf766ad5b48e5cbab648171322f766` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.3-1_loongarch64.deb) |
 | `ruby` | `4.0.9-1` | `all` | `31eeca670cc0a5415b7a7265f8196573ef2285a2cc45b191a6bb48b4ca5a0ce1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-1_all.deb) |
