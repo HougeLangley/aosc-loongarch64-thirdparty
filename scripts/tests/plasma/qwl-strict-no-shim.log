@@ -1,0 +1,5 @@
+TEST platform=wayland qt=6.11.2 requested={renderableType=0 version=2.0 profile=0 RGBA=-1,-1,-1,-1 depth=-1 stencil=-1 samples=-1 swapBehavior=0 swapInterval=0}
+TEST current display=0x5555de418200 draw_surface=0x5555de423740 EGL_VENDOR=Mesa Project EGL_VERSION=1.4 GL_VENDOR=X.Org GL_RENDERER=LoongGPU(TM) LG110 (DRM 1.0.0 / 7.3.1-mainline-16k-rt-clang-lto, LLVM 8.0.1) GL_VERSION=2.1 Mesa 18.3.6
+TEST PASS native window context and swap completed
+warning: queue 0x5555de418190 destroyed while proxies still attached:
+  wl_display#1 still attached

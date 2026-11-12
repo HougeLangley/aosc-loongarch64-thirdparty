@@ -1,0 +1,27 @@
+warning: queue 0x5555e37e6080 destroyed while proxies still attached:
+  wl_display#1 still attached
+CONSTANTS WINDOW=4 PIXMAP=2 PBUFFER=1 ES1=1 ES2=4 OPENGL=8 ES3=64
+DISPLAY handle=0x5555e37e5540 EGL=1.4 VENDOR=Mesa Project VERSION=1.4 CLIENT_APIS=OpenGL OpenGL_ES 
+MATCH name=Qt_full_WINDOW_OPENGL ret=1 num_config=6 error=0x3000 attribs=0x3024=0(0x0) 0x3023=0(0x0) 0x3022=0(0x0) 0x3021=8(0x8) 0x3031=0(0x0) 0x3032=0(0x0) 0x3025=0(0x0) 0x3026=0(0x0) 0x3033=4(0x4) 0x3040=8(0x8) 
+MATCH name=Qt_full_PBUFFER_OPENGL ret=1 num_config=0 error=0x3000 attribs=0x3024=0(0x0) 0x3023=0(0x0) 0x3022=0(0x0) 0x3021=8(0x8) 0x3031=0(0x0) 0x3032=0(0x0) 0x3025=0(0x0) 0x3026=0(0x0) 0x3033=1(0x1) 0x3040=8(0x8) 
+MATCH name=WINDOW_OPENGL ret=1 num_config=12 error=0x3000 attribs=0x3033=4(0x4) 0x3040=8(0x8) 
+MATCH name=PBUFFER_OPENGL ret=1 num_config=0 error=0x3000 attribs=0x3033=1(0x1) 0x3040=8(0x8) 
+MATCH name=WINDOW_ES2 ret=1 num_config=12 error=0x3000 attribs=0x3033=4(0x4) 0x3040=4(0x4) 
+MATCH name=PBUFFER_ES2 ret=1 num_config=0 error=0x3000 attribs=0x3033=1(0x1) 0x3040=4(0x4) 
+MATCH name=WINDOW_only ret=1 num_config=12 error=0x3000 attribs=0x3033=4(0x4) 
+MATCH name=PBUFFER_only ret=1 num_config=0 error=0x3000 attribs=0x3033=1(0x1) 
+MATCH name=WINDOW_or_PBUFFER_OPENGL ret=1 num_config=0 error=0x3000 attribs=0x3033=5(0x5) 0x3040=8(0x8) 
+MATCH name=PIXMAP_only ret=1 num_config=0 error=0x3000 attribs=0x3033=2(0x2) 
+CONFIG_COUNT requested=12 returned=12
+CONFIG index=0 handle=0x5555e3ad3430 id=1 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,8 depth=0 stencil=0 samples=0 sample_buffers=0 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=1 handle=0x5555e3ad35c0 id=2 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,8 depth=24 stencil=0 samples=0 sample_buffers=0 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=2 handle=0x5555e3ad3690 id=3 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,8 depth=24 stencil=8 samples=0 sample_buffers=0 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=3 handle=0x5555e3ad3760 id=4 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,8 depth=0 stencil=0 samples=4 sample_buffers=1 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=4 handle=0x5555e3ad3830 id=5 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,8 depth=24 stencil=0 samples=4 sample_buffers=1 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=5 handle=0x5555e3ad3900 id=6 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,8 depth=24 stencil=8 samples=4 sample_buffers=1 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=6 handle=0x5555e3ad39d0 id=7 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,0 depth=0 stencil=0 samples=0 sample_buffers=0 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=7 handle=0x5555e3ad3aa0 id=8 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,0 depth=24 stencil=0 samples=0 sample_buffers=0 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=8 handle=0x5555e3ad3b70 id=9 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,0 depth=24 stencil=8 samples=0 sample_buffers=0 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=9 handle=0x5555e3ad3c40 id=10 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,0 depth=0 stencil=0 samples=4 sample_buffers=1 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=10 handle=0x5555e3ad3d10 id=11 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,0 depth=24 stencil=0 samples=4 sample_buffers=1 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
+CONFIG index=11 handle=0x5555e3ad3de0 id=12 surface=4(0x4)[WINDOW|] renderable=13(0xd)[ES1|ES2|OPENGL|] conformant=13 RGBA=8,8,8,0 depth=24 stencil=8 samples=4 sample_buffers=1 native_visual=0x0 caveat=12344 matchQtWindow=1 matchQtPbuffer=0
