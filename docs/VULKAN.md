@@ -67,6 +67,19 @@
   这是小型场景结果，不外推为大型 3D 性能。
 - 保留呈现前 `glFinish`：当前没有可验证的 dma-buf fence 交接，不能用 glFlush 猜测替代。
 
+## 0.1.35 实测（2026-11-11）
+
+- 修正 `vkCmdUpdateBuffer` 的 record/submit 时序：记录时拥有并复制源 payload，执行时才按命令顺序修改目标并推进 memory revision；重复提交复用同一记录内容，不再提前改目标或引用调用者临时内存。
+- 独立严格测试覆盖源在记录后修改、提交前目标仍保持旧值、同一命令缓冲重复提交，以及 indirect buffer、带 binding offset 的 vertex buffer 和 fragment uniform 消费者。保留的 0.1.34 按预期失败，候选、公开源码重建和安装 0.1.35 均得到精确预期值。
+- 0.1.34 scissor、七项 primitive-restart 与安装后 5/5 GPU-only 烟雾均通过，无 llvmpipe。六轮 AB/BA 的 vertex/texture/shading 配对中位为 **+0.43% / −2.21% / +0.50%**，只作回归控制，不宣称提速。
+- 生产库 SHA-256=`78c963855189836046520f1ee9f327057bd61d7a75c2b8e40b8988f3ea473668`，deb SHA-256=`25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda`；保留 0.1.34 回滚。详见 [0.1.35 报告](../scripts/tests/vkgl/vkgl-0.1.35.md)。这仍是 Vulkan-over-GLES2 正确性修复，不是原生 Vulkan。
+
+## 0.1.34 实测（2026-11-11）
+
+- 修正 scissor 坐标原点：Vulkan 使用 top-left，GL 使用 bottom-left，执行时以 64 位中间值计算 `gl_y = fb_height - offset.y - extent.height`。
+- 严格 640×480 测试要求 `(320,120)` 红、`(320,360)` 黑；安装 0.1.33 负对照相反并失败，候选、公开重建和安装 0.1.34 均逐字节通过。primitive-restart、mapped-index 与 5/5 烟雾无回归。
+- 六轮 AB/BA 的 vertex/texture/shading 配对中位为 **−1.55% / +1.94% / +1.18%**，波动不作为提速证据。生产库 SHA-256=`54e2f3563bd3ecdddd3bcd0d85c78f7bc82a6a1d6999949ce8dc776efe99ca84`。详见 [0.1.34 报告](../scripts/tests/vkgl/vkgl-0.1.34.md)。
+
 ## vkmark 2025.01-4：验证清零（2026-11-07）
 
 - 责任层在基准程序而非vkgl：上游等待acquire fence却未给后续QueueSubmit配提交fence；render-finished semaphore跨image复用；OPTIMAL纹理误用PREINITIALIZED；anisotropy16未按maxSamplerAnisotropy=1禁用/钳制。

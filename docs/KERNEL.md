@@ -124,6 +124,17 @@ sudo dpkg -i linux-kernel-*_loongarch64.deb linux-headers-*_loongarch64.deb
 - 当前 clang 内核 deb 强依赖 `loonggpu-kernel-dkms >= 2:1.0.2+lnd25.1-3`；postinst 不再忽略
   DKMS 错误，并硬校验 initramfs 内存在 `updates/dkms/loonggpu.ko`。
 
+### 2026-11-12 REL2 候选构建仍待启动验收
+
+上一节是历史 clang 会话验证，不等同于当前 REL2 候选已验收。新的 REL2 本地构建身份为
+`#2 SMP PREEMPT_RT Sun Nov  8 21:56:09 CST 2026`，release 为
+`7.3.1-mainline-16k-rt-clang-lto`，`/boot` 映像 SHA-256 为
+`6eec098be14b8c9462062135b73e39808cd9612114f6bc0a9daae6f23cc9c386`。
+截至 2026-11-12 18:30，机器仍运行 REL1（`#1`，2026-11-04），REL2 的 GRUB 一次性启动项已武装，
+但新 boot ID、initramfs 模块、真实 LibLoL 可执行、Wayland vkcube、KWin 硬件合成、loonggpu/DRM、
+ftrace、DKMS 和 systemd failed units 尚未在同一 REL2 启动中全部通过。因此不得把 REL2 描述为已发布；
+验收通过前也继续冻结系统更新，保留 gcc-O3 回退。
+
 ## 实际落地的 LoongArch 相关补丁（48 个）
 
 在 7.3.1 上最终成功应用、且与 LoongArch/龙芯平台直接相关的补丁：
