@@ -40,7 +40,15 @@ cmake --build SPIRV-Cross/build -j4
 
 - 架构字段必须是 `loongarch64`（不是 `loong64`），否则 apt 不认。
 - 依赖写 AOSC 包名（`glibc` 而非 `libc6`），在 `PKGDEP` 中以空格分隔；轻量构建器生成 Debian `Depends` 时统一转换成逗号分隔，不能直接写空格。
-- `plasma-loonggpu-compat` 的 shim 用 `LD_PRELOAD` 注入，编译时链接 `libdrm`/`libEGL`。
+- `plasma-loonggpu-compat` 的 KWin shim 用 `LD_PRELOAD` 注入。dmabuf 桥使用 KWin 6.7 私有 GraphicsBuffer ABI，重建时必须显式提供源码与生成头文件目录，不能依赖偶然的全局 `CPATH`：
+
+  ```bash
+  KWIN_SOURCE_DIR=/path/to/kwin-6.7.5 \
+  KWIN_BUILD_DIR=/path/to/kwin-6.7.5/build-loonggpu \
+    ./scripts/build-package.sh packages/desktop-plasma/plasma-loonggpu-compat
+  ```
+
+  只做 Plasma 配置重建时，可用 `KWIN_DMABUF_BRIDGE_BINARY=/usr/lib/loonggpu/kwin-dmabuf-bridge.so` 明确保留当前已验证桥；发布 1.0.4 即采用这一方式，两个 KWin 桥与旧安装版逐字节一致。
 - 构建内核见 [KERNEL.md](KERNEL.md)，它不走 `scripts/build-package.sh` 的通用流程。
 
 ## 已知坑：命令行 `CFLAGS=` 会覆盖 Makefile 自带的 define
