@@ -1,4 +1,4 @@
 VER=4.0.9
 SRCS="file::https://cache.ruby-lang.org/pub/ruby/4.0/ruby-${VER}.tar.gz"
-CHKSUMS="SKIP"
+CHKSUMS="sha256::c35350682ff050b79702d57ade4516e7336063f510155d19fb2fb5b3f3909511"
 CHKUPDATE="ruby"
