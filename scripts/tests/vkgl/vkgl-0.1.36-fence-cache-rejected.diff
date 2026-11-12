@@ -1,0 +1,25 @@
+--- a/vkgl.cpp
++++ b/vkgl.cpp
+@@ -91,6 +91,7 @@
+    EGLSurface surf = EGL_NO_SURFACE;
+    bool ok = false;
+    PFNEGLCREATESYNCKHRPROC create_sync = nullptr;
++   bool fence_sync_create_failed = false;
+    PFNEGLCLIENTWAITSYNCKHRPROC client_wait_sync = nullptr;
+    PFNEGLDESTROYSYNCKHRPROC destroy_sync = nullptr;
+ 
+@@ -186,12 +187,13 @@
+    void *create_sync() {
+       GlCtx &g = GlCtx::get();
+       g.make_current();
+-      if (!g.ok || !g.fence_sync_available()) return nullptr;
++      if (!g.ok || !g.fence_sync_available() || g.fence_sync_create_failed) return nullptr;
+       const EGLint attribs[] = {
+          EGL_SYNC_CONDITION_KHR, EGL_SYNC_PRIOR_COMMANDS_COMPLETE_KHR, EGL_NONE,
+       };
+       EGLSyncKHR sync = g.create_sync(g.dpy, EGL_SYNC_FENCE_KHR, attribs);
+       if (sync == EGL_NO_SYNC_KHR) {
++         g.fence_sync_create_failed = true;
+          VKGL_LOG("eglCreateSyncKHR failed 0x%x; using glFinish\n", eglGetError());
+          return nullptr;
+       }
