@@ -6,9 +6,19 @@
 - advertises the EGL GBM platform and AR24/XR24 dma-buf query API used by KWin 6.7;
 - publishes the legacy wl_drm authentication interface required by the vendor Mesa 18.3 Wayland EGL.
 
-`gsgpu-egl-window-compat.so` is preloaded only into plasmashell. It makes the
-vendor pbuffer-capable EGL configs selectable as Qt window configs and keeps
-Qt Quick on the OpenGL RHI backend.
+Qt Quick remains on the OpenGL RHI backend. Plasmashell no longer preloads an
+EGL config rewrite: the current driver exposes WINDOW-only configurations, and
+the historical WINDOW-to-PBUFFER shim caused `Cannot find EGLConfig`.
+
+## 1.0.4 (2026-11-12)
+
+Remove `gsgpu-egl-window-compat.so` from the package and from Plasmashell's
+`LD_PRELOAD`. An independent Qt 6.11.2 Wayland test and a complete EGL config
+matrix found 12 WINDOW configs and zero PBUFFER configs. Without the shim, six
+configs match Qt's default request and native window surface creation,
+makeCurrent, swapInterval(0), and swap all succeed on LoongGPU LG110. With the
+old shim, every rewritten PBUFFER request returns zero configs. KWin's two shims
+are unchanged.
 
 ## 1.0.3 (2026-11-03)
 

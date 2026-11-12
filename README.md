@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **16 个最新 deb 条目、16 个不同包名**；索引共保留 21 个 deb。
+当前列出 **16 个最新 deb 条目、16 个不同包名**；索引共保留 22 个 deb。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -82,7 +82,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `linux-kernel-mainline-16k-rt-7.3.1-gcc-o3` | `7.3.1-1` | `loongarch64` | `b56f2e2d37fc2b9db45687f5ee6d064f3782fb875c085e4bb5fccc7088604988` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.1-gcc-o3/linux-kernel-mainline-16k-rt-7.3.1-gcc-o3_7.3.1-1_loongarch64.deb) |
 | `loonggpu-kernel-dkms` | `2:1.0.2+lnd25.1-3` | `loongarch64` | `6c9dee5ee696f7ceb8c5bfbae4fc140c60131e08cf99650eb4703129a9509116` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loonggpu-kernel-dkms/loonggpu-kernel-dkms_1.0.2%2Blnd25.1-3_loongarch64.deb) |
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
-| `plasma-loonggpu-compat` | `1.0.3-1` | `loongarch64` | `b2c1a945a155d4b72abd3c9a68f144cc89bf766ad5b48e5cbab648171322f766` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.3-1_loongarch64.deb) |
+| `plasma-loonggpu-compat` | `1.0.4-1` | `loongarch64` | `2db5b5c21cd93eab9997e25fbd2593e56a9c2aa263c4340790be378b23aad505` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.4-1_loongarch64.deb) |
 | `ruby` | `4.0.9-2` | `loongarch64` | `a6775b8b0c33cb20eec41ad496ba5bf252ed7bcd6ce8c5de56bc57b5eace2f03` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-2_loongarch64.deb) |
 | `v2raya` | `2.5.14-1` | `loongarch64` | `5eaf29d7ffac7cfd0d0acee04576029bc19541cae309f32007783311021fbaae` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.14-1_loongarch64.deb) |
 | `vkgl-loonggpu` | `0.1.35-1` | `loongarch64` | `25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.35-1_loongarch64.deb) |

@@ -1,31 +1,56 @@
 #!/usr/bin/env bash
 # KWin/Plasma compatibility shims for the Loongson LG110 GPU.
 #
-# The vendor Mesa (gsgpu) exposes only GLES2/GL2.1 EGL without a usable
-# wl_drm or window-capable EGL config, so Plasma needs three small shims:
+# The vendor Mesa (gsgpu) exposes GLES2/GL2.1 EGL without a usable wl_drm.
+# Current KWin needs two small shims:
 #   kwin-drm-fd-reuse.so      - authorized card0 fd reuse + legacy wl_drm
 #   kwin-dmabuf-bridge.so     - wl_drm prime buffers -> KWin GraphicsBuffer
-#   gsgpu-egl-window-compat.so- makes pbuffer EGL configs usable by Qt
+# Plasmashell must use the driver's WINDOW configs directly; the historical
+# WINDOW->PBUFFER shim is no longer built or injected.
 # plus systemd drop-ins and a Wayland session launcher.
 set -euo pipefail
 FILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/../files" && pwd)"
 CFLAGS="-O2 -fPIC -I/usr/include/libdrm"
-
 build_so() { # <src> <out>
   gcc -O2 -fPIC -shared -I/usr/include/libdrm -o "$2" "$1" -ldl -lEGL -ldrm
 }
-g++ -O2 -fPIC -shared -o /tmp/kwin-dmabuf-bridge.so "$FILES/src/kwin-dmabuf-bridge.cpp" -ldl -lEGL -ldrm
+if [[ -n "${KWIN_DMABUF_BRIDGE_BINARY:-}" ]]; then
+  # A Plasma-only rebuild may explicitly retain the already validated bridge.
+  [[ -f "$KWIN_DMABUF_BRIDGE_BINARY" ]] || {
+    echo "missing KWIN_DMABUF_BRIDGE_BINARY=$KWIN_DMABUF_BRIDGE_BINARY" >&2
+    exit 1
+  }
+  install -Dvm644 "$KWIN_DMABUF_BRIDGE_BINARY" /tmp/kwin-dmabuf-bridge.so
+else
+  : "${KWIN_SOURCE_DIR:?set KWIN_SOURCE_DIR to a KWin 6.7 source checkout}"
+  [[ -f "$KWIN_SOURCE_DIR/src/core/graphicsbuffer.h" ]] || {
+    echo "missing KWin GraphicsBuffer header under $KWIN_SOURCE_DIR/src" >&2
+    exit 1
+  }
+  KWIN_BUILD_DIR="${KWIN_BUILD_DIR:-$KWIN_SOURCE_DIR/build-loonggpu}"
+  [[ -f "$KWIN_BUILD_DIR/src/kwin_export.h" ]] || {
+    echo "missing generated kwin_export.h; set KWIN_BUILD_DIR" >&2
+    exit 1
+  }
+  QT6_CFLAGS="$(pkg-config --cflags Qt6Core Qt6Gui)"
+  QT6_LIBS="$(pkg-config --libs Qt6Core Qt6Gui)"
+  # The interposer uses KWin's exact 6.7 GraphicsBuffer ABI, so its private
+  # headers are explicit inputs rather than accidental CPATH leakage.
+  g++ -O2 -fPIC -shared $QT6_CFLAGS -I"$KWIN_SOURCE_DIR/src" -I"$KWIN_BUILD_DIR/src" \
+    -o /tmp/kwin-dmabuf-bridge.so "$FILES/src/kwin-dmabuf-bridge.cpp" \
+    -ldl -l:libkwin.so.6 -lwayland-server $QT6_LIBS
+fi
 
 install -Dvm755 plasma-wayland-loonggpu "$PKGDIR/usr/bin/plasma-wayland-loonggpu"
-install -Dvm755 "$FILES/libexec/plasmashell" "$PKGDIR/usr/libexec/plasma-loonggpu/plasmashell"
+install -Dvm755 "$FILES/libexec/plasma-loonggpu/plasmashell" "$PKGDIR/usr/libexec/plasma-loonggpu/plasmashell"
 install -Dvm644 "$FILES/plasma-loonggpu.desktop" "$PKGDIR/usr/share/wayland-sessions/plasma-loonggpu.desktop"
 install -Dvm644 /tmp/kwin-dmabuf-bridge.so "$PKGDIR/usr/lib/loonggpu/kwin-dmabuf-bridge.so"
 build_so "$FILES/src/kwin-drm-fd-reuse.c" /tmp/kwin-drm-fd-reuse.so
-build_so "$FILES/src/gsgpu-egl-window-compat.c" /tmp/gsgpu-egl-window-compat.so
 install -Dvm644 /tmp/kwin-drm-fd-reuse.so "$PKGDIR/usr/lib/loonggpu/kwin-drm-fd-reuse.so"
-install -Dvm644 /tmp/gsgpu-egl-window-compat.so "$PKGDIR/usr/lib/loonggpu/gsgpu-egl-window-compat.so"
 for d in "$FILES"/systemd/user/*/; do
   n=$(basename "$d")
-  install -Dvm644 "$d"/*.conf "$PKGDIR/usr/lib/systemd/user/$n/$(basename "$(ls "$d"/*.conf | head -1)")"
+  for conf in "$d"/*.conf; do
+    install -Dvm644 "$conf" "$PKGDIR/usr/lib/systemd/user/$n/$(basename "$conf")"
+  done
 done
 install -Dvm644 "$FILES/src/README.md" "$PKGDIR/usr/share/doc/plasma-loonggpu-compat/README.md"
