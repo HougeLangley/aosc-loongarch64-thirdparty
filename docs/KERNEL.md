@@ -1,5 +1,19 @@
 # 主线 16K RT 内核
 
+## 2026-11-13：7.3.4 隔离候选已编译，尚未启动验收
+
+当前 `spec` 已跟进 kernel.org stable **7.3.4**。下方未特别注明版本的构建/发布记录仍是
+7.3.1 历史记录，尤其 REL2 仍待原一次性启动项验收，不能因新候选编译成功而替换它。
+
+7.3.4 候选的隔离构建使用 AOSC stable `b431925baa06056e4411c3a514d62122dd9db1f7`，
+原始补丁结果为 `349 applied / 58 already / 42 conflict / 1 skipped`，不是“450 个全部应用”。
+关键 Loongson/DRM 冲突已保留上游较新的实现；新增本地 0006 修复 AOSC fuzz 造成的 HID
+错位，0007 完成 MEI 设备 ID 转换。`make -j1 LLVM=1 all` 真实返回 0，生成 6383 个模块；
+16K、PREEMPT_RT、Clang full-LTO 和 LLD 均保持。候选内核与 headers deb 已生成；
+loonggpu 已使用该 headers deb 隔离构建成功（`dkms_build_rc=0`，模块 vermagic 为
+`7.3.4-mainline-16k-rt-clang-lto`），但尚未加载或启动验证。未安装、未发布、未改 GRUB。
+详细证据保留在 `/home/houge/infra/kernel-7.3.4-clang-lto/`。
+
 ## 目标
 
 | 变体 | 编译器 | 优化 | 说明 |
@@ -46,6 +60,8 @@ LoongArch 相关的 `AOSCOS-loongarch-*` 系列（0369–0374）全部应用成�
 | `0004-mt7921-txpwr-heap-allocation.patch` | clang full-LTO 链接时 `mt7921_txpwr()` 栈帧 4016 B 超过 `-Wframe-larger-than=2048`，改为 kzalloc |
 | `0003-gpio-xilinx-init-state-for-O3.patch` | `-O3` 下 gcc 发现 `xgpio_get()` 用未初始化的 bitmap 做读改写（`-Werror=uninitialized`），补 `bitmap_zero()` |
 | `0005-loongarch-ow-syscall-lto-kprobe-addr.patch` | full LTO 可能内联 `kallsyms_lookup_name()`，改用首个 kprobe 已解析的地址；增加不写系统调用表的 `discovery_only` 安全验证模式 |
+| `0006-repair-aosc-hid-fuzz-placement.patch` | 7.3.4 的 AOSC fuzz 把 HID notifier/quirk 代码插入错误函数和 `if` 表达式，恢复语法与生命周期 |
+| `0007-complete-aosc-mei-pci-device-data.patch` | 完成 AOSC 0427 未应用的 MEI ICP LP3 设备 ID 转换，移除旧宏与重复设备项 |
 
 ## 配置
 

@@ -12,7 +12,7 @@ case "$VARIANT" in
   *) echo "unknown variant: $VARIANT" >&2; exit 2 ;;
 esac
 [[ -d "$SRC" ]] || { echo "missing build tree: $SRC" >&2; exit 1; }
-OUT=/home/houge/infra/kernel/debs
+OUT="${OUT:-/home/houge/infra/kernel/debs}"
 [[ -d "$SRC" ]] || { echo "missing build tree: $SRC" >&2; exit 1; }
 VER=$(make -s -C "$SRC" kernelversion)
 REL=$(make -s -C "$SRC" kernelrelease)
