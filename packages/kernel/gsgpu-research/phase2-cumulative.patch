@@ -1,0 +1,1765 @@
+--- a/Makefile
++++ b/Makefile
+@@ -22,7 +22,7 @@
+ 
+ obj-m := gsgpu.o
+ 
+-ccflags-y := -I$(src)
++ccflags-y := -I$(src) -DTRACE_INCLUDE_PATH=$(src)
+ 
+ # ---------------------------------------------------------------- 3D core
+ gsgpu-y := \
+--- a/bridge_phy.c
++++ b/bridge_phy.c
+@@ -1,4 +1,5 @@
+ #include <drm/drm_atomic_helper.h>
++#include <linux/string.h>
+ #include "gsgpu.h"
+ #include "gsgpu_dc.h"
+ #include "gsgpu_dc_connector.h"
+@@ -49,7 +50,7 @@
+ 
+ static enum drm_mode_status
+ bridge_phy_connector_mode_valid(struct drm_connector *connector,
+-				struct drm_display_mode *mode)
++				const struct drm_display_mode *mode)
+ {
+ 	struct gsgpu_device *adev = connector->dev->dev_private;
+ 	struct gsgpu_bridge_phy *phy =
+@@ -87,7 +88,8 @@
+ /**
+  * @section Bridge-phy core functions
+  */
+-static void bridge_phy_enable(struct drm_bridge *bridge)
++static void bridge_phy_enable(struct drm_bridge *bridge,
++			      struct drm_atomic_commit *state)
+ {
+ 	struct gsgpu_bridge_phy *phy = to_bridge_phy(bridge);
+ 
+@@ -100,7 +102,8 @@
+ 		phy->cfg_funcs->hdmi_audio(phy);
+ }
+ 
+-static void bridge_phy_disable(struct drm_bridge *bridge)
++static void bridge_phy_disable(struct drm_bridge *bridge,
++			       struct drm_atomic_commit *state)
+ {
+ 	struct gsgpu_bridge_phy *phy = to_bridge_phy(bridge);
+ 
+@@ -142,6 +145,7 @@
+ }
+ 
+ static int bridge_phy_attach(struct drm_bridge *bridge,
++			     struct drm_encoder *encoder,
+ 			     enum drm_bridge_attach_flags flags)
+ {
+ 	struct gsgpu_bridge_phy *phy = to_bridge_phy(bridge);
+@@ -209,8 +213,8 @@
+ }
+ 
+ static const struct drm_bridge_funcs bridge_funcs = {
+-	.enable = bridge_phy_enable,
+-	.disable = bridge_phy_disable,
++	.atomic_enable = bridge_phy_enable,
++	.atomic_disable = bridge_phy_disable,
+ 	.attach = bridge_phy_attach,
+ };
+ 
+@@ -427,10 +431,11 @@
+ 		return ret;
+ 	}
+ 
+-	if (phy->hpd_funcs && phy->hpd_funcs->isr_thread) {
+-		irq_handler = phy->hpd_funcs->irq_handler;
+-		isr_thread = phy->hpd_funcs->isr_thread;
+-	}
++	if (!phy->hpd_funcs || !phy->hpd_funcs->isr_thread)
++		return ret;
++
++	irq_handler = phy->hpd_funcs->irq_handler;
++	isr_thread = phy->hpd_funcs->isr_thread;
+ 
+ 	ret = devm_request_threaded_irq(
+ 		&phy->i2c_phy->dev, phy->irq_num, irq_handler, isr_thread,
+@@ -502,7 +507,7 @@
+ 		if (!ret)
+ 			DRM_ERROR("Failed to verify chip %s, return [%s]\n",
+ 				  phy->res->chip_name, str);
+-		strncpy(phy->res->vendor_str, str, NAME_SIZE_MAX - 1);
++		strscpy(phy->res->vendor_str, str, NAME_SIZE_MAX);
+ 		return ret;
+ 	}
+ 
+@@ -659,7 +664,7 @@
+ 
+ 	link = encoder_res->base.link;
+ 	if (link >= DC_DVO_MAXLINK)
+-		return false;
++		return NULL;
+ 
+ 	dc_bridge->adev = dc->adev;
+ 	dc_bridge->dc = dc;
+--- a/bridge_phy.h
++++ b/bridge_phy.h
+@@ -195,7 +195,7 @@
+ 			     const struct drm_display_mode *mode,
+ 			     const struct drm_display_mode *adj_mode);
+ 	enum drm_mode_status (*mode_valid)(struct drm_connector *connector,
+-					   struct drm_display_mode *mode);
++					   const struct drm_display_mode *mode);
+ };
+ 
+ struct bridge_phy_misc_funcs {
+@@ -282,10 +282,21 @@
+ 			u32 feature, struct bridge_phy_helper *helper);
+ 
+ int bridge_phy_lt6711_init(struct gsgpu_dc_bridge *dc_bridge);
++int bridge_phy_lt6711_remove(struct gsgpu_dc_bridge *phy);
+ int bridge_phy_lt9721_init(struct gsgpu_dc_bridge *res);
+ int bridge_phy_lt8619_init(struct gsgpu_dc_bridge *dc_bridge);
++void lt8619_bridge_enable(struct gsgpu_bridge_phy *phy);
+ int bridge_phy_ncs8805_init(struct gsgpu_dc_bridge *dc_bridge);
++int bridge_phy_ncs8805_remove(struct gsgpu_dc_bridge *phy);
+ void bridge_phy_mode_set(struct gsgpu_bridge_phy *phy,
+ 				struct drm_display_mode *mode,
+ 				struct drm_display_mode *adj_mode);
++void bridge_phy_reg_mask_seq(struct gsgpu_bridge_phy *phy,
++			     const struct reg_mask_seq *seq, size_t seq_size);
++void bridge_phy_reg_update_bits(struct gsgpu_bridge_phy *phy, unsigned int reg,
++				unsigned int mask, unsigned int val);
++int bridge_phy_reg_dump(struct gsgpu_bridge_phy *phy, size_t start,
++			size_t count);
++void gsgpu_bridge_suspend(struct gsgpu_device *adev);
++void gsgpu_bridge_resume(struct gsgpu_device *adev);
+ #endif /* __BRIDGE_PHY_H__ */
+--- a/gsgpu.h
++++ b/gsgpu.h
+@@ -1304,6 +1304,10 @@
+ #define gsgpu_gfx_select_me_pipe_q(adev, me, pipe, q) ((adev)->gfx.funcs->select_me_pipe_q((adev), (me), (pipe), (q)))
+ 
+ /* Common functions */
++/* Zero means reset completed; negative values are reset errno. */
++#define GSGPU_GPU_RECOVER_NO_HANG  1
++#define GSGPU_GPU_RECOVER_DISABLED 2
++
+ int gsgpu_device_gpu_recover(struct gsgpu_device *adev,
+ 			     struct gsgpu_job *job, bool force);
+ void gsgpu_device_pci_config_reset(struct gsgpu_device *adev);
+@@ -1329,7 +1333,6 @@
+ 
+ int gsgpu_driver_load_kms(struct drm_device *dev, unsigned long flags);
+ void gsgpu_driver_unload_kms(struct drm_device *dev);
+-void gsgpu_driver_lastclose_kms(struct drm_device *dev);
+ int gsgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv);
+ void gsgpu_driver_postclose_kms(struct drm_device *dev,
+ 				struct drm_file *file_priv);
+--- a/gsgpu_backlight.c
++++ b/gsgpu_backlight.c
+@@ -2,6 +2,7 @@
+ #include <linux/types.h>
+ #include <linux/gpio.h>
+ #include <linux/pwm.h>
++#include <linux/backlight.h>
+ #include "gsgpu.h"
+ #include "gsgpu_dc_vbios.h"
+ #include "gsgpu_backlight.h"
+--- a/gsgpu_cs.c
++++ b/gsgpu_cs.c
+@@ -1016,7 +1016,8 @@
+ 	job = p->job;
+ 	p->job = NULL;
+ 
+-	r = drm_sched_job_init(&job->base, entity, p->filp);
++	r = drm_sched_job_init(&job->base, entity, 1, p->filp,
++			       p->filp->client_id);
+ 	if (r)
+ 		goto error_unlock;
+ 
+--- a/gsgpu_dc.h
++++ b/gsgpu_dc.h
+@@ -64,7 +64,7 @@
+ 	/**
+ 	 * Caches device atomic state for suspend/resume
+ 	 */
+-	struct drm_atomic_state *cached_state;
++	struct drm_atomic_commit *cached_state;
+ 
+ 	spinlock_t irq_handler_list_table_lock;
+ 	struct irq_list_head irq_handler_list_low_tab[DC_IRQ_SOURCES_NUMBER];
+--- a/gsgpu_dc_connector.c
++++ b/gsgpu_dc_connector.c
+@@ -180,7 +180,7 @@
+ 	kfree(connector);
+ }
+ 
+-struct drm_connector_state *
++static struct drm_connector_state *
+ gsgpu_dc_connector_atomic_duplicate_state(struct drm_connector *connector)
+ {
+ 	struct dc_connector_state *state =
+@@ -226,7 +226,7 @@
+ 
+ 	link = connector->resource->base.link;
+ 	if (link >= DC_DVO_MAXLINK)
+-		return false;
++		return NULL;
+ 
+ 	list_add_tail(&connector->node, &dc->connector_list);
+ 
+--- a/gsgpu_dc_crtc.c
++++ b/gsgpu_dc_crtc.c
+@@ -609,7 +609,7 @@
+ 
+ 	link = crtc->resource->base.link;
+ 	if (link >= DC_DVO_MAXLINK)
+-		return false;
++		return NULL;
+ 
+ 	list_add_tail(&crtc->node, &dc->crtc_list);
+ 
+@@ -627,7 +627,7 @@
+ }
+ 
+ static int crtc_helper_atomic_check(struct drm_crtc *crtc,
+-				    struct drm_atomic_state *state)
++				    struct drm_atomic_commit *state)
+ {
+ 	return 0;
+ }
+--- a/gsgpu_dc_drv.c
++++ b/gsgpu_dc_drv.c
+@@ -118,7 +118,7 @@
+ 	bool status;
+ 
+ 	if (IS_ERR_OR_NULL(adev))
+-		return false;
++		return NULL;
+ 
+ 	dc = kzalloc(sizeof(*dc), GFP_KERNEL);
+ 
+@@ -309,7 +309,6 @@
+ 
+ static const struct drm_mode_config_funcs gsgpu_dc_mode_funcs = {
+ 	.fb_create = gsgpu_display_user_framebuffer_create,
+-	.output_poll_changed = drm_fb_helper_output_poll_changed,
+ 	.atomic_check = drm_atomic_helper_check,
+ 	.atomic_commit = drm_atomic_helper_commit,
+ };
+@@ -574,7 +573,7 @@
+ 			 lower_32_bits(afb->address));
+ }
+ 
+-static void gsgpu_dc_commit_planes(struct drm_atomic_state *state,
++static void gsgpu_dc_commit_planes(struct drm_atomic_commit *state,
+ 				   struct drm_device *dev,
+ 				   struct drm_crtc *pcrtc,
+ 				   bool *wait_for_vblank)
+@@ -719,7 +718,7 @@
+ 	}
+ }
+ 
+-void gsgpu_dc_atomic_commit_tail(struct drm_atomic_state *state)
++static void gsgpu_dc_atomic_commit_tail(struct drm_atomic_commit *state)
+ {
+ 	struct drm_device *dev = state->dev;
+ 	struct gsgpu_device *adev = dev->dev_private;
+--- a/gsgpu_dc_encoder.c
++++ b/gsgpu_dc_encoder.c
+@@ -63,7 +63,7 @@
+ 
+ 	link = encoder->resource->base.link;
+ 	if (link >= DC_DVO_MAXLINK)
+-		return false;
++		return NULL;
+ 
+ 	return encoder;
+ }
+--- a/gsgpu_dc_hdmi.c
++++ b/gsgpu_dc_hdmi.c
+@@ -89,6 +89,11 @@
+ 	    adev->dc->chip_ops->skip_phy_pll_pipe1 && index == 1)
+ 		return;
+ 
++	if (clock < 21250) {
++		DRM_ERROR("Unsupported HDMI pixel clock %d\n", clock);
++		return;
++	}
++
+ 	dc_writel(adev, CURRENT_REG(DC_HDMI_PHY_PLLCFG_REG, index), 0x0);
+ 	dc_writel(adev, CURRENT_REG(DC_HDMI_PHY_CTRL_REG, index), 0xf02);
+ 
+@@ -98,7 +103,7 @@
+ 		val = (0x1 << 13) | (0x28 << 6) | (0x8 << 1) | (0 << 0);
+ 	else if (clock >= 42500 && clock < 85000)
+ 		val = (0x2 << 13) | (0x28 << 6) | (0x4 << 1) | (0 << 0);
+-	else if (clock >= 21250 && clock < 42500)
++	else
+ 		val = (0x3 << 13) | (0x28 << 6) | (0x2 << 1) | (0 << 0);
+ 
+ 	dc_writel(adev, CURRENT_REG(DC_HDMI_PHY_PLLCFG_REG, index), val);
+--- a/gsgpu_dc_i2c.c
++++ b/gsgpu_dc_i2c.c
+@@ -268,7 +268,6 @@
+ 	const struct i2c_board_info ddc_info = {
+ 		.type = "ddc-dev",
+ 		.addr = i2c_addr,
+-		.flags = I2C_CLASS_DDC,
+ 	};
+ 
+ 	i2c = kzalloc(sizeof(struct gsgpu_dc_i2c), GFP_KERNEL);
+@@ -276,7 +275,6 @@
+ 		return -ENOMEM;
+ 
+ 	i2c->adapter.owner = THIS_MODULE;
+-	i2c->adapter.class = I2C_CLASS_DDC;
+ 	i2c->adapter.algo = &gsgpu_dc_i2c_algo;
+ 	i2c->adapter.dev.parent = adev->ddev->dev;
+ 	i2c->adapter.nr = -1;
+@@ -340,7 +338,6 @@
+ 	const struct i2c_board_info ddc_info = {
+ 		.type = "ddc-dev",
+ 		.addr = i2c_addr,
+-		.flags = I2C_CLASS_DDC,
+ 	};
+ 
+ 	i2c = kzalloc(sizeof(struct gsgpu_dc_i2c), GFP_KERNEL);
+@@ -354,7 +351,6 @@
+ 	}
+ 
+ 	i2c->adapter.owner = THIS_MODULE;
+-	i2c->adapter.class = I2C_CLASS_DDC;
+ 	i2c->adapter.algo_data = i2c_algo_data;
+ 	i2c->adapter.dev.parent = adev->ddev->dev;
+ 	i2c->adapter.nr = -1;
+--- a/gsgpu_dc_irq.c
++++ b/gsgpu_dc_irq.c
+@@ -506,6 +506,7 @@
+ 		break;
+ 	default:
+ 		DRM_ERROR("NO support this irq id:%d!\n", src_id);
++		dc_irq_source = DC_IRQ_SOURCE_INVALID;
+ 		break;
+ 	}
+ 
+--- a/gsgpu_dc_irq.h
++++ b/gsgpu_dc_irq.h
+@@ -91,5 +91,8 @@
+ void gsgpu_dc_hpd_init(struct gsgpu_device *adev);
+ void gsgpu_dc_hpd_disable(struct gsgpu_device *adev);
+ bool dc_interrupt_enable(struct gsgpu_dc *dc, enum dc_irq_source src, bool enable);
++void gsgpu_dc_irq_unregister_interrupt(struct gsgpu_device *adev,
++				       enum dc_irq_source irq_source,
++				       void *ih);
+ 
+ #endif /* __GSGPU_DM_IRQ_H__ */
+--- a/gsgpu_dc_plane.c
++++ b/gsgpu_dc_plane.c
+@@ -101,7 +101,7 @@
+ }
+ 
+ static int dc_plane_atomic_check(struct drm_plane *plane,
+-				 struct drm_atomic_state *state)
++				 struct drm_atomic_commit *state)
+ {
+ 	return 0;
+ }
+--- a/gsgpu_dc_vbios.c
++++ b/gsgpu_dc_vbios.c
+@@ -703,13 +703,13 @@
+ 	if (!mapped_vbios) {
+ 		DRM_WARN("Unable to map VBIOS physical address 0x%px.\n",
+ 			 (void *)(phy_addr));
+-		return false;
++		return NULL;
+ 	}
+ 
+ 	u8 *vbios = kmalloc(VBIOS_SIZE, GFP_KERNEL);
+ 	if (IS_ERR_OR_NULL(vbios)) {
+ 		DRM_WARN("Unable to allocate kernel memory for VBIOS.\n");
+-		return false;
++		return NULL;
+ 	}
+ 
+ 	memcpy(vbios, mapped_vbios, VBIOS_SIZE);
+@@ -728,19 +728,19 @@
+ {
+ 	struct acpi_table_header *hdr;
+ 	if (!ACPI_SUCCESS(acpi_get_table("VIAT", 1, &hdr)))
+-		return false;
++		return NULL;
+ 
+ 	acpi_size tbl_size = hdr->length;
+ 	if (tbl_size != sizeof(struct acpi_viat_table)) {
+ 		DRM_WARN("ACPI viat table present but broken (length error #1)\n");
+-		return false;
++		return NULL;
+ 	}
+ 
+ 	struct acpi_viat_table *viat = (struct acpi_viat_table *)hdr;
+ 	u8 *vbios = kmalloc(VBIOS_SIZE, GFP_KERNEL);
+ 	if (IS_ERR_OR_NULL(vbios)) {
+ 		DRM_WARN("Unable to allocate kernel memory for VBIOS!\n");
+-		return false;
++		return NULL;
+ 	}
+ 
+ 	/*
+--- a/gsgpu_debugfs.c
++++ b/gsgpu_debugfs.c
+@@ -417,9 +417,9 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; i++) {
+ 		struct gsgpu_ring *ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+-		kthread_park(ring->sched.thread);
++		drm_sched_wqueue_stop(&ring->sched);
+ 	}
+ 
+ 	seq_printf(m, "run ib test:\n");
+@@ -433,9 +433,9 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; i++) {
+ 		struct gsgpu_ring *ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+-		kthread_unpark(ring->sched.thread);
++		drm_sched_wqueue_start(&ring->sched);
+ 	}
+ 
+ 	return 0;
+@@ -454,9 +454,9 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; i++) {
+ 		ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+-		kthread_park(ring->sched.thread);
++		drm_sched_wqueue_stop(&ring->sched);
+ 	}
+ 
+ 	seq_printf(m, "run ring test:\n");
+@@ -481,9 +481,9 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; i++) {
+ 		struct gsgpu_ring *ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+-		kthread_unpark(ring->sched.thread);
++		drm_sched_wqueue_start(&ring->sched);
+ 	}
+ 
+ 	return 0;
+@@ -502,9 +502,9 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; i++) {
+ 		ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+-		kthread_park(ring->sched.thread);
++		drm_sched_wqueue_stop(&ring->sched);
+ 	}
+ 
+ 	seq_printf(m, "run xdma test:\n");
+@@ -521,9 +521,9 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; i++) {
+ 		struct gsgpu_ring *ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+-		kthread_unpark(ring->sched.thread);
++		drm_sched_wqueue_start(&ring->sched);
+ 	}
+ 
+ 	return 0;
+--- a/gsgpu_device.c
++++ b/gsgpu_device.c
+@@ -477,7 +477,7 @@
+ 
+ 	pci_release_resource(adev->pdev, 0);
+ 
+-	r = pci_resize_resource(adev->pdev, 0, rbar_size);
++	r = pci_resize_resource(adev->pdev, 0, rbar_size, 0);
+ 	if (r == -ENOSPC)
+ 		DRM_INFO("Not enough PCI address space for a large BAR.");
+ 	else if (r && r != -ENOTSUPP)
+@@ -2167,12 +2167,12 @@
+ 
+ 	if (!force && !gsgpu_device_ip_check_soft_reset(adev)) {
+ 		DRM_INFO("No hardware hang detected. Did some blocks stall?\n");
+-		return 0;
++		return GSGPU_GPU_RECOVER_NO_HANG;
+ 	}
+ 
+ 	if (!force && (gsgpu_gpu_recovery == 0 || gsgpu_gpu_recovery == -1)) {
+ 		DRM_INFO("GPU recovery disabled.\n");
+-		return 0;
++		return GSGPU_GPU_RECOVER_DISABLED;
+ 	}
+ 
+ 	dev_info(adev->dev, "GPU reset begin!\n");
+@@ -2203,7 +2203,7 @@
+ 			for (i = 0; i < GSGPU_MAX_RINGS; ++i) {
+ 				struct gsgpu_ring *ring = adev->rings[i];
+ 
+-				if (!ring || !ring->sched.thread)
++				if (!ring || !ring->sched.submit_wq)
+ 					continue;
+ 
+ 				drm_sched_stop(&ring->sched, job ? &job->base : NULL);
+@@ -2212,7 +2212,7 @@
+ 		for (i = 0; i < GSGPU_MAX_RINGS; ++i) {
+ 			struct gsgpu_ring *ring = adev->rings[i];
+ 
+-			if (!ring || !ring->sched.thread)
++			if (!ring || !ring->sched.submit_wq)
+ 				continue;
+ 
+ 			/* after all hw jobs are reset, hw fence is meaningless,
+@@ -2223,7 +2223,7 @@
+ 			for (i = 0; i < GSGPU_MAX_RINGS; ++i) {
+ 				struct gsgpu_ring *ring = adev->rings[i];
+ 
+-				if (!ring || !ring->sched.thread)
++				if (!ring || !ring->sched.submit_wq)
+ 					continue;
+ 
+ 				drm_sched_stop(&ring->sched, job ? &job->base : NULL);
+@@ -2233,10 +2233,10 @@
+ 		for (i = 0; i < GSGPU_MAX_RINGS; ++i) {
+ 			struct gsgpu_ring *ring = adev->rings[i];
+ 
+-			if (!ring || !ring->sched.thread)
++			if (!ring || !ring->sched.submit_wq)
+ 				continue;
+ 
+-			kthread_park(ring->sched.thread);
++			drm_sched_wqueue_stop(&ring->sched);
+ 
+ 			if (job && job->base.sched == &ring->sched)
+ 				continue;
+@@ -2254,7 +2254,7 @@
+ 	for (i = 0; i < GSGPU_MAX_RINGS; ++i) {
+ 		struct gsgpu_ring *ring = adev->rings[i];
+ 
+-		if (!ring || !ring->sched.thread)
++		if (!ring || !ring->sched.submit_wq)
+ 			continue;
+ 
+ 		/* only need recovery sched of the given job's ring
+@@ -2272,9 +2272,9 @@
+ 		if (gsgpu_recover_fence_fix)
+ 			/* full recovery re-submits the pending jobs and lets
+ 			 * the scheduler signal their fences */
+-			drm_sched_start(&ring->sched, true);
++			drm_sched_start(&ring->sched, r);
+ 		else
+-			kthread_unpark(ring->sched.thread);
++			drm_sched_wqueue_start(&ring->sched);
+ 	}
+ 
+ 	if (r) {
+--- a/gsgpu_display.c
++++ b/gsgpu_display.c
+@@ -256,12 +256,13 @@
+ 
+ int gsgpu_display_framebuffer_init(struct drm_device *dev,
+ 				    struct gsgpu_framebuffer *rfb,
++				    const struct drm_format_info *info,
+ 				    const struct drm_mode_fb_cmd2 *mode_cmd,
+ 				    struct drm_gem_object *obj)
+ {
+ 	int ret;
+ 	rfb->base.obj[0] = obj;
+-	drm_helper_mode_fill_fb_struct(dev, &rfb->base, mode_cmd);
++	drm_helper_mode_fill_fb_struct(dev, &rfb->base, info, mode_cmd);
+ 	ret = drm_framebuffer_init(dev, &rfb->base, &gsgpu_fb_funcs);
+ 	if (ret) {
+ 		rfb->base.obj[0] = NULL;
+@@ -273,6 +274,7 @@
+ struct drm_framebuffer *
+ gsgpu_display_user_framebuffer_create(struct drm_device *dev,
+ 				       struct drm_file *file_priv,
++				       const struct drm_format_info *info,
+ 				       const struct drm_mode_fb_cmd2 *mode_cmd)
+ {
+ 	struct drm_gem_object *obj;
+@@ -299,7 +301,7 @@
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+-	ret = gsgpu_display_framebuffer_init(dev, gsgpu_fb, mode_cmd, obj);
++	ret = gsgpu_display_framebuffer_init(dev, gsgpu_fb, info, mode_cmd, obj);
+ 	if (ret) {
+ 		kfree(gsgpu_fb);
+ 		drm_gem_object_put(obj);
+--- a/gsgpu_display.h
++++ b/gsgpu_display.h
+@@ -1,10 +1,16 @@
+ #ifndef __GSGPU_DISPLAY_H__
+ #define __GSGPU_DISPLAY_H__
+ 
++int gsgpu_display_crtc_page_flip_target(struct drm_crtc *crtc,
++					struct drm_framebuffer *fb,
++					struct drm_pending_vblank_event *event,
++					uint32_t page_flip_flags, uint32_t target,
++					struct drm_modeset_acquire_ctx *ctx);
+ uint32_t gsgpu_display_supported_domains(struct gsgpu_device *adev);
+ struct drm_framebuffer *
+ gsgpu_display_user_framebuffer_create(struct drm_device *dev,
+ 				       struct drm_file *file_priv,
++				       const struct drm_format_info *info,
+ 				       const struct drm_mode_fb_cmd2 *mode_cmd);
+ 
+ #endif /* __GSGPU_DISPLAY_H__ */
+--- a/gsgpu_drv.c
++++ b/gsgpu_drv.c
+@@ -3,7 +3,7 @@
+ #include "gsgpu_drv.h"
+ 
+ #include <drm/drm_pciids.h>
+-#include <drm/drm_aperture.h>
++#include <linux/aperture.h>
+ #include <linux/console.h>
+ #include <linux/module.h>
+ #include <linux/delay.h>
+@@ -366,7 +366,7 @@
+ 	}
+ 
+ 	/* Get rid of things like offb */
+-	ret = drm_aperture_remove_conflicting_pci_framebuffers(pdev, &kms_driver);
++	ret = aperture_remove_conflicting_pci_devices(pdev, kms_driver.name);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -682,7 +682,6 @@
+ 	.load = gsgpu_driver_load_kms,
+ 	.open = gsgpu_driver_open_kms,
+ 	.postclose = gsgpu_driver_postclose_kms,
+-	.lastclose = gsgpu_driver_lastclose_kms,
+ 	/* Teardown fix (DC-TEARDOWN-HARDEN item 6): .unload deliberately not set.
+ 	 * gsgpu_pci_remove() calls gsgpu_driver_unload_kms() explicitly, so the
+ 	 * teardown no longer depends on the deprecated legacy callback (and can
+@@ -690,13 +689,13 @@
+ 	.ioctls = gsgpu_ioctls_kms,
+ 	.dumb_create = gsgpu_mode_dumb_create,
+ 	.dumb_map_offset = gsgpu_mode_dumb_mmap,
++	.fbdev_probe = gsgpu_fbdev_probe,
+ 	.fops = &gsgpu_driver_kms_fops,
+ 
+ 	.gem_prime_import_sg_table = gsgpu_gem_prime_import_sg_table,
+ 
+ 	.name = DRIVER_NAME,
+ 	.desc = DRIVER_DESC,
+-	.date = DRIVER_DATE,
+ 	.major = KMS_DRIVER_MAJOR,
+ 	.minor = KMS_DRIVER_MINOR,
+ 	.patchlevel = KMS_DRIVER_PATCHLEVEL,
+--- a/gsgpu_drv.h
++++ b/gsgpu_drv.h
+@@ -10,7 +10,6 @@
+ 
+ #define DRIVER_NAME		"gsgpu"
+ #define DRIVER_DESC		"GS GPU Driver"
+-#define DRIVER_DATE		"20230923"
+ 
+ long gsgpu_drm_ioctl(struct file *filp,
+ 		     unsigned int cmd, unsigned long arg);
+--- a/gsgpu_fb.c
++++ b/gsgpu_fb.c
+@@ -79,11 +79,11 @@
+ }
+ 
+ static int gsgpufb_create_pinned_object(struct gsgpu_fbdev *rfbdev,
++					 const struct drm_format_info *info,
+ 					 struct drm_mode_fb_cmd2 *mode_cmd,
+ 					 struct drm_gem_object **gobj_p)
+ {
+ 	struct gsgpu_device *adev = rfbdev->adev;
+-	const struct drm_format_info *info = drm_get_format_info(adev->ddev, mode_cmd);
+ 	struct drm_gem_object *gobj = NULL;
+ 	struct gsgpu_bo *abo = NULL;
+ 	bool fb_tiled = false; /* useful for testing */
+@@ -158,14 +158,15 @@
+ 	return ret;
+ }
+ 
+-static int gsgpufb_create(struct drm_fb_helper *helper,
+-			   struct drm_fb_helper_surface_size *sizes)
++int gsgpu_fbdev_probe(struct drm_fb_helper *helper,
++		      struct drm_fb_helper_surface_size *sizes)
+ {
+ 	struct gsgpu_fbdev *rfbdev = (struct gsgpu_fbdev *)helper;
+ 	struct gsgpu_device *adev = rfbdev->adev;
+-	struct fb_info *info;
++	const struct drm_format_info *format_info;
++	struct fb_info *info = helper->info;
+ 	struct drm_framebuffer *fb = NULL;
+-	struct drm_mode_fb_cmd2 mode_cmd;
++	struct drm_mode_fb_cmd2 mode_cmd = { };
+ 	struct drm_gem_object *gobj = NULL;
+ 	struct gsgpu_bo *abo = NULL;
+ 	unsigned long tmp;
+@@ -180,7 +181,9 @@
+ 	mode_cmd.pixel_format = drm_mode_legacy_fb_format(sizes->surface_bpp,
+ 							  sizes->surface_depth);
+ 
+-	ret = gsgpufb_create_pinned_object(rfbdev, &mode_cmd, &gobj);
++	format_info = drm_get_format_info(adev->ddev, mode_cmd.pixel_format,
++					  mode_cmd.modifier[0]);
++	ret = gsgpufb_create_pinned_object(rfbdev, format_info, &mode_cmd, &gobj);
+ 	if (ret) {
+ 		DRM_ERROR("failed to create fbcon object %d\n", ret);
+ 		return ret;
+@@ -188,18 +191,12 @@
+ 
+ 	abo = gem_to_gsgpu_bo(gobj);
+ 
+-	/* okay we have an object now allocate the framebuffer */
+-	info = drm_fb_helper_alloc_info(helper);
+-	if (IS_ERR(info)) {
+-		ret = PTR_ERR(info);
+-		goto out;
+-	}
+-
++	/* okay we have an object now initialize the framebuffer */
+ 	info->par = rfbdev;
+ 	info->skip_vt_switch = true;
+ 
+ 	ret = gsgpu_display_framebuffer_init(adev->ddev, &rfbdev->rfb,
+-					     &mode_cmd, gobj);
++					     format_info, &mode_cmd, gobj);
+ 	if (ret) {
+ 		DRM_ERROR("failed to initialize framebuffer %d\n", ret);
+ 		goto out;
+@@ -272,7 +269,6 @@
+ }
+ 
+ static const struct drm_fb_helper_funcs gsgpu_fb_helper_funcs = {
+-	.fb_probe = gsgpufb_create,
+ };
+ 
+ int gsgpu_fbdev_init(struct gsgpu_device *adev)
+--- a/gsgpu_fence.c
++++ b/gsgpu_fence.c
+@@ -222,7 +222,6 @@
+ {
+ 	struct gsgpu_fence_driver *drv = &ring->fence_drv;
+ 	uint32_t seq, last_seq;
+-	int r;
+ 
+ 	do {
+ 		last_seq = atomic_read(&ring->fence_drv.last_seq);
+@@ -253,9 +252,7 @@
+ 		if (!fence)
+ 			continue;
+ 
+-		r = dma_fence_signal(fence);
+-		if (r)
+-			BUG();
++		dma_fence_signal(fence);
+ 
+ 		dma_fence_put(fence);
+ 	} while (last_seq != seq);
+@@ -270,8 +267,8 @@
+  */
+ static void gsgpu_fence_fallback(struct timer_list *t)
+ {
+-	struct gsgpu_ring *ring = from_timer(ring, t,
+-					      fence_drv.fallback_timer);
++	struct gsgpu_ring *ring = timer_container_of(ring, t,
++						      fence_drv.fallback_timer);
+ 
+ 	gsgpu_fence_process(ring);
+ }
+@@ -402,6 +399,14 @@
+ int gsgpu_fence_driver_init_ring(struct gsgpu_ring *ring,
+ 				  unsigned num_hw_submission)
+ {
++	struct drm_sched_init_args args = {
++		.ops = &gsgpu_sched_ops,
++		.num_rqs = DRM_SCHED_PRIORITY_COUNT,
++		.credit_limit = num_hw_submission,
++		.hang_limit = gsgpu_job_hang_limit,
++		.name = ring->name,
++		.dev = ring->adev->dev,
++	};
+ 	long timeout;
+ 	int r;
+ 
+@@ -426,9 +431,8 @@
+ 
+ 	timeout = msecs_to_jiffies(gsgpu_lockup_timeout);
+ 
+-	r = drm_sched_init(&ring->sched, &gsgpu_sched_ops,
+-			   num_hw_submission, gsgpu_job_hang_limit,
+-			   timeout, NULL, NULL, ring->name, ring->adev->dev);
++	args.timeout = timeout;
++	r = drm_sched_init(&ring->sched, &args);
+ 	if (r) {
+ 		DRM_ERROR("Failed to create scheduler on ring %s.\n",
+ 			  ring->name);
+@@ -484,7 +488,7 @@
+ 		gsgpu_irq_put(adev, ring->fence_drv.irq_src,
+ 			       ring->fence_drv.irq_type);
+ 		drm_sched_fini(&ring->sched);
+-		del_timer_sync(&ring->fence_drv.fallback_timer);
++		timer_delete_sync(&ring->fence_drv.fallback_timer);
+ 		for (j = 0; j <= ring->fence_drv.num_fences_mask; ++j)
+ 			dma_fence_put(ring->fence_drv.fences[j]);
+ 		kfree(ring->fence_drv.fences);
+--- a/gsgpu_gem.c
++++ b/gsgpu_gem.c
+@@ -51,7 +51,7 @@
+ 
+ 	if (robj) {
+ 		gsgpu_hmm_unregister(robj);
+-		gsgpu_bo_unref(&robj);
++		ttm_bo_fini(&robj->tbo);
+ 	}
+ }
+ 
+@@ -99,7 +99,6 @@
+ 		return r;
+ 	}
+ 	*obj = &bo->tbo.base;
+-	(*obj)->funcs = &gsgpu_gem_object_funcs;
+ 
+ 	return 0;
+ }
+--- a/gsgpu_ids.c
++++ b/gsgpu_ids.c
+@@ -39,9 +39,9 @@
+ 	int pasid = -EINVAL;
+ 
+ 	for (bits = min(bits, 31U); bits > 0; bits--) {
+-		pasid = ida_simple_get(&gsgpu_pasid_ida,
+-				       1U << (bits - 1), 1U << bits,
+-				       GFP_KERNEL);
++		pasid = ida_alloc_range(&gsgpu_pasid_ida,
++					1U << (bits - 1), (1U << bits) - 1,
++					GFP_KERNEL);
+ 		if (pasid != -ENOSPC)
+ 			break;
+ 	}
+@@ -59,7 +59,7 @@
+ void gsgpu_pasid_free(unsigned int pasid)
+ {
+ 	trace_gsgpu_pasid_freed(pasid);
+-	ida_simple_remove(&gsgpu_pasid_ida, pasid);
++	ida_free(&gsgpu_pasid_ida, pasid);
+ }
+ 
+ static void gsgpu_pasid_free_cb(struct dma_fence *fence,
+@@ -105,8 +105,7 @@
+ 		uint64_t context = dma_fence_context_alloc(1);
+ 		struct dma_fence_array *array;
+ 
+-		array = dma_fence_array_create(count, fences, context,
+-					       1, false);
++		array = dma_fence_array_create(count, fences, context, 1);
+ 		if (!array) {
+ 			kfree(fences);
+ 			goto fallback;
+@@ -208,8 +207,11 @@
+ 		for (j = 0; j < i; ++j)
+ 			dma_fence_get(fences[j]);
+ 
++		/* 7.3.4 fence arrays only wait for all fences.  This is a
++		 * conservative VMID wait, not the former any-fence fast path.
++		 */
+ 		array = dma_fence_array_create(i, fences, fence_context,
+-					       seqno, true);
++					       seqno);
+ 		if (!array) {
+ 			for (j = 0; j < i; ++j)
+ 				dma_fence_put(fences[j]);
+--- a/gsgpu_job.c
++++ b/gsgpu_job.c
+@@ -8,13 +8,18 @@
+ {
+ 	struct gsgpu_ring *ring = to_gsgpu_ring(s_job->sched);
+ 	struct gsgpu_job *job = to_gsgpu_job(s_job);
++	int r;
+ 
+ 	DRM_ERROR("job %px ring %s timeout, signaled seq=%u, emitted seq=%u\n", job,
+ 		  job->base.sched->name, atomic_read(&ring->fence_drv.last_seq),
+ 		  ring->fence_drv.sync_seq);
+ 
+-	gsgpu_device_gpu_recover(ring->adev, job, false);
+-	return DRM_GPU_SCHED_STAT_NOMINAL;
++	r = gsgpu_device_gpu_recover(ring->adev, job, false);
++	if (r == GSGPU_GPU_RECOVER_NO_HANG)
++		return DRM_GPU_SCHED_STAT_NO_HANG;
++	if (r)
++		return DRM_GPU_SCHED_STAT_ENODEV;
++	return DRM_GPU_SCHED_STAT_RESET;
+ }
+ 
+ int gsgpu_job_alloc(struct gsgpu_device *adev, unsigned num_ibs,
+@@ -102,7 +107,7 @@
+ }
+ 
+ int gsgpu_job_submit(struct gsgpu_job *job, struct drm_sched_entity *entity,
+-		      void *owner, struct dma_fence **f)
++		      void *owner, u64 drm_client_id, struct dma_fence **f)
+ {
+ 	enum drm_sched_priority priority;
+ 	struct gsgpu_ring *ring;
+@@ -111,7 +116,7 @@
+ 	if (!f)
+ 		return -EINVAL;
+ 
+-	r = drm_sched_job_init(&job->base, entity, owner);
++	r = drm_sched_job_init(&job->base, entity, 1, owner, drm_client_id);
+ 	if (r)
+ 		return r;
+ 
+--- a/gsgpu_job.h
++++ b/gsgpu_job.h
+@@ -7,6 +7,14 @@
+ #define GSGPU_PREAMBLE_IB_PRESENT_FIRST    (1 << 1)
+ /* bit set means context switch occured */
+ #define GSGPU_HAVE_CTX_SWITCH              (1 << 2)
++
++/* Trace-only internal job IDs, reserved above the DRM client ID space. */
++#define GSGPU_KERNEL_JOB_ID_VM_UPDATE_PDES	(U64_MAX - 1)
++#define GSGPU_KERNEL_JOB_ID_VM_UPDATE_RANGE	(U64_MAX - 2)
++#define GSGPU_KERNEL_JOB_ID_VM_PT_CLEAR		(U64_MAX - 3)
++#define GSGPU_KERNEL_JOB_ID_TTM_MAP_BUFFER	(U64_MAX - 4)
++#define GSGPU_KERNEL_JOB_ID_TTM_COPY_BUFFER	(U64_MAX - 6)
++#define GSGPU_KERNEL_JOB_ID_TTM_CLEAR_BUFFER	(U64_MAX - 9)
+ 
+ #define to_gsgpu_job(sched_job)		\
+ 		container_of((sched_job), struct gsgpu_job, base)
+@@ -43,7 +51,7 @@
+ void gsgpu_job_free_resources(struct gsgpu_job *job);
+ void gsgpu_job_free(struct gsgpu_job *job);
+ int gsgpu_job_submit(struct gsgpu_job *job, struct drm_sched_entity *entity,
+-		      void *owner, struct dma_fence **f);
++		      void *owner, u64 drm_client_id, struct dma_fence **f);
+ int gsgpu_job_submit_direct(struct gsgpu_job *job, struct gsgpu_ring *ring,
+ 			     struct dma_fence **fence);
+ 
+--- a/gsgpu_kms.c
++++ b/gsgpu_kms.c
+@@ -495,22 +495,6 @@
+ }
+ 
+ 
+-/*
+- * Outdated mess for old drm with Xorg being in charge (void function now).
+- */
+-/**
+- * gsgpu_driver_lastclose_kms - drm callback for last close
+- *
+- * @dev: drm dev pointer
+- *
+- * Switch vga_switcheroo state after last close (all asics).
+- */
+-void gsgpu_driver_lastclose_kms(struct drm_device *dev)
+-{
+-	drm_fb_helper_lastclose(dev);
+-	vga_switcheroo_process_delayed_switch();
+-}
+-
+ /**
+  * gsgpu_driver_open_kms - drm callback for open
+  *
+--- a/gsgpu_mode.h
++++ b/gsgpu_mode.h
+@@ -164,9 +164,12 @@
+ 
+ int gsgpu_display_framebuffer_init(struct drm_device *dev,
+ 				   struct gsgpu_framebuffer *rfb,
++				   const struct drm_format_info *info,
+ 				   const struct drm_mode_fb_cmd2 *mode_cmd,
+ 				   struct drm_gem_object *obj);
+ 
++int gsgpu_fbdev_probe(struct drm_fb_helper *helper,
++		      struct drm_fb_helper_surface_size *sizes);
+ int gsgpu_fbdev_init(struct gsgpu_device *adev);
+ void gsgpu_fbdev_fini(struct gsgpu_device *adev);
+ void gsgpu_fbdev_set_suspend(struct gsgpu_device *adev, int state);
+--- a/gsgpu_object.c
++++ b/gsgpu_object.c
+@@ -156,9 +156,6 @@
+ 
+ 	placement->num_placement = c;
+ 	placement->placement = places;
+-
+-	placement->num_busy_placement = c;
+-	placement->busy_placement = places;
+ }
+ 
+ /**
+@@ -384,6 +381,7 @@
+ 	if (bo == NULL)
+ 		return -ENOMEM;
+ 	drm_gem_private_object_init(adev->ddev, &bo->tbo.base, size);
++	bo->tbo.base.funcs = &gsgpu_gem_object_funcs;
+ 	INIT_LIST_HEAD(&bo->shadow_list);
+ 	INIT_LIST_HEAD(&bo->va);
+ 	bo->preferred_domains = bp->preferred_domain ? bp->preferred_domain :
+@@ -693,7 +691,7 @@
+ 	if (bo == NULL)
+ 		return NULL;
+ 
+-	ttm_bo_get(&bo->tbo);
++	drm_gem_object_get(&bo->tbo.base);
+ 	return bo;
+ }
+ 
+@@ -705,13 +703,10 @@
+  */
+ void gsgpu_bo_unref(struct gsgpu_bo **bo)
+ {
+-	struct ttm_buffer_object *tbo;
+-
+ 	if ((*bo) == NULL)
+ 		return;
+ 
+-	tbo = &((*bo)->tbo);
+-	ttm_bo_put(tbo);
++	drm_gem_object_put(&(*bo)->tbo.base);
+ 	*bo = NULL;
+ }
+ 
+@@ -1134,8 +1129,7 @@
+ 					GSGPU_GEM_DOMAIN_GTT);
+ 
+ 	/* Avoid costly evictions; only set GTT as a busy placement */
+-	abo->placement.num_busy_placement = 1;
+-	abo->placement.busy_placement = &abo->placements[1];
++	abo->placements[0].flags |= TTM_PL_FLAG_DESIRED;
+ 
+ 	r = ttm_bo_validate(bo, &abo->placement, &ctx);
+ 	if (unlikely(r == -EBUSY || r == -ERESTARTSYS))
+--- a/gsgpu_pm.c
++++ b/gsgpu_pm.c
+@@ -1,6 +1,7 @@
+ #include "gsgpu.h"
+ #include "gsgpu_dc_resource.h"
+ #include "gsgpu_dc_vbios.h"
++#include "gsgpu_pm.h"
+ 
+ #define FREQ_LEVEL0 0xf
+ #define FREQ_LEVEL1 0xd
+@@ -98,7 +99,7 @@
+ {
+ 	int ret;
+ 	char *tmp;
+-	char **str;
++	char *str = NULL;
+ 	char *sub_str = NULL;
+ 	char buf_cpy[100];
+ 	const char delimiter[3] = {' ', '\n', '\0'};
+@@ -113,7 +114,7 @@
+ 	if (0 == strlen(sub_str))
+ 		return -EINVAL;
+ 
+-	ret = simple_strtoul(sub_str, str, 10);
++	ret = simple_strtoul(sub_str, &str, 10);
+ 	if (ret >= 0 && ret <= (max_level - 1))
+ 		return ret;
+ 	else
+--- a/gsgpu_res_cursor.h
++++ b/gsgpu_res_cursor.h
+@@ -55,7 +55,7 @@
+ 				    uint64_t start, uint64_t size,
+ 				    struct gsgpu_res_cursor *cur)
+ {
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 	struct list_head *head, *next;
+ 	struct drm_mm_node *node;
+ 
+@@ -71,7 +71,7 @@
+ 		head = &to_gsgpu_vram_mgr_resource(res)->blocks;
+ 
+ 		block = list_first_entry_or_null(head,
+-						 struct drm_buddy_block,
++						 struct gpu_buddy_block,
+ 						 link);
+ 		if (!block)
+ 			goto fallback;
+@@ -81,7 +81,7 @@
+ 
+ 			next = block->link.next;
+ 			if (next != head)
+-				block = list_entry(next, struct drm_buddy_block, link);
++				block = list_entry(next, struct gpu_buddy_block, link);
+ 		}
+ 
+ 		cur->start = gsgpu_vram_mgr_block_start(block) + start;
+@@ -124,7 +124,7 @@
+  */
+ static inline void gsgpu_res_next(struct gsgpu_res_cursor *cur, uint64_t size)
+ {
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 	struct drm_mm_node *node;
+ 	struct list_head *next;
+ 
+@@ -145,7 +145,7 @@
+ 		block = cur->node;
+ 
+ 		next = block->link.next;
+-		block = list_entry(next, struct drm_buddy_block, link);
++		block = list_entry(next, struct gpu_buddy_block, link);
+ 
+ 		cur->node = block;
+ 		cur->start = gsgpu_vram_mgr_block_start(block);
+--- a/gsgpu_ring.c
++++ b/gsgpu_ring.c
+@@ -148,12 +148,12 @@
+ 		return;
+ 
+ 	mutex_lock(&ring->priority_mutex);
+-	/* something higher prio is executing, no need to decay */
+-	if (ring->priority > priority)
++	/* 7.3.4 priorities are descending: lower numeric means higher. */
++	if (ring->priority < priority)
+ 		goto out_unlock;
+ 
+ 	/* decay priority to the next level with a job available */
+-	for (i = priority; i >= DRM_SCHED_PRIORITY_MIN; i--) {
++	for (i = priority; i <= DRM_SCHED_PRIORITY_LOW; i++) {
+ 		if (i == DRM_SCHED_PRIORITY_NORMAL
+ 				|| atomic_read(&ring->num_jobs[i])) {
+ 			ring->priority = i;
+@@ -184,7 +184,7 @@
+ 		return;
+ 
+ 	mutex_lock(&ring->priority_mutex);
+-	if (priority <= ring->priority)
++	if (priority >= ring->priority)
+ 		goto out_unlock;
+ 
+ 	ring->priority = priority;
+--- a/gsgpu_sched.c
++++ b/gsgpu_sched.c
+@@ -2,6 +2,7 @@
+ #include <linux/pid.h>
+ #include <drm/gsgpu_drm.h>
+ #include "gsgpu.h"
++#include "gsgpu_sched.h"
+ 
+ #include "gsgpu_vm.h"
+ 
+@@ -16,7 +17,7 @@
+ 		return DRM_SCHED_PRIORITY_NORMAL;
+ 	case GSGPU_CTX_PRIORITY_LOW:
+ 	case GSGPU_CTX_PRIORITY_VERY_LOW:
+-		return DRM_SCHED_PRIORITY_MIN;
++		return DRM_SCHED_PRIORITY_LOW;
+ 	case GSGPU_CTX_PRIORITY_UNSET:
+ 		pr_warn_once("GSGPU-->DRM context priority value UNSET-->NORMAL");
+ 		return DRM_SCHED_PRIORITY_NORMAL;
+--- a/gsgpu_trace.h
++++ b/gsgpu_trace.h
+@@ -141,7 +141,6 @@
+ 	    TP_PROTO(struct gsgpu_job *job),
+ 	    TP_ARGS(job),
+ 	    TP_STRUCT__entry(
+-			     __field(uint64_t, sched_job_id)
+ 			     __string(timeline, GSGPU_JOB_GET_TIMELINE_NAME(job))
+ 			     __field(unsigned int, context)
+ 			     __field(unsigned int, seqno)
+@@ -151,15 +150,14 @@
+ 			     ),
+ 
+ 	    TP_fast_assign(
+-			   __entry->sched_job_id = job->base.id;
+-			   __assign_str(timeline, GSGPU_JOB_GET_TIMELINE_NAME(job))
++			   __assign_str(timeline);
+ 			   __entry->context = job->base.s_fence->finished.context;
+ 			   __entry->seqno = job->base.s_fence->finished.seqno;
+ 			   __entry->ring_name = to_gsgpu_ring(job->base.sched)->name;
+ 			   __entry->num_ibs = job->num_ibs;
+ 			   ),
+-	    TP_printk("sched_job=%llu, timeline=%s, context=%u, seqno=%u, ring_name=%s, num_ibs=%u",
+-		      __entry->sched_job_id, __get_str(timeline), __entry->context,
++	    TP_printk("timeline=%s, context=%u, seqno=%u, ring_name=%s, num_ibs=%u",
++		      __get_str(timeline), __entry->context,
+ 		      __entry->seqno, __entry->ring_name, __entry->num_ibs)
+ );
+ 
+@@ -167,7 +165,6 @@
+ 	    TP_PROTO(struct gsgpu_job *job),
+ 	    TP_ARGS(job),
+ 	    TP_STRUCT__entry(
+-			     __field(uint64_t, sched_job_id)
+ 			     __string(timeline, GSGPU_JOB_GET_TIMELINE_NAME(job))
+ 			     __field(unsigned int, context)
+ 			     __field(unsigned int, seqno)
+@@ -176,15 +173,14 @@
+ 			     ),
+ 
+ 	    TP_fast_assign(
+-			   __entry->sched_job_id = job->base.id;
+-			   __assign_str(timeline, GSGPU_JOB_GET_TIMELINE_NAME(job))
++			   __assign_str(timeline);
+ 			   __entry->context = job->base.s_fence->finished.context;
+ 			   __entry->seqno = job->base.s_fence->finished.seqno;
+ 			   __entry->ring_name = to_gsgpu_ring(job->base.sched)->name;
+ 			   __entry->num_ibs = job->num_ibs;
+ 			   ),
+-	    TP_printk("sched_job=%llu, timeline=%s, context=%u, seqno=%u, ring_name=%s, num_ibs=%u",
+-		      __entry->sched_job_id, __get_str(timeline), __entry->context,
++	    TP_printk("timeline=%s, context=%u, seqno=%u, ring_name=%s, num_ibs=%u",
++		      __get_str(timeline), __entry->context,
+ 		      __entry->seqno, __entry->ring_name, __entry->num_ibs)
+ );
+ 
+@@ -443,6 +439,7 @@
+ #endif
+ 
+ /* This part must be outside protection */
+-#undef TRACE_INCLUDE_PATH
++#ifndef TRACE_INCLUDE_PATH
+ #define TRACE_INCLUDE_PATH ../../drivers/gpu/drm/gsgpu/include
++#endif
+ #include <trace/define_trace.h>
+--- a/gsgpu_ttm.c
++++ b/gsgpu_ttm.c
+@@ -53,16 +53,13 @@
+ 	/* Don't handle scatter gather BOs */
+ 	if (bo->type == ttm_bo_type_sg) {
+ 		placement->num_placement = 0;
+-		placement->num_busy_placement = 0;
+ 		return;
+ 	}
+ 
+ 	/* Object isn't an GSGPU object so ignore */
+ 	if (!gsgpu_bo_is_gsgpu_bo(bo)) {
+ 		placement->placement = &placements;
+-		placement->busy_placement = &placements;
+ 		placement->num_placement = 1;
+-		placement->num_busy_placement = 1;
+ 		return;
+ 	}
+ 
+@@ -85,8 +82,7 @@
+ 						       GSGPU_GEM_DOMAIN_GTT);
+ 			abo->placements[0].fpfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
+ 			abo->placements[0].lpfn = 0;
+-			abo->placement.busy_placement = &abo->placements[1];
+-			abo->placement.num_busy_placement = 1;
++			abo->placements[0].flags |= TTM_PL_FLAG_DESIRED;
+ 		} else {
+ 			/* Move to GTT memory */
+ 			gsgpu_bo_placement_from_domain(abo, GSGPU_GEM_DOMAIN_GTT);
+@@ -206,7 +202,8 @@
+ 	}
+ 
+ 	r = gsgpu_job_submit(job, &adev->mman.entity,
+-			     GSGPU_FENCE_OWNER_UNDEFINED, &fence);
++			     GSGPU_FENCE_OWNER_UNDEFINED,
++			     GSGPU_KERNEL_JOB_ID_TTM_MAP_BUFFER, &fence);
+ 	if (r)
+ 		goto error_free;
+ 
+@@ -674,7 +671,7 @@
+ 	sg_free_table(ttm->sg);
+ }
+ 
+-int gsgpu_ttm_gart_bind(struct gsgpu_device *adev,
++static int gsgpu_ttm_gart_bind(struct gsgpu_device *adev,
+ 			struct ttm_buffer_object *tbo,
+ 			uint64_t flags)
+ {
+@@ -757,8 +754,6 @@
+ 	/* allocate GART space */
+ 	placement.num_placement = 1;
+ 	placement.placement = &placements;
+-	placement.num_busy_placement = 1;
+-	placement.busy_placement = &placements;
+ 	placements.fpfn = 0;
+ 	placements.lpfn = adev->gmc.gart_size >> PAGE_SHIFT;
+ 	placements.mem_type = TTM_PL_TT;
+@@ -1349,8 +1344,10 @@
+ 	int r = ttm_device_init(&adev->mman.bdev, &gsgpu_device_funcs, adev->dev,
+ 				adev->ddev->anon_inode->i_mapping,
+ 				adev->ddev->vma_offset_manager,
+-				adev->need_swiotlb,
+-				dma_addressing_limited(adev->dev));
++				(adev->need_swiotlb ?
++				 TTM_ALLOCATION_POOL_USE_DMA_ALLOC : 0) |
++				(dma_addressing_limited(adev->dev) ?
++				 TTM_ALLOCATION_POOL_USE_DMA32 : 0));
+ 	if (r) {
+ 		DRM_ERROR("failed initializing buffer object driver(%d).\n", r);
+ 		return r;
+@@ -1492,8 +1489,7 @@
+ 		}
+ 	} else {
+ 		drm_sched_entity_destroy(&adev->mman.entity);
+-		dma_fence_put(man->move);
+-		man->move = NULL;
++		ttm_resource_manager_cleanup(man);
+ 	}
+ 
+ 	/* this just adjusts TTM size idea, which sets lpfn to the correct value */
+@@ -1564,7 +1560,8 @@
+ 		r = gsgpu_job_submit_direct(job, ring, fence);
+ 	else
+ 		r = gsgpu_job_submit(job, &adev->mman.entity,
+-				      GSGPU_FENCE_OWNER_UNDEFINED, fence);
++				      GSGPU_FENCE_OWNER_UNDEFINED,
++				      GSGPU_KERNEL_JOB_ID_TTM_COPY_BUFFER, fence);
+ 	if (r)
+ 		goto error_free;
+ 
+@@ -1638,7 +1635,8 @@
+ 	gsgpu_ring_pad_ib(ring, &job->ibs[0]);
+ 	WARN_ON(job->ibs[0].length_dw > num_dw);
+ 	r = gsgpu_job_submit(job, &adev->mman.entity,
+-			      GSGPU_FENCE_OWNER_UNDEFINED, fence);
++			      GSGPU_FENCE_OWNER_UNDEFINED,
++			      GSGPU_KERNEL_JOB_ID_TTM_CLEAR_BUFFER, fence);
+ 	if (r)
+ 		goto error_free;
+ 
+--- a/gsgpu_vm.c
++++ b/gsgpu_vm.c
+@@ -377,7 +377,8 @@
+ 	if (r)
+ 		goto error_free;
+ 
+-	r = gsgpu_job_submit(job, &vm->entity, GSGPU_FENCE_OWNER_UNDEFINED, &fence);
++	r = gsgpu_job_submit(job, &vm->entity, GSGPU_FENCE_OWNER_UNDEFINED,
++			     GSGPU_KERNEL_JOB_ID_VM_PT_CLEAR, &fence);
+ 	if (r)
+ 		goto error_free;
+ 
+@@ -1001,7 +1002,8 @@
+ 		gsgpu_sync_resv(ldev, &job->sync, root->tbo.base.resv,
+ 				 GSGPU_FENCE_OWNER_VM, false);
+ 		WARN_ON(params.ib->length_dw > ndw);
+-		r = gsgpu_job_submit(job, &vm->entity, GSGPU_FENCE_OWNER_VM, &fence);
++		r = gsgpu_job_submit(job, &vm->entity, GSGPU_FENCE_OWNER_VM,
++				     GSGPU_KERNEL_JOB_ID_VM_UPDATE_PDES, &fence);
+ 		if (r)
+ 			goto error;
+ 
+@@ -1032,7 +1034,7 @@
+  *
+  * Find the vm_pt entry and it's parent for the given address.
+  */
+-void gsgpu_vm_get_entry(struct gsgpu_pte_update_params *p, u64 addr,
++static void gsgpu_vm_get_entry(struct gsgpu_pte_update_params *p, u64 addr,
+ 			 struct gsgpu_vm_pt **entry,
+ 			 struct gsgpu_vm_pt **parent)
+ {
+@@ -1312,7 +1314,8 @@
+ 
+ 	gsgpu_ring_pad_ib(ring, params.ib);
+ 	WARN_ON(params.ib->length_dw > ndw);
+-	r = gsgpu_job_submit(job, &vm->entity, GSGPU_FENCE_OWNER_VM, &f);
++	r = gsgpu_job_submit(job, &vm->entity, GSGPU_FENCE_OWNER_VM,
++			     GSGPU_KERNEL_JOB_ID_VM_UPDATE_RANGE, &f);
+ 	if (r)
+ 		goto error_free;
+ 
+@@ -1328,8 +1331,8 @@
+ }
+ 
+ /* ---------------------------------------------------------------------------
+- * P0-b: VRAM BOs are managed by drm_buddy in this tree
+- * (gsgpu_vram_mgr.c:470 drm_buddy_alloc_blocks; struct gsgpu_vram_mgr_resource
++ * P0-b: VRAM BOs are managed by gpu_buddy in this tree
++ * (gsgpu_vram_mgr.c:470 gpu_buddy_alloc_blocks; struct gsgpu_vram_mgr_resource
+  * = { struct ttm_resource base; struct list_head blocks; unsigned long flags; }),
+  * while only the GTT manager hands out ttm_range_mgr_node/drm_mm_node arrays.
+  * Reading to_ttm_range_mgr_node(mem)->mm_nodes for a VRAM resource therefore
+@@ -1337,18 +1340,18 @@
+  * (see evidence/VENDOR-DIFF.md 2.4), and gsgpu_vm_bo_split_mapping()'s final
+  * `else` left max_entries uninitialized.
+  *
+- * vendor AOSC 1.0.2 walks the resource with the drm_buddy-aware cursor
++ * vendor AOSC 1.0.2 walks the resource with the gpu_buddy-aware cursor
+  * (loonggpu_vm.c:1293-1378: loonggpu_res_first()/loonggpu_res_next()); this
+  * tree already ships the same capability unused in gsgpu_res_cursor.h.
+  *
+- * gsgpu_vram_buddy_cursor = 1 selects the vendor cursor shape and initializes
+- * max_entries on every branch.  Default 0 keeps the legacy code path
+- * byte-for-byte, so one module serves both A/B arms.
++ * gsgpu_vram_buddy_cursor = 1 selects the vendor cursor shape.  Default 0
++ * retains the legacy traversal; its final else uses the vendor's mapping-sized
++ * max_entries assignment to avoid uninitialized use.
+  * ------------------------------------------------------------------------- */
+ bool gsgpu_vram_buddy_cursor;
+ module_param_named(vram_buddy_cursor, gsgpu_vram_buddy_cursor, bool, 0644);
+ MODULE_PARM_DESC(vram_buddy_cursor,
+-	"Walk VRAM BOs with the drm_buddy resource cursor (0=legacy (default), 1=vendor cursor)");
++	"Walk VRAM BOs with the gpu_buddy resource cursor (0=legacy (default), 1=vendor cursor)");
+ 
+ /**
+  * gsgpu_vm_bo_split_mapping - split a mapping into smaller chunks
+@@ -1390,7 +1393,7 @@
+ 
+ 	if (gsgpu_vram_buddy_cursor) {
+ 		/* P0-b (vendor shape): walk the resource chunk by chunk with
+-		 * the drm_buddy-aware cursor instead of dereferencing a
++		 * the gpu_buddy-aware cursor instead of dereferencing a
+ 		 * drm_mm_node array that only exists for TTM_PL_TT. */
+ 		struct gsgpu_res_cursor cursor;
+ 
+@@ -1458,6 +1461,7 @@
+ 		} else {
+ 			addr = 0;
+ 			dma_addr = NULL;
++			max_entries = mapping->last - mapping->start + 1;
+ 		}
+ 
+ 		last = min(mapping->last, start + max_entries - 1);
+--- a/gsgpu_vm_it.h
++++ b/gsgpu_vm_it.h
+@@ -26,6 +26,10 @@
+ 					struct rb_root_cached *root);
+ 
+ extern struct gsgpu_bo_va_mapping *
++gsgpu_vm_it_subtree_search(struct gsgpu_bo_va_mapping *node,
++					uint64_t start, uint64_t last);
++
++extern struct gsgpu_bo_va_mapping *
+ gsgpu_vm_it_iter_first(struct rb_root_cached *root,
+ 					uint64_t start, uint64_t last);
+ 
+--- a/gsgpu_vram_mgr.c
++++ b/gsgpu_vram_mgr.c
+@@ -23,6 +23,7 @@
+  */
+ 
+ #include <linux/dma-mapping.h>
++#include <drm/drm_buddy.h>
+ #include <drm/ttm/ttm_range_manager.h>
+ 
+ #include "gsgpu.h"
+@@ -48,15 +49,15 @@
+ 	return container_of(mgr, struct gsgpu_device, mman.vram_mgr);
+ }
+ 
+-static inline struct drm_buddy_block *
++static inline struct gpu_buddy_block *
+ gsgpu_vram_mgr_first_block(struct list_head *list)
+ {
+-	return list_first_entry_or_null(list, struct drm_buddy_block, link);
++	return list_first_entry_or_null(list, struct gpu_buddy_block, link);
+ }
+ 
+ static inline bool gsgpu_is_vram_mgr_blocks_contiguous(struct list_head *head)
+ {
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 	u64 start, size;
+ 
+ 	block = gsgpu_vram_mgr_first_block(head);
+@@ -67,7 +68,7 @@
+ 		start = gsgpu_vram_mgr_block_start(block);
+ 		size = gsgpu_vram_mgr_block_size(block);
+ 
+-		block = list_entry(block->link.next, struct drm_buddy_block, link);
++		block = list_entry(block->link.next, struct gpu_buddy_block, link);
+ 		if (start + size != gsgpu_vram_mgr_block_start(block))
+ 			return false;
+ 	}
+@@ -177,7 +178,7 @@
+  * Calculate how many bytes of the DRM BUDDY block are inside visible VRAM
+  */
+ static u64 gsgpu_vram_mgr_vis_size(struct gsgpu_device *adev,
+-				   struct drm_buddy_block *block)
++				   struct gpu_buddy_block *block)
+ {
+ 	u64 start = gsgpu_vram_mgr_block_start(block);
+ 	u64 end = start + gsgpu_vram_mgr_block_size(block);
+@@ -202,7 +203,7 @@
+ 	struct gsgpu_device *adev = gsgpu_ttm_adev(bo->tbo.bdev);
+ 	struct ttm_resource *res = bo->tbo.resource;
+ 	struct gsgpu_vram_mgr_resource *vres = to_gsgpu_vram_mgr_resource(res);
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 	u64 usage = 0;
+ 
+ 	if (gsgpu_gmc_vram_full_visible(&adev->gmc))
+@@ -222,15 +223,15 @@
+ {
+ 	struct gsgpu_vram_mgr *mgr = to_vram_mgr(man);
+ 	struct gsgpu_device *adev = to_gsgpu_device(mgr);
+-	struct drm_buddy *mm = &mgr->mm;
++	struct gpu_buddy *mm = &mgr->mm;
+ 	struct gsgpu_vram_reservation *rsv, *temp;
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 	uint64_t vis_usage;
+ 
+ 	list_for_each_entry_safe(rsv, temp, &mgr->reservations_pending, blocks) {
+-		if (drm_buddy_alloc_blocks(mm, rsv->start, rsv->start + rsv->size,
++		if (gpu_buddy_alloc_blocks(mm, rsv->start, rsv->start + rsv->size,
+ 					   rsv->size, mm->chunk_size, &rsv->allocated,
+-					   DRM_BUDDY_RANGE_ALLOCATION))
++					   GPU_BUDDY_RANGE_ALLOCATION))
+ 			continue;
+ 
+ 		block = gsgpu_vram_mgr_first_block(&rsv->allocated);
+@@ -381,8 +382,8 @@
+ 	struct gsgpu_device *adev = to_gsgpu_device(mgr);
+ 	struct gsgpu_vram_mgr_resource *vres;
+ 	u64 size, remaining_size, lpfn, fpfn;
+-	struct drm_buddy *mm = &mgr->mm;
+-	struct drm_buddy_block *block;
++	struct gpu_buddy *mm = &mgr->mm;
++	struct gpu_buddy_block *block;
+ 	unsigned long pages_per_block;
+ 	int r;
+ 
+@@ -424,11 +425,11 @@
+ 	INIT_LIST_HEAD(&vres->blocks);
+ 
+ 	if (place->flags & TTM_PL_FLAG_TOPDOWN)
+-		vres->flags |= DRM_BUDDY_TOPDOWN_ALLOCATION;
++		vres->flags |= GPU_BUDDY_TOPDOWN_ALLOCATION;
+ 
+ 	if (fpfn || lpfn != mgr->mm.size)
+ 		/* Allocate blocks in desired range */
+-		vres->flags |= DRM_BUDDY_RANGE_ALLOCATION;
++		vres->flags |= GPU_BUDDY_RANGE_ALLOCATION;
+ 
+ 	remaining_size = (u64)vres->base.size;
+ 
+@@ -467,7 +468,7 @@
+ 			}
+ 		}
+ 
+-		r = drm_buddy_alloc_blocks(mm, fpfn,
++		r = gpu_buddy_alloc_blocks(mm, fpfn,
+ 					   lpfn,
+ 					   size,
+ 					   min_block_size,
+@@ -484,7 +485,7 @@
+ 	mutex_unlock(&mgr->lock);
+ 
+ 	if (cur_size != size) {
+-		struct drm_buddy_block *block;
++		struct gpu_buddy_block *block;
+ 		struct list_head *trim_list;
+ 		u64 original_size;
+ 		LIST_HEAD(temp);
+@@ -508,7 +509,7 @@
+ 		}
+ 
+ 		mutex_lock(&mgr->lock);
+-		drm_buddy_block_trim(mm,
++		gpu_buddy_block_trim(mm, NULL,
+ 				     original_size,
+ 				     trim_list);
+ 		mutex_unlock(&mgr->lock);
+@@ -547,7 +548,7 @@
+ 	return 0;
+ 
+ error_free_blocks:
+-	drm_buddy_free_list(mm, &vres->blocks);
++	gpu_buddy_free_list(mm, &vres->blocks, 0);
+ 	mutex_unlock(&mgr->lock);
+ error_fini:
+ 	ttm_resource_fini(man, &vres->base);
+@@ -570,8 +571,8 @@
+ 	struct gsgpu_vram_mgr_resource *vres = to_gsgpu_vram_mgr_resource(res);
+ 	struct gsgpu_vram_mgr *mgr = to_vram_mgr(man);
+ 	struct gsgpu_device *adev = to_gsgpu_device(mgr);
+-	struct drm_buddy *mm = &mgr->mm;
+-	struct drm_buddy_block *block;
++	struct gpu_buddy *mm = &mgr->mm;
++	struct gpu_buddy_block *block;
+ 	uint64_t vis_usage = 0;
+ 
+ 	mutex_lock(&mgr->lock);
+@@ -580,7 +581,7 @@
+ 
+ 	gsgpu_vram_mgr_do_reserve(man);
+ 
+-	drm_buddy_free_list(mm, &vres->blocks);
++	gpu_buddy_free_list(mm, &vres->blocks, vres->flags);
+ 	mutex_unlock(&mgr->lock);
+ 
+ 	atomic64_sub(vis_usage, &mgr->vis_usage);
+@@ -740,7 +741,7 @@
+ 				      size_t size)
+ {
+ 	struct gsgpu_vram_mgr_resource *mgr = to_gsgpu_vram_mgr_resource(res);
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 
+ 	/* Check each drm buddy block individually */
+ 	list_for_each_entry(block, &mgr->blocks, link) {
+@@ -773,7 +774,7 @@
+ 				      size_t size)
+ {
+ 	struct gsgpu_vram_mgr_resource *mgr = to_gsgpu_vram_mgr_resource(res);
+-	struct drm_buddy_block *block;
++	struct gpu_buddy_block *block;
+ 
+ 	/* Check each drm buddy block individually */
+ 	list_for_each_entry(block, &mgr->blocks, link) {
+@@ -802,7 +803,7 @@
+ 				 struct drm_printer *printer)
+ {
+ 	struct gsgpu_vram_mgr *mgr = to_vram_mgr(man);
+-	struct drm_buddy *mm = &mgr->mm;
++	struct gpu_buddy *mm = &mgr->mm;
+ 	struct gsgpu_vram_reservation *rsv;
+ 
+ 	drm_printf(printer, "  vis usage:%llu\n",
+@@ -860,7 +861,7 @@
+ 
+ 	man->func = &gsgpu_vram_mgr_func;
+ 
+-	err = drm_buddy_init(&mgr->mm, man->size, PAGE_SIZE);
++	err = gpu_buddy_init(&mgr->mm, man->size, PAGE_SIZE);
+ 	if (err)
+ 		return err;
+ 
+@@ -895,10 +896,10 @@
+ 		kfree(rsv);
+ 
+ 	list_for_each_entry_safe(rsv, temp, &mgr->reserved_pages, blocks) {
+-		drm_buddy_free_list(&mgr->mm, &rsv->allocated);
++		gpu_buddy_free_list(&mgr->mm, &rsv->allocated, 0);
+ 		kfree(rsv);
+ 	}
+-	drm_buddy_fini(&mgr->mm);
++	gpu_buddy_fini(&mgr->mm);
+ 	mutex_unlock(&mgr->lock);
+ 
+ 	ttm_resource_manager_cleanup(man);
+--- a/gsgpu_vram_mgr.h
++++ b/gsgpu_vram_mgr.h
+@@ -24,11 +24,11 @@
+ #ifndef __GSGPU_VRAM_MGR_H__
+ #define __GSGPU_VRAM_MGR_H__
+ 
+-#include <drm/drm_buddy.h>
++#include <linux/gpu_buddy.h>
+ 
+ struct gsgpu_vram_mgr {
+ 	struct ttm_resource_manager manager;
+-	struct drm_buddy mm;
++	struct gpu_buddy mm;
+ 	/* protects access to buffer objects */
+ 	struct mutex lock;
+ 	struct list_head reservations_pending;
+@@ -43,14 +43,14 @@
+ 	unsigned long flags;
+ };
+ 
+-static inline u64 gsgpu_vram_mgr_block_start(struct drm_buddy_block *block)
++static inline u64 gsgpu_vram_mgr_block_start(struct gpu_buddy_block *block)
+ {
+-	return drm_buddy_block_offset(block);
++	return gpu_buddy_block_offset(block);
+ }
+ 
+-static inline u64 gsgpu_vram_mgr_block_size(struct drm_buddy_block *block)
++static inline u64 gsgpu_vram_mgr_block_size(struct gpu_buddy_block *block)
+ {
+-	return (u64)PAGE_SIZE << drm_buddy_block_order(block);
++	return (u64)PAGE_SIZE << gpu_buddy_block_order(block);
+ }
+ 
+ static inline struct gsgpu_vram_mgr_resource *
+@@ -64,6 +64,10 @@
+ u64 gsgpu_vram_mgr_bo_visible_size(struct gsgpu_bo *bo);
+ uint64_t gsgpu_vram_mgr_usage(struct gsgpu_vram_mgr *man);
+ uint64_t gsgpu_vram_mgr_vis_usage(struct gsgpu_vram_mgr *man);
++int gsgpu_vram_mgr_reserve_range(struct gsgpu_vram_mgr *mgr,
++				 uint64_t start, uint64_t size);
++int gsgpu_vram_mgr_query_page_status(struct gsgpu_vram_mgr *mgr,
++				     uint64_t start);
+ int gsgpu_vram_mgr_alloc_sgt(struct gsgpu_device *adev,
+ 			     struct ttm_resource *res,
+ 			     u64 offset, u64 length,
+--- a/lt6711_drv.c
++++ b/lt6711_drv.c
+@@ -5,7 +5,7 @@
+ #include "bridge_phy.h"
+ 
+ static enum drm_mode_status lt6711_mode_valid(struct drm_connector *connector,
+-					      struct drm_display_mode *mode)
++					      const struct drm_display_mode *mode)
+ {
+ 	if (mode->hdisplay < 1920)
+ 		return MODE_BAD;
+--- a/lt8619_drv.c
++++ b/lt8619_drv.c
+@@ -645,6 +645,7 @@
+ 
+ 	regmap = devm_regmap_init_i2c(client, &lt8619_regmap_config);
+ 	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
+ 		DRM_ERROR("Failed to regmap: %d\n", ret);
+ 		return -EINVAL;
+ 	}
+--- a/lt9721_drv.c
++++ b/lt9721_drv.c
+@@ -64,7 +64,7 @@
+ 	}
+ 
+ 	phy->chip_version = version_val[1];
+-	strncpy(str, version_val, ARRAY_SIZE(version_val));
++	memcpy(str, version_val, ARRAY_SIZE(version_val));
+ 
+ 	lt9721_dev = phy->priv;
+ 	if (version_val[1] == 0x06)
+@@ -127,14 +127,14 @@
+ 	.wr_table = &lt9721_write_table,
+ };
+ 
+-int lt9721_hdmi_rx_cdr(struct gsgpu_bridge_phy *phy)
++static int lt9721_hdmi_rx_cdr(struct gsgpu_bridge_phy *phy)
+ {
+ 	regmap_multi_reg_write(phy->phy_regmap, lt9721_HDMIRxCDR,
+ 			ARRAY_SIZE(lt9721_HDMIRxCDR));
+ 	return 0;
+ }
+ 
+-int lt9721_rx_pll(struct gsgpu_bridge_phy *phy)
++static int lt9721_rx_pll(struct gsgpu_bridge_phy *phy)
+ {
+ 	regmap_multi_reg_write(phy->phy_regmap, lt9711_rx_pll_cfg,
+ 				ARRAY_SIZE(lt9711_rx_pll_cfg));
+@@ -156,7 +156,7 @@
+ 	return 0;
+ }
+ 
+-int lt9721_hdmi_format(struct gsgpu_bridge_phy *phy)
++static int lt9721_hdmi_format(struct gsgpu_bridge_phy *phy)
+ {
+ 	regmap_write(phy->phy_regmap, 0x8817, 0x08);
+ 	regmap_write(phy->phy_regmap, 0x8818, 0x20);
+--- a/ncs8805_drv.c
++++ b/ncs8805_drv.c
+@@ -395,7 +395,7 @@
+ }
+ 
+ 
+-void ncs8805_prepare(struct gsgpu_bridge_phy *phy)
++static void ncs8805_prepare(struct gsgpu_bridge_phy *phy)
+ {
+ 	ncs8805_working_ctrl(phy, NCS8805_WORKING_DISABLE);
+ }
+@@ -417,7 +417,7 @@
+ 	return 0;
+ }
+ 
+-void ncs8805_commit(struct gsgpu_bridge_phy *phy)
++static void ncs8805_commit(struct gsgpu_bridge_phy *phy)
+ {
+ 	ncs8805_working_ctrl(phy, NCS8805_WORKING_ENABLE);
+ }
