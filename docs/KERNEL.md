@@ -49,14 +49,22 @@ loonggpu 已使用该 headers deb 隔离构建成功（`dkms_build_rc=0`，模�
 
 两者共同点：
 
-- 上游 7.3.1 源码；
+- 上游 7.3.4 源码（7.3.1 仅作历史回退）；
 - AOSC OS `runtime-kernel/linux-kernel` 的全部补丁（450 个）；
 - AOSC 的 `autobuild/loongarch64/config.16k` 作为配置基线；
 - `CONFIG_PAGE_SIZE_16KB=y`、`CONFIG_PREEMPT_RT=y`；
-- 内核 release 名分别为 `7.3.1-mainline-16k-rt-gcc-o3` / `7.3.1-mainline-16k-rt-clang-lto`，
+- 内核 release 名分别为 `7.3.4-mainline-16k-rt-gcc-o3` / `7.3.4-mainline-16k-rt-clang-lto`（7.3.1 同名包保留回退），
   可以共存，DKMS 会为各自构建 `loonggpu`。
 
-## 补丁应用结果（7.3.1）
+## 补丁应用结果（7.3.4）
+
+```
+applied=349  already-upstream=58  conflict=42  skipped=1
+```
+
+42 个冲突仍集中在非 LoongArch 路径，不宣称“450 项全部应用”。7.3.1 的历史统计保留在下文作对照。
+
+## 补丁应用结果（7.3.1 历史）
 
 ```
 applied=355  already-upstream=55  conflict=40
