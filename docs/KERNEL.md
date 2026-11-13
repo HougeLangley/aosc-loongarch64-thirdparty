@@ -11,8 +11,10 @@
 错位，0007 完成 MEI 设备 ID 转换。`make -j1 LLVM=1 all` 真实返回 0，生成 6383 个模块；
 16K、PREEMPT_RT、Clang full-LTO 和 LLD 均保持。候选内核与 headers deb 已生成；
 loonggpu 已使用该 headers deb 隔离构建成功（`dkms_build_rc=0`，模块 vermagic 为
-`7.3.4-mainline-16k-rt-clang-lto`），但尚未加载或启动验证。未安装、未发布、未改 GRUB。
-详细证据保留在 `/home/houge/infra/kernel-7.3.4-clang-lto/`。
+`7.3.4-mainline-16k-rt-clang-lto`）。root 在候选路径生成的 initramfs 无权限警告，
+`lsinitrd` 已确认同时包含 `updates/dkms/loonggpu.ko` 和 `la_ow_syscall.ko`。
+上述模块尚未加载，候选尚未启动验证；未安装、未发布、未改 GRUB。详细证据保留在
+`/home/houge/infra/kernel-7.3.4-clang-lto/`。
 
 ## 目标
 
