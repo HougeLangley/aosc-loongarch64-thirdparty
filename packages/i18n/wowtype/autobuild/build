@@ -3,9 +3,9 @@
 set -euo pipefail
 
 export CARGO_NET_RETRY=5
-DATA_VER=2026.10.31.2
+DATA_VER=2026.11.11.3
 DATA_URL="https://github.com/Gloridust/WowType/releases/download/v${VER}/wowtype-data-rime-ice-${DATA_VER}.tar.gz"
-DATA_SHA=e3c031eae278d49b5bfa83dc8c3509a1f367c04f8d11e5f24625483249a3b534
+DATA_SHA=d61f8b5e13ce17100a418f60807126158c64008af8c9216561b9b868470fd680
 
 cd "$SRCDIR"
 
@@ -37,11 +37,11 @@ from pathlib import Path
 p = Path("settings/wowtype-config")
 s = p.read_text()
 old_plan = '''    """要下载的包：[(文件名, 地址)]，和一段说明。装不了时列表为空，说明里写原因。"""
-    if dpkg_version(ENGINE_PKG) is None:'''
+    manager, distro, arch, reason = update_platform()'''
 new_plan = '''    """要下载的包：[(文件名, 地址)]，和一段说明。装不了时列表为空，说明里写原因。"""
     if os.path.exists("/usr/share/wowtype/AOSC_PACKAGED"):
         return [], "此版本由 AOSC 第三方源打包，请用系统包管理器（oma/apt）更新"
-    if dpkg_version(ENGINE_PKG) is None:'''
+    manager, distro, arch, reason = update_platform()'''
 assert s.count(old_plan) == 1
 s = s.replace(old_plan, new_plan)
 old_bg = '''    values, _ = read_config()

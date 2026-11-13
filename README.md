@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **16 个最新 deb 条目、16 个不同包名**；索引共保留 22 个 deb。
+当前列出 **16 个最新 deb 条目、16 个不同包名**；索引共保留 23 个 deb。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -87,7 +87,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `v2raya` | `2.5.14-1` | `loongarch64` | `5eaf29d7ffac7cfd0d0acee04576029bc19541cae309f32007783311021fbaae` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.14-1_loongarch64.deb) |
 | `vkgl-loonggpu` | `0.1.35-1` | `loongarch64` | `25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.35-1_loongarch64.deb) |
 | `vkmark` | `2025.01-4` | `loongarch64` | `5cbda2cb85b902f590b6fdf0d2e8ad4cd1f84887c8f27020b6596d6a5085356a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkmark/vkmark_2025.01-4_loongarch64.deb) |
-| `wowtype` | `0.3.10-1` | `loongarch64` | `6e28c9d9f80674864ca9d7bfd4d9b36a3ae61043c6d9f5c3087a1fa312393d09` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/wowtype/wowtype_0.3.10-1_loongarch64.deb) |
+| `wowtype` | `0.3.11-1` | `loongarch64` | `ea77a00b3faed548ea4ff65a137b579bad3a7a991b2e021eaa6c2d4f34d41bc7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/wowtype/wowtype_0.3.11-1_loongarch64.deb) |
 | `zerotier-one` | `1.16.2-1` | `loongarch64` | `a21e556042be743970ab9ac1a7f14c3d739e227007778b3d28bb1c4fe9ae39f4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/z/zerotier-one/zerotier-one_1.16.2-1_loongarch64.deb) |
 
 <!-- END GENERATED DEB PACKAGE INDEX -->
