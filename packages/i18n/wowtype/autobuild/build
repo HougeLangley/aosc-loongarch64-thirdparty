@@ -5,7 +5,7 @@ set -euo pipefail
 export CARGO_NET_RETRY=5
 DATA_VER=2026.11.11.3
 DATA_URL="https://github.com/Gloridust/WowType/releases/download/v${VER}/wowtype-data-rime-ice-${DATA_VER}.tar.gz"
-DATA_SHA=d61f8b5e13ce17100a418f60807126158c64008af8c9216561b9b868470fd680
+DATA_SHA=ea07c3e8cf66cbf7d0ebc23ab95cc96384e6f3808fd0cdee1f87905322e51d7c
 
 cd "$SRCDIR"
 
