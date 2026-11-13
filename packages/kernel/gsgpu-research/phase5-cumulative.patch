@@ -498,6 +498,24 @@
  	if (r == -ENOSPC)
  		DRM_INFO("Not enough PCI address space for a large BAR.");
  	else if (r && r != -ENOTSUPP)
+@@ -1233,7 +1233,7 @@
+ 	return r;
+ }
+ 
+-extern struct pci_dev *loongson_dc_pdev;
++extern struct pci_dev *gsgpu_research_dc_pdev;
+ 
+ /**
+  * gsgpu_device_init - initialize the driver
+@@ -1260,7 +1260,7 @@
+ 	adev->dev = &pdev->dev;
+ 	adev->ddev = ddev;
+ 	adev->pdev = pdev;
+-	adev->loongson_dc = loongson_dc_pdev;
++	adev->loongson_dc = gsgpu_research_dc_pdev;
+ 	adev->flags = flags;
+ 	adev->family_type = flags & GAGPU_ASIC_MASK;
+ 	adev->usec_timeout = GSGPU_MAX_USEC_TIMEOUT;
 @@ -1980,7 +1980,7 @@
   * Restores the contents of VRAM buffers from the shadows in GTT.  Used to
   * restore things like GPUVM page tables after a GPU reset where
@@ -807,6 +825,37 @@
  	if (ret)
  		return ret;
  
+@@ -552,8 +536,8 @@
+  */
+ MODULE_DEVICE_TABLE(pci, loongson_vga_pci_devices);
+ 
+-struct pci_dev *loongson_dc_pdev;
+-EXPORT_SYMBOL(loongson_dc_pdev);
++struct pci_dev *gsgpu_research_dc_pdev;
++EXPORT_SYMBOL(gsgpu_research_dc_pdev);
+ 
+ /**
+  * loongson_vga_pci_register -- add pci device
+@@ -595,7 +579,7 @@
+ 	pci_iounmap(pdev, dc_rmmio);
+ 
+ 	/* Publish the DC function only once the probe has succeeded. */
+-	loongson_dc_pdev = pdev;
++	gsgpu_research_dc_pdev = pdev;
+ 
+ 	return 0;
+ }
+@@ -610,8 +594,8 @@
+ 	/* Teardown fix (DC-TEARDOWN-HARDEN item 6): clear the global before the
+ 	 * pci_dev can go away, so no stale pointer survives for a later
+ 	 * gsgpu_device_init() or gsgpu_exit(). */
+-	if (loongson_dc_pdev == pdev)
+-		loongson_dc_pdev = NULL;
++	if (gsgpu_research_dc_pdev == pdev)
++		gsgpu_research_dc_pdev = NULL;
+ 
+ 	pci_disable_device(pdev);
+ }
 @@ -682,7 +666,6 @@
  	.load = gsgpu_driver_load_kms,
  	.open = gsgpu_driver_open_kms,
@@ -830,11 +879,77 @@
  	.major = KMS_DRIVER_MAJOR,
  	.minor = KMS_DRIVER_MINOR,
  	.patchlevel = KMS_DRIVER_PATCHLEVEL,
+@@ -742,6 +725,16 @@
+ 		return -EINVAL;
+ 	}
+ 
++	/* Research builds must not register either PCI driver by default.
++	 * In particular, the DC probe clears CRTC registers even when the GPU
++	 * function is already owned by the production driver. Require one
++	 * explicit opt-in before any slab, PCI registration or hardware access.
++	 */
++	if (gsgpu_exp_hw_support != 1) {
++		DRM_INFO("gsgpu research requires exp_hw_support=1; not registering PCI drivers.\n");
++		return -ENODEV;
++	}
++
+ 	/* Prefer discrete card if present */
+ 	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, pdev))) {
+ 		if (pdev->vendor != PCI_VENDOR_ID_LOONGSON)
+@@ -756,11 +749,11 @@
+ 
+ 	r = gsgpu_sync_init();
+ 	if (r)
+-		goto error_sync;
++		return r;
+ 
+ 	r = gsgpu_fence_slab_init();
+ 	if (r)
+-		goto error_fence;
++		goto error_sync;
+ 
+ 	DRM_INFO("gsgpu kernel modesetting enabled.\n");
+ 	driver = &kms_driver;
+@@ -769,21 +762,23 @@
+ 	driver->num_ioctls = gsgpu_max_kms_ioctl;
+ 
+ 	r = pci_register_driver(loongson_dc_pdriver);
+-	if (r) {
+-		goto error_sync;
+-	}
++	if (r)
++		goto error_fence;
+ 
+ 	r = pci_register_driver(pdriver);
+-	if (r) {
+-		goto error_sync;
+-	}
++	if (r)
++		goto error_dc;
+ 
+ 	return 0;
+ 
++error_dc:
++	pci_unregister_driver(loongson_dc_pdriver);
++
+ error_fence:
++	gsgpu_fence_slab_fini();
++
++error_sync:
+ 	gsgpu_sync_fini();
+-
+-error_sync:
+ 	return r;
+ }
+ 
 --- a/gsgpu_drv.h
 +++ b/gsgpu_drv.h
-@@ -10,7 +10,6 @@
+@@ -8,9 +8,8 @@
  
- #define DRIVER_NAME		"gsgpu"
+ #define DRIVER_AUTHOR		"Loongson graphics driver team"
+ 
+-#define DRIVER_NAME		"gsgpu"
++#define DRIVER_NAME		"gsgpu-research"
  #define DRIVER_DESC		"GS GPU Driver"
 -#define DRIVER_DATE		"20230923"
  
@@ -917,7 +1032,15 @@
  int gsgpu_fbdev_init(struct gsgpu_device *adev)
 --- a/gsgpu_fence.c
 +++ b/gsgpu_fence.c
-@@ -222,7 +222,6 @@
+@@ -6,6 +6,7 @@
+ #include <linux/firmware.h>
+ #include <linux/delay.h>
+ #include "gsgpu.h"
++#include "gsgpu_drv.h"
+ #include "gsgpu_trace.h"
+ 
+ /*
+@@ -222,7 +223,6 @@
  {
  	struct gsgpu_fence_driver *drv = &ring->fence_drv;
  	uint32_t seq, last_seq;
@@ -925,7 +1048,7 @@
  
  	do {
  		last_seq = atomic_read(&ring->fence_drv.last_seq);
-@@ -253,9 +252,7 @@
+@@ -253,9 +253,7 @@
  		if (!fence)
  			continue;
  
@@ -936,7 +1059,7 @@
  
  		dma_fence_put(fence);
  	} while (last_seq != seq);
-@@ -270,8 +267,8 @@
+@@ -270,8 +268,8 @@
   */
  static void gsgpu_fence_fallback(struct timer_list *t)
  {
@@ -947,7 +1070,7 @@
  
  	gsgpu_fence_process(ring);
  }
-@@ -402,6 +399,14 @@
+@@ -402,6 +400,14 @@
  int gsgpu_fence_driver_init_ring(struct gsgpu_ring *ring,
  				  unsigned num_hw_submission)
  {
@@ -962,7 +1085,7 @@
  	long timeout;
  	int r;
  
-@@ -426,9 +431,8 @@
+@@ -426,9 +432,8 @@
  
  	timeout = msecs_to_jiffies(gsgpu_lockup_timeout);
  
@@ -974,7 +1097,7 @@
  	if (r) {
  		DRM_ERROR("Failed to create scheduler on ring %s.\n",
  			  ring->name);
-@@ -484,7 +488,7 @@
+@@ -484,7 +489,7 @@
  		gsgpu_irq_put(adev, ring->fence_drv.irq_src,
  			       ring->fence_drv.irq_type);
  		drm_sched_fini(&ring->sched);
@@ -983,6 +1106,15 @@
  		for (j = 0; j <= ring->fence_drv.num_fences_mask; ++j)
  			dma_fence_put(ring->fence_drv.fences[j]);
  		kfree(ring->fence_drv.fences);
+@@ -568,7 +573,7 @@
+ 
+ static const char *gsgpu_fence_get_driver_name(struct dma_fence *fence)
+ {
+-	return "gsgpu";
++	return DRIVER_NAME;
+ }
+ 
+ static const char *gsgpu_fence_get_timeline_name(struct dma_fence *f)
 --- a/gsgpu_gem.c
 +++ b/gsgpu_gem.c
 @@ -51,7 +51,7 @@

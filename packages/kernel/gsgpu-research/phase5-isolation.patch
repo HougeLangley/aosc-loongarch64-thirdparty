@@ -1,0 +1,146 @@
+--- a/gsgpu_device.c
++++ b/gsgpu_device.c
+@@ -1233,7 +1233,7 @@
+ 	return r;
+ }
+ 
+-extern struct pci_dev *loongson_dc_pdev;
++extern struct pci_dev *gsgpu_research_dc_pdev;
+ 
+ /**
+  * gsgpu_device_init - initialize the driver
+@@ -1260,7 +1260,7 @@
+ 	adev->dev = &pdev->dev;
+ 	adev->ddev = ddev;
+ 	adev->pdev = pdev;
+-	adev->loongson_dc = loongson_dc_pdev;
++	adev->loongson_dc = gsgpu_research_dc_pdev;
+ 	adev->flags = flags;
+ 	adev->family_type = flags & GAGPU_ASIC_MASK;
+ 	adev->usec_timeout = GSGPU_MAX_USEC_TIMEOUT;
+--- a/gsgpu_drv.c
++++ b/gsgpu_drv.c
+@@ -536,8 +536,8 @@
+  */
+ MODULE_DEVICE_TABLE(pci, loongson_vga_pci_devices);
+ 
+-struct pci_dev *loongson_dc_pdev;
+-EXPORT_SYMBOL(loongson_dc_pdev);
++struct pci_dev *gsgpu_research_dc_pdev;
++EXPORT_SYMBOL(gsgpu_research_dc_pdev);
+ 
+ /**
+  * loongson_vga_pci_register -- add pci device
+@@ -579,7 +579,7 @@
+ 	pci_iounmap(pdev, dc_rmmio);
+ 
+ 	/* Publish the DC function only once the probe has succeeded. */
+-	loongson_dc_pdev = pdev;
++	gsgpu_research_dc_pdev = pdev;
+ 
+ 	return 0;
+ }
+@@ -594,8 +594,8 @@
+ 	/* Teardown fix (DC-TEARDOWN-HARDEN item 6): clear the global before the
+ 	 * pci_dev can go away, so no stale pointer survives for a later
+ 	 * gsgpu_device_init() or gsgpu_exit(). */
+-	if (loongson_dc_pdev == pdev)
+-		loongson_dc_pdev = NULL;
++	if (gsgpu_research_dc_pdev == pdev)
++		gsgpu_research_dc_pdev = NULL;
+ 
+ 	pci_disable_device(pdev);
+ }
+@@ -725,6 +725,16 @@
+ 		return -EINVAL;
+ 	}
+ 
++	/* Research builds must not register either PCI driver by default.
++	 * In particular, the DC probe clears CRTC registers even when the GPU
++	 * function is already owned by the production driver. Require one
++	 * explicit opt-in before any slab, PCI registration or hardware access.
++	 */
++	if (gsgpu_exp_hw_support != 1) {
++		DRM_INFO("gsgpu research requires exp_hw_support=1; not registering PCI drivers.\n");
++		return -ENODEV;
++	}
++
+ 	/* Prefer discrete card if present */
+ 	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, pdev))) {
+ 		if (pdev->vendor != PCI_VENDOR_ID_LOONGSON)
+@@ -739,11 +749,11 @@
+ 
+ 	r = gsgpu_sync_init();
+ 	if (r)
+-		goto error_sync;
++		return r;
+ 
+ 	r = gsgpu_fence_slab_init();
+ 	if (r)
+-		goto error_fence;
++		goto error_sync;
+ 
+ 	DRM_INFO("gsgpu kernel modesetting enabled.\n");
+ 	driver = &kms_driver;
+@@ -752,21 +762,23 @@
+ 	driver->num_ioctls = gsgpu_max_kms_ioctl;
+ 
+ 	r = pci_register_driver(loongson_dc_pdriver);
+-	if (r) {
+-		goto error_sync;
+-	}
++	if (r)
++		goto error_fence;
+ 
+ 	r = pci_register_driver(pdriver);
+-	if (r) {
+-		goto error_sync;
+-	}
++	if (r)
++		goto error_dc;
+ 
+ 	return 0;
+ 
++error_dc:
++	pci_unregister_driver(loongson_dc_pdriver);
++
+ error_fence:
++	gsgpu_fence_slab_fini();
++
++error_sync:
+ 	gsgpu_sync_fini();
+-
+-error_sync:
+ 	return r;
+ }
+ 
+--- a/gsgpu_drv.h
++++ b/gsgpu_drv.h
+@@ -8,7 +8,7 @@
+ 
+ #define DRIVER_AUTHOR		"Loongson graphics driver team"
+ 
+-#define DRIVER_NAME		"gsgpu"
++#define DRIVER_NAME		"gsgpu-research"
+ #define DRIVER_DESC		"GS GPU Driver"
+ 
+ long gsgpu_drm_ioctl(struct file *filp,
+--- a/gsgpu_fence.c
++++ b/gsgpu_fence.c
+@@ -6,6 +6,7 @@
+ #include <linux/firmware.h>
+ #include <linux/delay.h>
+ #include "gsgpu.h"
++#include "gsgpu_drv.h"
+ #include "gsgpu_trace.h"
+ 
+ /*
+@@ -572,7 +573,7 @@
+ 
+ static const char *gsgpu_fence_get_driver_name(struct dma_fence *fence)
+ {
+-	return "gsgpu";
++	return DRIVER_NAME;
+ }
+ 
+ static const char *gsgpu_fence_get_timeline_name(struct dma_fence *f)
