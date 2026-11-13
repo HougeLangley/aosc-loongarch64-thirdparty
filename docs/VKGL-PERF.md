@@ -30,7 +30,8 @@
 1. **4ms poll 切片**：`wait_buffer_release()` 原实现每 4ms 醒一次；隔离构建改为无限等待时
    阻塞、有限等待用剩余时间。同负载生产版 32/31/31，测试版 32/32/31，无可复现差异，
    不安装。
-2. **present `glFinish` 改 EGL fence**：历史六轮候选均无正收益，保留保守同步。
+2. **swapchain 4 张图**：强制 minImageCount=4，同负载测试版 32/30/31，生产 3 张 32/35/35；无收益且更差，不安装。
+3. **present `glFinish` 改 EGL fence**：历史六轮候选均无正收益，保留保守同步。
 3. **clear 合并**：仅合并单 color+depth 且两个 clear value 的排列；draw 时间不是主墙钟。
 4. **uniform/UBO/UpdateBuffer/vertex/index/scissor**：逐项验证后均未改变 1080p 主瓶颈。
 5. **vkgl 0.1.35 swapchain/fence/semaphore**：严格矩阵 13/13、vkgl 官方 5/5 通过，
