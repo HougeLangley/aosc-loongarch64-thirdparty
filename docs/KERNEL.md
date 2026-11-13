@@ -16,6 +16,19 @@ loonggpu 已使用该 headers deb 隔离构建成功（`dkms_build_rc=0`，模�
 上述模块尚未加载，候选尚未启动验证；未安装、未发布、未改 GRUB。详细证据保留在
 `/home/houge/infra/kernel-7.3.4-clang-lto/`。
 
+### 2026-11-13 17:52 最新状态复验
+
+- kernel.org stable 仍为 **7.3.4**，与本地 recipe 相同，不触发新构建。
+- AOSC stable 已从候选固定提交 `b431925` 前进到 `1455c7a`，但差异不含任何
+  kernel/linux/DRM 路径；历史 450 项补丁审查仍有效，不能宣称“补丁已随上游全部更新”。
+- 两个 deb 和 initramfs 的 SHA-256 重新实测为：kernel `cd75bf73…4e50`、headers
+  `1cbe0e39…7d01`、initramfs `c3eef5f4…5947`。
+- loonggpu DKMS 对新 headers 的构建为 rc=0，模块 SHA `a5450bb9…e754`，vermagic
+  精确匹配候选。initramfs 内模块 SHA 因 dracut 裁剪 debug/symtab 而不同，但 `.text`、
+  `.rodata`、`.modinfo` 与构建产物逐字节一致，`srcversion` 也相同，**不是旧模块**。
+- 这只证明编译期兼容。真实启动、RT/NUMA/cpufreq、loonggpu 加载、DMA-BUF 与
+  Wayland 合成仍未验证；候选没有安装到 `/boot`，APT 索引里没有 7.3.4 deb。
+
 第三方开源 gsgpu 的 7.3.4 隔离 compile/MODPOST 研究见
 [`packages/kernel/gsgpu-research`](../packages/kernel/gsgpu-research/README.md)。
 该研究补丁不是生产 loonggpu 的替代品，不发布 KO/deb；缺少可用硬件 reset 原语且 PCI ID 相同，
