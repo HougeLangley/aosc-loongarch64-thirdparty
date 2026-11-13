@@ -3,6 +3,7 @@
 
 import argparse
 import hashlib
+import re
 import subprocess
 from pathlib import Path
 from urllib.parse import quote
@@ -48,10 +49,23 @@ def version_greater(candidate: str, current: str) -> bool:
     return result.returncode == 0
 
 
+KERNEL_FAMILY_RE = re.compile(r"^(linux-(?:kernel|headers)-mainline-16k-rt)-[0-9][0-9A-Za-z.+~-]*-(gcc-o3|clang-lto)$")
+
+
+def package_family(name: str) -> str:
+    """Kernel/header packages embed the version in the package name.
+
+    Collapse versioned kernel names to family+variant so README only lists the
+    newest 7.3.x kernel instead of every retained rollback build.
+    """
+    match = KERNEL_FAMILY_RE.match(name)
+    return f"{match.group(1)}-{match.group(2)}" if match else name
+
+
 def latest_per_package(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     latest: dict[tuple[str, str], dict[str, str]] = {}
     for row in rows:
-        key = (row["Package"], row["Architecture"])
+        key = (package_family(row["Package"]), row["Architecture"])
         current = latest.get(key)
         if current is None or version_greater(row["Version"], current["Version"]):
             latest[key] = row
