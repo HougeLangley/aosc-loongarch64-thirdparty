@@ -24,7 +24,9 @@ loonggpu 已使用该 headers deb 隔离构建成功（`dkms_build_rc=0`，模�
 - 两个 deb 和 initramfs 的 SHA-256 重新实测为：kernel `cd75bf73…4e50`、headers
   `1cbe0e39…7d01`、initramfs `c3eef5f4…5947`。
 - loonggpu DKMS 对新 headers 的构建为 rc=0，模块 SHA `a5450bb9…e754`，vermagic
-  精确匹配候选。initramfs 内模块 SHA 因 dracut 裁剪 debug/symtab 而不同，但 `.text`、
+  精确匹配候选。隔离源码与已安装 `loonggpu-kernel-dkms 2:1.0.2+lnd25.1-3` 的
+  210 个源文件逐一 SHA-256 相同（0 缺失/0 差异），因此不是用未知旧源码冒充。
+  initramfs 内模块 SHA 因 dracut 裁剪 debug/symtab 而不同，但 `.text`、
   `.rodata`、`.modinfo` 与构建产物逐字节一致，`srcversion` 也相同，**不是旧模块**。
 - 这只证明编译期兼容。真实启动、RT/NUMA/cpufreq、loonggpu 加载、DMA-BUF 与
   Wayland 合成仍未验证；候选没有安装到 `/boot`，APT 索引里没有 7.3.4 deb。
