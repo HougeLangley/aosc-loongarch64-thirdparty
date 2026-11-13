@@ -33,3 +33,12 @@ clang/gcc 两个 7.3.4 变体均在 README 列出；本机 apt 候选优先级 5
 - 顶层 index0：7.3.4 clang-full-LTO
 - 顶层 index1：7.3.4 gcc-O3
 - 当前 `saved_entry` 仍为 clang；gcc 通过一次性启动验证，两个变体可共存。
+
+## 客户端下载复核
+
+公网 HTTPS 隔离 apt `apt-get update` 成功，下载 gcc kernel/headers 7.3.4 成功，SHA-256 与发布物一致：
+
+- kernel：`2b91a94d42e636651410463aeb8098ae3f3752192e58b555c6162a4f7db58cd4`
+- headers：`b45acae18cd3a35274321cf773debd43acf24f29544e8742177c512e24d4725c`
+
+仓库此时共 29 个索引 deb；clang/gcc 两个 7.3.4 变体均已在 README 列出。
