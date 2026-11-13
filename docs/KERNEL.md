@@ -18,7 +18,7 @@ loonggpu 已使用该 headers deb 隔离构建成功（`dkms_build_rc=0`，模�
 
 第三方开源 gsgpu 的 7.3.4 隔离 compile/MODPOST 研究见
 [`packages/kernel/gsgpu-research`](../packages/kernel/gsgpu-research/README.md)。
-该研究补丁不是生产 loonggpu 的替代品，不发布 KO/deb；默认 legacy recovery 和
+该研究补丁不是生产 loonggpu 的替代品，不发布 KO/deb；缺少可用硬件 reset 原语以及
 PCI/导出符号/DRM 名称冲突仍使真机与安装保持 NO-GO。
 
 ## 目标

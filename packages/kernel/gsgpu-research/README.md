@@ -23,12 +23,12 @@
 
 | 文件 | 用途 | SHA-256 |
 |---|---|---|
-| `phase3-cumulative.patch` | 固定第三方 HEAD 到当前研究源码的完整补丁 | `a6bb9a964ef8cd17287cc5eea3d4719fd025a9308096973f16d0171b142791df` |
-| `phase3-vmid-lru.patch` | phase2 到 phase3 的单文件 VMID 等待修复 | `340f73deff3627bb49b949c8dba1fa20663af28616db14c424a53fb38e8c28f6` |
+| `phase4-cumulative.patch` | 固定第三方 HEAD 到当前研究源码的完整补丁 | `0a1e0f2f252d8f06c74cdabf931c29dd0065b15b7ddeeec51e9a762924f80374` |
+| `phase4-recovery.patch` | phase3 到 phase4 的恢复/调度生命周期修复 | `8300125ddef71b52da2f92a68da09f8ac901c125dde8585642c1282dc170208f` |
 | `audit.json` | 最终 TU、编译选项、modpost、vermagic、未解析符号和重定位审计 | 见实际文件；KO SHA 在文件内 |
 
 最终隔离构建的 KO SHA-256 为
-`71e9e8936a1950f1636143621c1ff5861bd3b704d79f3989a40adff6fde7e169`，
+`5a7324fb0a215422db4ea4aa4b82248e141af6024cea9acb93500b1508e8600f`，
 但**二进制不随仓库发布**。该哈希用于核对研究日志，不提供下载或安装入口。
 
 ## 已处理的主要 API/语义问题
@@ -54,10 +54,16 @@ phase3 进一步按同版本 AMDGPU 的 VMID 策略移除了临时的 all-fence 
 全部繁忙时只缓存并等待 LRU 单条 fence。PASID 延迟释放仍保留其本来就需要等待全部 fence
 的独立数组路径。这样不再把无关 VMID 的长等待耦合到当前 ring，但 VMID 饱和和恢复仍未真机验证。
 
+phase4 删除了不完整的 legacy recovery 及两个实验开关，统一为所有 ring 的
+`drm_sched_stop` → force completion → reset → `drm_sched_start(r)`。独立复核发现的三个后续问题
+也已修复：recovery disabled 时对 guilty scheduler 显式 stop/start(-ENODEV)；VRAM 恢复失败不再
+返回正 1；`free_job` 调用 `drm_sched_job_cleanup()`。这些结论只覆盖所审查的调度生命周期，
+不扩大为整个模块无泄漏或硬件 reset 可用。
+
 ## 仍未放行的问题
 
-- **legacy recovery 未闭合：**默认 `recover_fence_fix=0` 的 guilty-ring 路径仍需重新审查
-  pending-list、credits 和 fence completion；本阶段没有扩大为恢复框架重写。
+- **没有可用硬件 reset 原语：**当前 `has_hw_reset` 的 fail-closed 路径仍返回 `-ENODEV`；
+  调度资源可以按核心约定清理，不代表挂起引擎、VM/VRAM 或显示能够恢复。
 - **生产硬冲突：**本机 `00:06.0 [0014:7a25]` 已绑定 `loonggpu`，
   `00:06.1 [0014:7a36]` 已绑定 `loonggpu-dc`。研究模块还声明相同 PCI alias，
   导出裸全局 `loongson_dc_pdev`，并使用相同 DRM/module name `gsgpu`。
@@ -68,7 +74,7 @@ phase3 进一步按同版本 AMDGPU 的 VMID 策略移除了临时的 all-fence 
 
 原第三方树以 6.6/6.6.52 为基线，导出快照缺少原 `build-dc.sh`。复现时必须：
 
-1. 只导出 `src/kernel/tree-stride2`，在独立目录应用 `phase3-cumulative.patch`。
+1. 只导出 `src/kernel/tree-stride2`，在独立目录应用 `phase4-cumulative.patch`。
 2. 将仓内三个 staging 头放到**目标内核副本**的对应路径，而不是生产 headers：
    - `include/uapi/drm/gsgpu_drm.h`
    - `include/drm/gsgpu_family_type.h`
@@ -84,7 +90,7 @@ phase3 进一步按同版本 AMDGPU 的 VMID 策略移除了临时的 all-fence 
 
 ## 后续门槛
 
-先解决或明确废弃 legacy recovery，再完成生产解绑定、命名/导出隔离和回退设计。
+先明确可恢复的硬件 reset 原语及 fail-closed 边界，再完成生产解绑定、命名/导出隔离和回退设计。
 只有独立可恢复测试机及明确维护授权后，才讨论 probe、fence、
 像素、VMID 饱和、超时恢复和显示验证。compile PASS 不构成这些授权或证据。
 
