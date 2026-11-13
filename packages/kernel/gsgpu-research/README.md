@@ -63,7 +63,8 @@ phase4 删除了不完整的 legacy recovery 及两个实验开关，统一为�
 ## 仍未放行的问题
 
 - **没有可用硬件 reset 原语：**当前 `has_hw_reset` 的 fail-closed 路径仍返回 `-ENODEV`；
-  调度资源可以按核心约定清理，不代表挂起引擎、VM/VRAM 或显示能够恢复。
+  调度资源可以按核心约定清理，不代表挂起引擎、VM/VRAM 或显示能够恢复。LG100/LG200 分类、
+  不可达的 `0x7c` magic 写入及本机只读证据见 [RESET.md](RESET.md)。
 - **生产硬冲突：**本机 `00:06.0 [0014:7a25]` 已绑定 `loonggpu`，
   `00:06.1 [0014:7a36]` 已绑定 `loonggpu-dc`。研究模块还声明相同 PCI alias，
   导出裸全局 `loongson_dc_pdev`，并使用相同 DRM/module name `gsgpu`。
