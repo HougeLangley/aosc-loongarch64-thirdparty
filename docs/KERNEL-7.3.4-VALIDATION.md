@@ -58,3 +58,9 @@ vkgl 官方 5 项测试 5/5、0 validation errors、GPU-only；严格矩阵 13/1
 
 kernel/headers deb 已发布到第三方 AOSC 仓库；仓库共 27 个索引 deb，
 签名、HTTPS、隔离 apt 验证通过。GRUB 默认 `saved_entry=7.3.4`，旧 7.3.1 保留在子菜单。
+
+## 独立与客户端复核
+
+- 仓库自带 `scripts/verify-kernel.sh` 在 7.3.4 上 **8/8 PASS**：16K/RT、clang full-LTO、loonggpu loaded、DKMS entry、KWin LG110 renderer、vkgl active。
+- 公网 HTTPS 隔离 apt `apt-get update` 成功，下载 kernel/headers 7.3.4 成功，SHA-256 与发布物一致。
+- 本机 `127.0.0.1:8080/aosc` 源刷新后候选优先级 500，`apt-get download` 成功；此前无候选只是 apt 索引未刷新。
