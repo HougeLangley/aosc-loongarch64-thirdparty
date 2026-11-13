@@ -15,22 +15,24 @@
   "modpost_warnings": 0,
   "forbidden_undefined": [],
   "vermagic": "7.3.4-mainline-16k-rt-clang-lto SMP preempt_rt mod_unload LOONGARCH 64BIT",
-  "relocation_entries": 327928,
+  "relocation_entries": 327885,
   "relocation_types": {
     "R_LARCH_GOT_PC_HI20": 323,
     "R_LARCH_GOT_PC_LO12": 323,
-    "R_LARCH_B26": 4404,
+    "R_LARCH_B26": 4396,
     "R_LARCH_PCALA_HI20": 1397,
     "R_LARCH_PCALA_LO12": 1430,
-    "R_LARCH_32_PCREL": 7074,
+    "R_LARCH_32_PCREL": 7072,
     "R_LARCH_64_PCREL": 32,
     "R_LARCH_ADD64": 30,
     "R_LARCH_SUB64": 30,
-    "R_LARCH_64": 15449,
-    "R_LARCH_32": 297436
+    "R_LARCH_64": 15440,
+    "R_LARCH_32": 297412
   },
   "unhandled_relocation_types": [],
-  "ko_sha256": "98c670081499ce8461a5fdc3531ff2d26c4325febcf172c9f4acec81023a6a25",
-  "phase2_patch_sha256": "10378dc7f77ac81e88e7c386c0b4fb0a912c11305cd6f4f19013b2244209aa15",
-  "lead_fixes_patch_sha256": "45dfac7fce632fd6504ff732d4397c2dc8b8f7d1e187d6b218f60c06bb7ca9b1"
+  "ko_sha256": "71e9e8936a1950f1636143621c1ff5861bd3b704d79f3989a40adff6fde7e169",
+  "phase3_patch_sha256": "a6bb9a964ef8cd17287cc5eea3d4719fd025a9308096973f16d0171b142791df",
+  "vmid_delta_patch_sha256": "340f73deff3627bb49b949c8dba1fa20663af28616db14c424a53fb38e8c28f6",
+  "vmid_single_lru": true,
+  "vmid_all_fence_removed": true
 }

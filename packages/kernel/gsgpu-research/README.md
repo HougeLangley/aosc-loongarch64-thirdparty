@@ -23,11 +23,12 @@
 
 | 文件 | 用途 | SHA-256 |
 |---|---|---|
-| `phase2-cumulative.patch` | 固定第三方 HEAD 到当前研究源码的完整补丁 | `10378dc7f77ac81e88e7c386c0b4fb0a912c11305cd6f4f19013b2244209aa15` |
+| `phase3-cumulative.patch` | 固定第三方 HEAD 到当前研究源码的完整补丁 | `a6bb9a964ef8cd17287cc5eea3d4719fd025a9308096973f16d0171b142791df` |
+| `phase3-vmid-lru.patch` | phase2 到 phase3 的单文件 VMID 等待修复 | `340f73deff3627bb49b949c8dba1fa20663af28616db14c424a53fb38e8c28f6` |
 | `audit.json` | 最终 TU、编译选项、modpost、vermagic、未解析符号和重定位审计 | 见实际文件；KO SHA 在文件内 |
 
 最终隔离构建的 KO SHA-256 为
-`98c670081499ce8461a5fdc3531ff2d26c4325febcf172c9f4acec81023a6a25`，
+`71e9e8936a1950f1636143621c1ff5861bd3b704d79f3989a40adff6fde7e169`，
 但**二进制不随仓库发布**。该哈希用于核对研究日志，不提供下载或安装入口。
 
 ## 已处理的主要 API/语义问题
@@ -49,10 +50,12 @@ C5 没有机械地把 `ttm_bo_put` 换成 GEM put：创建时设置 `base.funcs`
 `ttm_bo_fini` 进入 TTM release，静态正常路径未见同对象递归释放或 double-free。
 运行时引用计数、并发 close 和 parent/shadow 链仍未验证。
 
+phase3 进一步按同版本 AMDGPU 的 VMID 策略移除了临时的 all-fence 等待：从 MRU 端扫描，
+全部繁忙时只缓存并等待 LRU 单条 fence。PASID 延迟释放仍保留其本来就需要等待全部 fence
+的独立数组路径。这样不再把无关 VMID 的长等待耦合到当前 ring，但 VMID 饱和和恢复仍未真机验证。
+
 ## 仍未放行的问题
 
-- **VMID any-fence 非等价：**7.3.4 删除了 `signal_on_any`。当前 VMID 空闲等待暂用
-  保守 all-fence，可能等待无关 VMID 并把长挂起耦合到当前 ring，不能用于性能或活性结论。
 - **legacy recovery 未闭合：**默认 `recover_fence_fix=0` 的 guilty-ring 路径仍需重新审查
   pending-list、credits 和 fence completion；本阶段没有扩大为恢复框架重写。
 - **生产硬冲突：**本机 `00:06.0 [0014:7a25]` 已绑定 `loonggpu`，
@@ -65,7 +68,7 @@ C5 没有机械地把 `ttm_bo_put` 换成 GEM put：创建时设置 `base.funcs`
 
 原第三方树以 6.6/6.6.52 为基线，导出快照缺少原 `build-dc.sh`。复现时必须：
 
-1. 只导出 `src/kernel/tree-stride2`，在独立目录应用 `phase2-cumulative.patch`。
+1. 只导出 `src/kernel/tree-stride2`，在独立目录应用 `phase3-cumulative.patch`。
 2. 将仓内三个 staging 头放到**目标内核副本**的对应路径，而不是生产 headers：
    - `include/uapi/drm/gsgpu_drm.h`
    - `include/drm/gsgpu_family_type.h`
@@ -81,8 +84,8 @@ C5 没有机械地把 `ttm_bo_put` 换成 GEM put：创建时设置 `base.funcs`
 
 ## 后续门槛
 
-先解决或明确废弃 legacy recovery，设计真正的 VMID any-fence 等待，再完成生产解绑定、
-命名/导出隔离和回退设计。只有独立可恢复测试机及明确维护授权后，才讨论 probe、fence、
+先解决或明确废弃 legacy recovery，再完成生产解绑定、命名/导出隔离和回退设计。
+只有独立可恢复测试机及明确维护授权后，才讨论 probe、fence、
 像素、VMID 饱和、超时恢复和显示验证。compile PASS 不构成这些授权或证据。
 
 第三方 gsgpu 内核源采用 GPL-2.0；本目录补丁为其内核 API 移植研究，不包含厂商闭源用户态、
