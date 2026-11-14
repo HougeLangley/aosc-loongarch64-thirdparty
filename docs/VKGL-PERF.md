@@ -71,3 +71,9 @@
 # 1080p 三轮，记录内核/负载/ICD
 scripts/bench-vkgl-1080p.sh
 ```
+
+## fullscreen / direct scanout 观察
+
+KWin 报告 compositing active，未显示 direct scanout 状态。vkmark 2 组交替：
+windowed Score 31/32，fullscreen Score 27/27（load 约 11 的 Homebrew 背景负载）。
+fullscreen 没有可验证的 direct scanout 收益，反而更低；不据此改 KWin/vkgl。
