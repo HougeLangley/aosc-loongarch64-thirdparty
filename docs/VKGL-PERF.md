@@ -99,3 +99,11 @@ scissor 修复；该次“+2 分”不作证据。
 Score 35。35 FPS 不是 CPU-bound，也不是 KWin 合成器 CPU-bound；
 no-flush、sampler 缓存等 CPU 微优化无收益与此一致。
 瓶颈在 WSI/显示/GPU 侧，不再重复“省 GL 调用”类实验。
+
+## WSI present mode 能力（2026-11-14）
+
+生产 vkgl 仅暴露 `VK_PRESENT_MODE_FIFO_KHR`；mailbox、immediate、
+fiforelaxed 均被设备拒绝。35 FPS 附近的上限是 FIFO/vsync WSI 锁定，
+不是 CPU 或 KWin CPU。下一步若要提升流畅度，只能在 vkgl WSI 实现
+mailbox/immediate + 非阻塞 acquire/present，并用 KWin allowTearing 验证；
+不得先把未实现的模式宣称为支持。
