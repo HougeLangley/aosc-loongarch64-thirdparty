@@ -37,15 +37,15 @@ vkgl 官方 5 项测试 5/5、0 validation errors、GPU-only；严格矩阵 13/1
 
 同一 rootfs、vkgl、LG110、KWin Wayland；暂停 Homebrew 与内核后台构建后，1080p FIFO 三轮中位：
 
-| 场景 | 7.3.1 clang #2 | 7.3.4 clang #1 |
-| --- | ---: | ---: |
-| vertex | 38 | 38 |
-| texture | 42 | 43 |
-| shading | 40 | 41 |
-| effect2d | 20 | 19 |
-| desktop | 41 | 41 |
+| 场景 | 7.3.4 clang |
+| --- | ---: |
+| vertex | 38 |
+| texture | 43 |
+| shading | 41 |
+| effect2d | 19 |
+| desktop | 41 |
 
-差异在噪声内，未发现 7.3.4 性能回退。GPU 时钟 `pm_dpm_sclk` 已在最高 496MHz 档，无提频空间。
+GPU 时钟 `pm_dpm_sclk` 已在最高 496MHz 档，无提频空间。旧版本对照只保留在本地证据，不写入公开文档。
 
 ## 已知边界
 
@@ -56,8 +56,9 @@ vkgl 官方 5 项测试 5/5、0 validation errors、GPU-only；严格矩阵 13/1
 
 ## 发布
 
-kernel/headers deb 已发布到第三方 AOSC 仓库；仓库共 27 个索引 deb，
-签名、HTTPS、隔离 apt 验证通过。GRUB 默认 `saved_entry=7.3.4`，旧 7.3.1 保留在子菜单。
+kernel/headers deb 已发布到第三方 AOSC 仓库；仓库共 **29** 个索引 deb，
+签名、HTTPS、隔离 apt 验证通过。GRUB 默认 `saved_entry=7.3.4`；旧版本仅本地回退，
+不在公开文档与源索引罗列。
 
 ## 独立与客户端复核
 
