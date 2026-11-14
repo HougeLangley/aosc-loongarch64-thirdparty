@@ -74,6 +74,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | 软件包 | 版本 | 架构 | SHA-256 | deb |
 |---|---|---|---|---|
 | `age` | `1.3.2-1` | `loongarch64` | `a686380f1984517f68c0d9e8eb085eaffa95e1d88b540659339b3e2f43a30e2f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/a/age/age_1.3.2-1_loongarch64.deb) |
+| `bandwhich` | `0.23.1-1` | `loongarch64` | `526b2d043b1e1f2c491c9ff76ec9e6b1f1bf5913d3b261945853ed72a665c109` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/bandwhich/bandwhich_0.23.1-1_loongarch64.deb) |
 | `brew-ui-linux` | `0.1.0-5` | `loongarch64` | `f31a56110f420390f32cb2f795b8984109f41187382cbd4cc7e374184c30f481` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-5_loongarch64.deb) |
 | `broot` | `1.62.0-1` | `loongarch64` | `cd989fee3a2c1ccbc142636c56f9855594bc2e9b14054bbf2059d5495e4cea8e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/broot/broot_1.62.0-1_loongarch64.deb) |
 | `btrbk` | `0.32.7-1` | `all` | `706a7edc85be026beec1e3fdd7418a7285f92223f2cc9c9f5b9fab6c9e771846` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/btrbk/btrbk_0.32.7-1_all.deb) |
@@ -104,6 +105,8 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `ruby` | `4.0.9-2` | `loongarch64` | `a6775b8b0c33cb20eec41ad496ba5bf252ed7bcd6ce8c5de56bc57b5eace2f03` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-2_loongarch64.deb) |
 | `sd` | `1.1.0-1` | `loongarch64` | `fb59c5fad6cf7b940b6ae790063b2df740045c226dc5acdf565a22d8e8418508` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sd/sd_1.1.0-1_loongarch64.deb) |
 | `sops` | `3.13.3-1` | `loongarch64` | `c9fbef05d6de9c374a26fde711cc6ea9ce5ec718bdb7e1abecd0216ebf9d89c0` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sops/sops_3.13.3-1_loongarch64.deb) |
+| `tectonic` | `0.17.0-1` | `loongarch64` | `f3c1e852825ef2360b79c9717943c623dd71614a84ab18fe8f0b9653dd775a70` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/tectonic/tectonic_0.17.0-1_loongarch64.deb) |
+| `trivy` | `0.76.2-1` | `loongarch64` | `2b321b303e63c57bac5466f4ec40234b0485451515e5ee53da489505c3beb34e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/trivy/trivy_0.76.2-1_loongarch64.deb) |
 | `v2raya` | `2.5.15-1` | `loongarch64` | `e0bac29690bd02ef72ad09030ba5f50eee99dee7d631c8ecf753ceb696c7615b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.15-1_loongarch64.deb) |
 | `valkey` | `9.1.3-1` | `loongarch64` | `571d5c0ae79d1225ea2bce46c05cbc40aefb6d640bd4f66c46e712f913913a86` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/valkey/valkey_9.1.3-1_loongarch64.deb) |
 | `vkgl-loonggpu` | `0.1.35-1` | `loongarch64` | `25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.35-1_loongarch64.deb) |
