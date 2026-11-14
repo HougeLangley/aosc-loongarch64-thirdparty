@@ -108,3 +108,18 @@ fiforelaxed 均被设备拒绝。**FIFO 的硬上限是显示器刷新率（约 
 限制在 GPU 实际渲染/WSI buffer release，而非 CPU 调用或 FIFO 帽。
 mailbox/immediate 是兼容性/延迟方向，但 GPU 已慢于刷新率时不保证
 提升 FPS；未实现、未验证前不宣称。
+
+## 分辨率缩放（2026-11-14）
+
+同场景生产 vkgl、FIFO：
+
+| 分辨率 | Score | desktop FPS |
+|---|---:|---:|
+| 640×480 | 185 / 182 | 133 / 134 |
+| 1280×720 | 67 / 66 | 67 / 61 |
+| 1920×1080 | 29 / 30 | 34 / 34 |
+
+1080p 是 GPU 填充率/带宽瓶颈，不是固定 WSI 节奏；640×480 的 desktop
+133 FPS 也说明当前 FIFO 路径没有硬锁 60Hz。CPU/GL 调用微优化无效，
+mailbox/immediate 不能解决填充瓶颈。下一步只能降低每像素成本
+（内部渲染分辨率/缩放、GPU 驱动或原生 Vulkan），不再重复改 WSI 模式。
