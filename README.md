@@ -83,6 +83,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `dysk` | `3.8.2-1` | `loongarch64` | `247e01aeb68b5d7e9621fc8a7c3e34c9e6b51deacf702a07fdb332aa9607d077` | [下载](https://homebrewloongarch64.site/aosc/pool/main/d/dysk/dysk_3.8.2-1_loongarch64.deb) |
 | `entr` | `5.7-1` | `loongarch64` | `5a9c6cbaaf75d67c63e771639a297753a9477f3565620cdfa035d6f32eb600c8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/e/entr/entr_5.7-1_loongarch64.deb) |
 | `fclones` | `0.35.0-2` | `loongarch64` | `a18aae2aaed64cd8a08e29cc1d8d35b6032793ca8c15123af7368680952418e1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fclones/fclones_0.35.0-2_loongarch64.deb) |
+| `git-branchless` | `0.11.1-2` | `loongarch64` | `87c3268fbda379d706bc6b2e2e45eabc4354854d67e2fc981c455257ce8bf744` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-branchless/git-branchless_0.11.1-2_loongarch64.deb) |
 | `gitleaks` | `8.30.1-1` | `loongarch64` | `920fe9a515b015f336d2328ff68807ce8fe32cf679ddf3bd5454ec06997e9626` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gitleaks/gitleaks_8.30.1-1_loongarch64.deb) |
 | `greeter` | `0.2.0-1` | `loongarch64` | `e076fa0e64256c51c8fc8c749cde6375536825f501a4957362524410599cb05e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/greeter/greeter_0.2.0-1_loongarch64.deb) |
 | `gron` | `0.7.1-1` | `loongarch64` | `9841fa22feb495e437829c2e2023e9acba08c5d5e87d1946e787febfce2e7f22` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gron/gron_0.7.1-1_loongarch64.deb) |
