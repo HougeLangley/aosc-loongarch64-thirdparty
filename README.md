@@ -73,6 +73,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 | 软件包 | 版本 | 架构 | SHA-256 | deb |
 |---|---|---|---|---|
+| `age` | `1.3.2-1` | `loongarch64` | `a686380f1984517f68c0d9e8eb085eaffa95e1d88b540659339b3e2f43a30e2f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/a/age/age_1.3.2-1_loongarch64.deb) |
 | `brew-ui-linux` | `0.1.0-5` | `loongarch64` | `f31a56110f420390f32cb2f795b8984109f41187382cbd4cc7e374184c30f481` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-5_loongarch64.deb) |
 | `entr` | `5.7-1` | `loongarch64` | `5a9c6cbaaf75d67c63e771639a297753a9477f3565620cdfa035d6f32eb600c8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/e/entr/entr_5.7-1_loongarch64.deb) |
 | `greeter` | `0.2.0-1` | `loongarch64` | `e076fa0e64256c51c8fc8c749cde6375536825f501a4957362524410599cb05e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/greeter/greeter_0.2.0-1_loongarch64.deb) |
@@ -82,10 +83,13 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `linux-kernel-mainline-16k-rt-7.3.4-clang-lto` | `7.3.4-1` | `loongarch64` | `cd75bf73bc2b502f74c2a12fdf23f04b88f2a28c2670334ada01f7d3dbdc4e50` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.4-clang-lto/linux-kernel-mainline-16k-rt-7.3.4-clang-lto_7.3.4-1_loongarch64.deb) |
 | `linux-kernel-mainline-16k-rt-7.3.4-gcc-o3` | `7.3.4-1` | `loongarch64` | `2b91a94d42e636651410463aeb8098ae3f3752192e58b555c6162a4f7db58cd4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.4-gcc-o3/linux-kernel-mainline-16k-rt-7.3.4-gcc-o3_7.3.4-1_loongarch64.deb) |
 | `loonggpu-kernel-dkms` | `2:1.0.2+lnd25.1-3` | `loongarch64` | `6c9dee5ee696f7ceb8c5bfbae4fc140c60131e08cf99650eb4703129a9509116` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loonggpu-kernel-dkms/loonggpu-kernel-dkms_1.0.2%2Blnd25.1-3_loongarch64.deb) |
+| `mkcert` | `1.4.4-1` | `loongarch64` | `93f6a13851a066959d4d8cd49e14f5406d52b4cbeb62b1fdc60e0ada76af0de1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mkcert/mkcert_1.4.4-1_loongarch64.deb) |
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
 | `miniupnpc` | `2.2.8-2` | `loongarch64` | `363e280e30968a1af677301181c39b852a7e7a1c189573535e167b07b1ab5768` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/miniupnpc/miniupnpc_2.2.8-2_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.4-1` | `loongarch64` | `2db5b5c21cd93eab9997e25fbd2593e56a9c2aa263c4340790be378b23aad505` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.4-1_loongarch64.deb) |
+| `pyenv` | `2.8.14-1` | `all` | `eb97c21ad5c8f9e2aada41e71f6be466fee470017c1d48f5f6b451783cdd4cf8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pyenv/pyenv_2.8.14-1_all.deb) |
 | `ruby` | `4.0.9-2` | `loongarch64` | `a6775b8b0c33cb20eec41ad496ba5bf252ed7bcd6ce8c5de56bc57b5eace2f03` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-2_loongarch64.deb) |
+| `sd` | `1.1.0-1` | `loongarch64` | `fb59c5fad6cf7b940b6ae790063b2df740045c226dc5acdf565a22d8e8418508` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sd/sd_1.1.0-1_loongarch64.deb) |
 | `v2raya` | `2.5.15-1` | `loongarch64` | `e0bac29690bd02ef72ad09030ba5f50eee99dee7d631c8ecf753ceb696c7615b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.15-1_loongarch64.deb) |
 | `vkgl-loonggpu` | `0.1.35-1` | `loongarch64` | `25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.35-1_loongarch64.deb) |
 | `vkmark` | `2025.01-4` | `loongarch64` | `5cbda2cb85b902f590b6fdf0d2e8ad4cd1f84887c8f27020b6596d6a5085356a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkmark/vkmark_2025.01-4_loongarch64.deb) |
