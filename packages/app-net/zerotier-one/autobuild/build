@@ -4,6 +4,11 @@ set -euo pipefail
 
 cd "$SRCDIR"
 
+# Arch 的同类修法：upstream 的 Makefile/unit 用 /usr/sbin，本包安装到 /usr/bin。
+# 先统一源码里的路径，避免 make install/unit 再引入 203/EXEC。
+sed -i -e 's#/usr/sbin/zerotier-one#/usr/bin/zerotier-one#' \
+    make-linux.mk debian/zerotier-one.service
+
 echo "[build] 编译 ZeroTierOne $VER（$ABTHREADS 线程）"
 make -j"$ABTHREADS" -f make-linux.mk
 
