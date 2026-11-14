@@ -1,0 +1,8 @@
+PKGNAME=miniupnpc
+PKGSEC=net
+PKGDEP="glibc gcc-runtime"
+BUILDDEP="gcc make"
+PKGDES="UPnP client library/tool to access Internet Gateway Devices"
+PKGHOMEPAGE="https://miniupnp.tuxfamily.org/"
+ABTYPE=self
+REL=2

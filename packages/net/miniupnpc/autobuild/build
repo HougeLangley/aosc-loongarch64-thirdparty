@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$SRCDIR"
+make -j"$ABTHREADS"
+make install DESTDIR="$PKGDIR" PREFIX=/usr
+
+# Transitional compat: old zerotier-one 1.16.2-2 NEEDED .so.17.
+# Keep the old soname available so a normal miniupnpc upgrade does not break it;
+# new zerotier 1.16.2-3 uses .so.18.
+if [[ -f "$PKGDIR_SRC/autobuild/legacy/libminiupnpc.so.17" ]]; then
+    install -Dm644 "$PKGDIR_SRC/autobuild/legacy/libminiupnpc.so.17" \
+        "$PKGDIR/usr/lib/libminiupnpc.so.17"
+fi

@@ -1,0 +1,2 @@
+legacy/libminiupnpc.so.17 is the AOSC 2.1-5 ABI shim, kept only for
+zerotier-one 1.16.2-2 during the 2.2.8 migration. New builds use .so.18.

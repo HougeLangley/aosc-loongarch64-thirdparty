@@ -4,6 +4,10 @@ set -euo pipefail
 
 cd "$SRCDIR"
 
+# Arch 方案：删掉 bundled miniupnpc，改用系统头/库，并打 miniupnpc 2.2.8 API 适配
+rm -rf ext/miniupnpc
+patch -Np1 -i "$PKGDIR_SRC/autobuild/patches/0001-miniupnpc.patch"
+
 # Arch 的同类修法：upstream 的 Makefile/unit 用 /usr/sbin，本包安装到 /usr/bin。
 # 先统一源码里的路径，避免 make install/unit 再引入 203/EXEC。
 sed -i -e 's#/usr/sbin/zerotier-one#/usr/bin/zerotier-one#' \

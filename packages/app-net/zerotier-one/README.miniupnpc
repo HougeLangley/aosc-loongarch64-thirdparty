@@ -1,0 +1,4 @@
+miniupnpc is built from the third-party 2.2.8 source. The generated deb
+control carries `Depends: miniupnpc (>= 2.2.8-1)` because AOSC's
+autobuild defines do not have a versioned PKGDEP syntax; the binary
+NEEDED libminiupnpc.so.18 and the repo package provides it.
