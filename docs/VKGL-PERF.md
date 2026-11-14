@@ -92,3 +92,10 @@ scissor 修复；该次“+2 分”不作证据。
 在含 scissor-Y 修复的基线上，为 `Pipeline` 增加 `(uniform location, unit)`
 缓存，跳过重复 `glUniform1i`。功能全过；同负载 vkmark 1080p FIFO
 测试 36/35/35，生产 35/35/35，中位相同，无复现收益，不进入生产。
+
+## CPU/合成器占用（2026-11-14）
+
+1080p FIFO vkmark 期间：vkmark 进程 CPU 4–7%，kwin_wayland 0.4%，
+Score 35。35 FPS 不是 CPU-bound，也不是 KWin 合成器 CPU-bound；
+no-flush、sampler 缓存等 CPU 微优化无收益与此一致。
+瓶颈在 WSI/显示/GPU 侧，不再重复“省 GL 调用”类实验。
