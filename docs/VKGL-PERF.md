@@ -103,7 +103,8 @@ no-flush、sampler 缓存等 CPU 微优化无收益与此一致。
 ## WSI present mode 能力（2026-11-14）
 
 生产 vkgl 仅暴露 `VK_PRESENT_MODE_FIFO_KHR`；mailbox、immediate、
-fiforelaxed 均被设备拒绝。35 FPS 附近的上限是 FIFO/vsync WSI 锁定，
-不是 CPU 或 KWin CPU。下一步若要提升流畅度，只能在 vkgl WSI 实现
-mailbox/immediate + 非阻塞 acquire/present，并用 KWin allowTearing 验证；
-不得先把未实现的模式宣称为支持。
+fiforelaxed 均被设备拒绝。**FIFO 的硬上限是显示器刷新率（约 60Hz），
+不是 35 FPS**；实测 35 FPS 同时 vkmark CPU 4–7%、KWin CPU 0.4%，
+限制在 GPU 实际渲染/WSI buffer release，而非 CPU 调用或 FIFO 帽。
+mailbox/immediate 是兼容性/延迟方向，但 GPU 已慢于刷新率时不保证
+提升 FPS；未实现、未验证前不宣称。
