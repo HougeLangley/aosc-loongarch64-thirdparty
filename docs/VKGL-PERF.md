@@ -77,3 +77,12 @@ scripts/bench-vkgl-1080p.sh
 KWin 报告 compositing active，未显示 direct scanout 状态。vkmark 2 组交替：
 windowed Score 31/32，fullscreen Score 27/27（load 约 11 的 Homebrew 背景负载）。
 fullscreen 没有可验证的 direct scanout 收益，反而更低；不据此改 KWin/vkgl。
+
+## 去每提交 glFlush（2026-11-14，否决）
+
+在含 scissor-Y 修复的基线上仅移除 `execute_cmds` 末尾 `glFlush()`：
+scissor A/B、vkgl 5/5 全过；同负载 vkmark 1080p FIFO 测试 33/33/34，
+生产 31/34/33，中位同为 33。无可复现收益，不进入生产。
+
+注：第一次基于旧源构建时 scissor FAIL，生产同测试 PASS，说明旧源缺
+scissor 修复；该次“+2 分”不作证据。
