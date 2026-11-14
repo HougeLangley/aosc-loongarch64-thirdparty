@@ -13,7 +13,11 @@ install -Dvm755 zerotier-one        "$PKGDIR/usr/bin/zerotier-one"
 ln -svf zerotier-one "$PKGDIR/usr/bin/zerotier-cli"
 ln -svf zerotier-one "$PKGDIR/usr/bin/zerotier-idtool"
 
-install -Dvm644 debian/zerotier-one.service "$PKGDIR/usr/lib/systemd/system/zerotier-one.service"
+# 本包把二进制装在 /usr/bin，upstream unit 却指向 /usr/sbin；不修会 203/EXEC
+install -d "$PKGDIR/usr/lib/systemd/system"
+sed 's#^ExecStart=/usr/sbin/zerotier-one#ExecStart=/usr/bin/zerotier-one#' \
+    debian/zerotier-one.service > "$PKGDIR/usr/lib/systemd/system/zerotier-one.service"
+chmod 644 "$PKGDIR/usr/lib/systemd/system/zerotier-one.service"
 
 install -d "$PKGDIR/usr/share/doc/zerotier-one"
 install -vm644 LICENSE.txt "$PKGDIR/usr/share/doc/zerotier-one/"
@@ -27,6 +31,13 @@ chmod 644 "$PKGDIR"/usr/share/man/man1/*.gz "$PKGDIR"/usr/share/man/man8/*.gz
 
 install -d "$PKGDIR/var/lib/zerotier-one"
 install -vm644 ext/installfiles/linux/zerotier-one.te "$PKGDIR/var/lib/zerotier-one/zerotier-one.te"
+
+mkdir -p "$PKGDIR/DEBIAN"
+{
+    echo '#!/bin/sh'
+    sed "s/%PKGVER%/${PKGVER%%+*}/g" "$PKGDIR_SRC/autobuild/postinst.in"
+} > "$PKGDIR/DEBIAN/postinst"
+chmod 755 "$PKGDIR/DEBIAN/postinst"
 
 echo "[build] 暂存完成"
 find "$PKGDIR" -type f | sed "s|$PKGDIR||" | sort

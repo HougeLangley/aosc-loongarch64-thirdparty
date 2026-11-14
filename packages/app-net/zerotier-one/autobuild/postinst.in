@@ -1,0 +1,9 @@
+#!/bin/sh
+# zerotier-cli needs the daemon port file; enable and start it on install.
+set -e
+if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || true
+    systemctl enable zerotier-one.service >/dev/null 2>&1 || true
+    systemctl restart zerotier-one.service >/dev/null 2>&1 || true
+fi
+exit 0
