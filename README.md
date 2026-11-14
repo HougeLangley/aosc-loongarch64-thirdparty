@@ -77,6 +77,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `brew-ui-linux` | `0.1.0-5` | `loongarch64` | `f31a56110f420390f32cb2f795b8984109f41187382cbd4cc7e374184c30f481` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-5_loongarch64.deb) |
 | `broot` | `1.62.0-1` | `loongarch64` | `cd989fee3a2c1ccbc142636c56f9855594bc2e9b14054bbf2059d5495e4cea8e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/broot/broot_1.62.0-1_loongarch64.deb) |
 | `btrbk` | `0.32.7-1` | `all` | `706a7edc85be026beec1e3fdd7418a7285f92223f2cc9c9f5b9fab6c9e771846` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/btrbk/btrbk_0.32.7-1_all.deb) |
+| `codespell` | `2.4.3-1` | `all` | `d4e23975944ab061c2ac21a2a3d40c12128041e2786c06d662ab18eeb3ee882e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/c/codespell/codespell_2.4.3-1_all.deb) |
 | `csvlens` | `0.15.1-1` | `loongarch64` | `4455040c5915b3320e04f5ff25d21045fa5593662c2ec7c3d4453141f69c4c89` | [下载](https://homebrewloongarch64.site/aosc/pool/main/c/csvlens/csvlens_0.15.1-1_loongarch64.deb) |
 | `dysk` | `3.8.2-1` | `loongarch64` | `247e01aeb68b5d7e9621fc8a7c3e34c9e6b51deacf702a07fdb332aa9607d077` | [下载](https://homebrewloongarch64.site/aosc/pool/main/d/dysk/dysk_3.8.2-1_loongarch64.deb) |
 | `entr` | `5.7-1` | `loongarch64` | `5a9c6cbaaf75d67c63e771639a297753a9477f3565620cdfa035d6f32eb600c8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/e/entr/entr_5.7-1_loongarch64.deb) |
@@ -85,6 +86,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `greeter` | `0.2.0-1` | `loongarch64` | `e076fa0e64256c51c8fc8c749cde6375536825f501a4957362524410599cb05e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/greeter/greeter_0.2.0-1_loongarch64.deb) |
 | `hello` | `1.0.0-1` | `loongarch64` | `5394a85cc56c50e8ec5a2593c23089755fd376e786a1e09d2d97f25f7b443952` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hello/hello_1.0.0-1_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
+| `lhasa` | `0.6.0-1` | `loongarch64` | `773c0bc859c0974c14ff1bfbd2632a4644c0d8ffa43a022646da4a9317f21c57` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lhasa/lhasa_0.6.0-1_loongarch64.deb) |
 | `libpng` | `1.6.59-3` | `loongarch64` | `4d3256386ab61bfbb98b842f7fda3eb208095f7cd540f8759085d21ac30d230f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libpng/libpng_1.6.59-3_loongarch64.deb) |
 | `linux-headers-mainline-16k-rt-7.3.4-clang-lto` | `7.3.4-1` | `loongarch64` | `1cbe0e39990aa4a5560f8bc83ee309c74a0ca66dfdd92bab696aebca7c6c7d01` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.4-clang-lto/linux-headers-mainline-16k-rt-7.3.4-clang-lto_7.3.4-1_loongarch64.deb) |
 | `linux-headers-mainline-16k-rt-7.3.4-gcc-o3` | `7.3.4-1` | `loongarch64` | `b45acae18cd3a35274321cf773debd43acf24f29544e8742177c512e24d4725c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.4-gcc-o3/linux-headers-mainline-16k-rt-7.3.4-gcc-o3_7.3.4-1_loongarch64.deb) |
@@ -106,6 +108,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `watchexec` | `2.8.0-2` | `loongarch64` | `f208ba6124acb7a38fff3a1facd8374a0e94623e45e5c30ae6c142bcee097b1c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/watchexec/watchexec_2.8.0-2_loongarch64.deb) |
 | `wowtype` | `0.3.12-1` | `loongarch64` | `4877dfec834f39e84bf3dd27cdce7428ae0f66452500a9fc8dbe4d96b5973050` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/wowtype/wowtype_0.3.12-1_loongarch64.deb) |
 | `xh` | `0.26.3-1` | `loongarch64` | `8d8a2d2c9d766aa27945cc7fd39c7cb806c1e5eadb5cfbad4123b5249e53e530` | [下载](https://homebrewloongarch64.site/aosc/pool/main/x/xh/xh_0.26.3-1_loongarch64.deb) |
+| `yamllint` | `1.38.0-2` | `all` | `16423e21c7e53d6bc965452dce0f80df725fb645bd467ecf477517ec3bbfead9` | [下载](https://homebrewloongarch64.site/aosc/pool/main/y/yamllint/yamllint_1.38.0-2_all.deb) |
 | `zerotier-one` | `1.16.2-3` | `loongarch64` | `1c81bc8752334a32c4b8fe546be6f770ac7c7aafeb7eb41963b9845bb0c51ea5` | [下载](https://homebrewloongarch64.site/aosc/pool/main/z/zerotier-one/zerotier-one_1.16.2-3_loongarch64.deb) |
 
 <!-- END GENERATED DEB PACKAGE INDEX -->
