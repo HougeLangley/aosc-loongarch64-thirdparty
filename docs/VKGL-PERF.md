@@ -86,3 +86,9 @@ scissor A/B、vkgl 5/5 全过；同负载 vkmark 1080p FIFO 测试 33/33/34，
 
 注：第一次基于旧源构建时 scissor FAIL，生产同测试 PASS，说明旧源缺
 scissor 修复；该次“+2 分”不作证据。
+
+## sampler uniform 缓存（2026-11-14，否决）
+
+在含 scissor-Y 修复的基线上，为 `Pipeline` 增加 `(uniform location, unit)`
+缓存，跳过重复 `glUniform1i`。功能全过；同负载 vkmark 1080p FIFO
+测试 36/35/35，生产 35/35/35，中位相同，无复现收益，不进入生产。
