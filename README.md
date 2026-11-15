@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **82 个最新 deb 条目、82 个不同包名**；索引共保留 89 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **83 个最新 deb 条目、83 个不同包名**；索引共保留 90 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -136,6 +136,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `speedtest-cli` | `2.1.3-1` | `all` | `f28f32d7bed597c710c2260067eef82fd6cf7f24d6eeb10e676a6810819b7214` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/speedtest-cli/speedtest-cli_2.1.3-1_all.deb) |
 | `spirv-cross` | `1.4.363.0-6` | `loongarch64` | `6ebf133b693b5c56f7cb698eada3c390e11ab9438c8f4d0f958f35af952a1a41` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/spirv-cross/spirv-cross_1.4.363.0-6_loongarch64.deb) |
 | `staticcheck` | `0.8.2-2` | `loongarch64` | `a7d938499d18d420e7815b2f00477578a4106ab0aa34b472987bd4ae3cb01ca1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/staticcheck/staticcheck_0.8.2-2_loongarch64.deb) |
+| `stern` | `1.35.0-1` | `loongarch64` | `575a40ddab1ad4fda9695343093fb266cf89927829af35992bc0553a0fcee0a7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/stern/stern_1.35.0-1_loongarch64.deb) |
 | `superfile` | `1.6.0-2` | `loongarch64` | `019fdadec61325a288f943d644b4a01d0c0ca767f9d99e857b54ea3ec3da2d4a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/superfile/superfile_1.6.0-2_loongarch64.deb) |
 | `taplo` | `0.10.0-1` | `loongarch64` | `fa9a0b0d214fdce07ed44e4369f606836accd5ca73519e6572f4c18f4e1884ab` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/taplo/taplo_0.10.0-1_loongarch64.deb) |
 | `tdf` | `0.5.0-2` | `loongarch64` | `b249f27735a9adf0971c3be40583ab392ec7cb539c0dcc11ef20b536fdc64459` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/tdf/tdf_0.5.0-2_loongarch64.deb) |
