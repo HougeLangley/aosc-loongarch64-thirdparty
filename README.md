@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **79 个最新 deb 条目、79 个不同包名**；索引共保留 85 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **81 个最新 deb 条目、81 个不同包名**；索引共保留 87 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -90,6 +90,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `fclones` | `0.35.0-2` | `loongarch64` | `a18aae2aaed64cd8a08e29cc1d8d35b6032793ca8c15123af7368680952418e1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fclones/fclones_0.35.0-2_loongarch64.deb) |
 | `freeze` | `0.2.2-1` | `loongarch64` | `c7740641af43dc3ae0db387c9c267e1057395caaf5eebb388eadaee7ba9a1948` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/freeze/freeze_0.2.2-1_loongarch64.deb) |
 | `fx` | `40.0.1-1` | `loongarch64` | `002c89ebd75ae62b5603f2e86ebbf811c53807699fa96c14c2c100c79d7ee817` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fx/fx_40.0.1-1_loongarch64.deb) |
+| `gh-dash` | `4.26.3-1` | `loongarch64` | `51a0aecdf61a9daca1c599b8478dcd13dd21d80b8ffc29003c864e49b1b17278` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gh-dash/gh-dash_4.26.3-1_loongarch64.deb) |
 | `git-branchless` | `0.11.1-3` | `loongarch64` | `c7f3a8f1e7a8a6d1af3b3c047ba2573781f6040d53d8023f06a9ffd8755f313b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-branchless/git-branchless_0.11.1-3_loongarch64.deb) |
 | `git-sizer` | `1.6.0-3` | `loongarch64` | `670780953f24db03b6fa26aa832e25aa2272d41ab8409868d22b812c4ef6d4dc` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-sizer/git-sizer_1.6.0-3_loongarch64.deb) |
 | `gitleaks` | `8.30.1-2` | `loongarch64` | `46f339a365aedecc15997c0ecd8188393a080e4408d22dc802d1c19cd207164f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gitleaks/gitleaks_8.30.1-2_loongarch64.deb) |
@@ -106,6 +107,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `k9s` | `0.51.0-1` | `loongarch64` | `640b55b71457a3999faa6d1f99337f90f4895dd0a2daf279d4fefaf252c6097b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/k9s/k9s_0.51.0-1_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
 | `lazydocker` | `0.25.2-2` | `loongarch64` | `e297aec7d560ebaa831859ae8bddf368786efe511bfa2c052bb8ab81b7960296` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazydocker/lazydocker_0.25.2-2_loongarch64.deb) |
+| `lazysql` | `0.7.0-1` | `loongarch64` | `474fae3d59ca5a315d38f49c3b8183acb50a451bc5cf5e9b4099ddfb1221c523` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazysql/lazysql_0.7.0-1_loongarch64.deb) |
 | `lf` | `42-3` | `loongarch64` | `9f365c68fb23c9a81ba84ab3cec63330570e9dfe4daa043008892fd41ddfeea7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lf/lf_42-3_loongarch64.deb) |
 | `lhasa` | `0.6.0-1` | `loongarch64` | `773c0bc859c0974c14ff1bfbd2632a4644c0d8ffa43a022646da4a9317f21c57` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lhasa/lhasa_0.6.0-1_loongarch64.deb) |
 | `libmspack` | `1.12-2` | `loongarch64` | `fd1360cad94e9e04de080647e0686f848b3c58f8038a1b62de6cc7c3ce8168c3` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libmspack/libmspack_1.12-2_loongarch64.deb) |
