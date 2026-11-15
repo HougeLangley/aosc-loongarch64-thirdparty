@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **83 个最新 deb 条目、83 个不同包名**；索引共保留 90 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **85 个最新 deb 条目、85 个不同包名**；索引共保留 92 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -106,6 +106,8 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `jaq` | `3.1.2-2` | `loongarch64` | `ffcd0b4f85ecedad23a8dfa0218673e77a147b069e6fe29d4e95db14024fba47` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-2_loongarch64.deb) |
 | `jira-cli` | `1.7.0-2` | `loongarch64` | `58f700c31edc8370f7179df6642b81ead3c0d22464627acaec109a311b6c5706` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jira-cli/jira-cli_1.7.0-2_loongarch64.deb) |
 | `k9s` | `0.51.0-1` | `loongarch64` | `640b55b71457a3999faa6d1f99337f90f4895dd0a2daf279d4fefaf252c6097b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/k9s/k9s_0.51.0-1_loongarch64.deb) |
+| `kubeconform` | `0.8.0-1` | `loongarch64` | `c2d0e7d334a4eb7b452183714acf175a8ef5ab3e89e136a15bf7ba48fc88ed7c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubeconform/kubeconform_0.8.0-1_loongarch64.deb) |
+| `kubectl-tree` | `0.6.0-1` | `loongarch64` | `8d4434dbffe439120fedfc88fdea5f5d55e8123166c2228449634966cbd3f726` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-tree/kubectl-tree_0.6.0-1_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
 | `lazydocker` | `0.25.2-2` | `loongarch64` | `e297aec7d560ebaa831859ae8bddf368786efe511bfa2c052bb8ab81b7960296` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazydocker/lazydocker_0.25.2-2_loongarch64.deb) |
 | `lazysql` | `0.7.0-1` | `loongarch64` | `474fae3d59ca5a315d38f49c3b8183acb50a451bc5cf5e9b4099ddfb1221c523` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazysql/lazysql_0.7.0-1_loongarch64.deb) |
