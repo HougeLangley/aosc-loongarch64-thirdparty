@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **93 个最新 deb 条目、93 个不同包名**；索引共保留 101 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **94 个最新 deb 条目、94 个不同包名**；索引共保留 102 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -126,6 +126,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
 | `mkcert` | `1.4.4-2` | `loongarch64` | `5bec4afdb3a68c127c03d3690ab97c203e0874bc7481b1680f59797444342b5c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mkcert/mkcert_1.4.4-2_loongarch64.deb) |
 | `moar` | `2.19.7-1` | `loongarch64` | `f732b07ff071977633dcf70fb234c34acc0ab81fff47db7ea42412c0871ba216` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/moar/moar_2.19.7-1_loongarch64.deb) |
+| `muffet` | `2.11.8-1` | `loongarch64` | `dc4e31ff3fb0c4939bc7b2c10438e24e67329ce21ab63f1d15c494b20f4ca783` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/muffet/muffet_2.11.8-1_loongarch64.deb) |
 | `navi` | `2.24.0-1` | `loongarch64` | `3f519626c914eacf5279d0801b075bae2af363c2633b3a1fefad711ec79b26c1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/n/navi/navi_2.24.0-1_loongarch64.deb) |
 | `oha` | `1.17.0-1` | `loongarch64` | `a1c845299747557bc7bff5039e791fb7904a9997985b5b9d6e833a4675fa6f68` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/oha/oha_1.17.0-1_loongarch64.deb) |
 | `ov` | `0.55.0-2` | `loongarch64` | `d21b0da33dcd682b973e980d700bbf5f315c37eec4af7c6c42e26886ddfe2282` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/ov/ov_0.55.0-2_loongarch64.deb) |
