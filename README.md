@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **96 个最新 deb 条目、96 个不同包名**；索引共保留 115 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **96 个最新 deb 条目、96 个不同包名**；索引共保留 116 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -138,7 +138,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `prettyping` | `1.1.0-1` | `all` | `c9cb64f22b6bffd96e17258eb10be8cd66d122559db6d9963fb7b48db0bfe672` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/prettyping/prettyping_1.1.0-1_all.deb) |
 | `procs` | `0.14.12-2` | `loongarch64` | `50ba32263de291e4489edd3cbba177281b91b794cf971b9cee535139eba51b70` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/procs/procs_0.14.12-2_loongarch64.deb) |
 | `pueue` | `4.0.4-1` | `loongarch64` | `05eaf88ccfd27b9942782e5fb36791b3f8231b61b4397c1d6d51a9a2d53f2329` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pueue/pueue_4.0.4-1_loongarch64.deb) |
-| `pyenv` | `2.8.14-2` | `all` | `032bceba9565e53347e5ffa39fabeac0c5d4267838fba9a93fb8230e5d2a8590` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pyenv/pyenv_2.8.14-2_all.deb) |
+| `pyenv` | `2.8.15-2` | `all` | `77247c8ce808e6d4682d701c1a285b9801afc87f2fb6e5e01931a803ffbd75e7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pyenv/pyenv_2.8.15-2_all.deb) |
 | `ripgrep-all` | `0.10.10-1` | `loongarch64` | `56fee43e3f032a442f15a99c622431ffff57cf29114131cca2d5388b1c529cf9` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ripgrep-all/ripgrep-all_0.10.10-1_loongarch64.deb) |
 | `sad` | `0.4.33-1` | `loongarch64` | `337275cf0f077c59d89396f0ef55aaa80357cd5d4ff35140a884e340a517cd93` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sad/sad_0.4.33-1_loongarch64.deb) |
 | `samurai` | `1.3-1` | `loongarch64` | `316e28b808c1a5989138644a8547e062af3b679ca9e344ba96ef356d8b5e57ea` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/samurai/samurai_1.3-1_loongarch64.deb) |
