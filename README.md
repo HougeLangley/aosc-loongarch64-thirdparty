@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **77 个最新 deb 条目、77 个不同包名**；索引共保留 83 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **79 个最新 deb 条目、79 个不同包名**；索引共保留 85 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -88,6 +88,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `dysk` | `3.8.2-1` | `loongarch64` | `247e01aeb68b5d7e9621fc8a7c3e34c9e6b51deacf702a07fdb332aa9607d077` | [下载](https://homebrewloongarch64.site/aosc/pool/main/d/dysk/dysk_3.8.2-1_loongarch64.deb) |
 | `entr` | `5.7-1` | `loongarch64` | `5a9c6cbaaf75d67c63e771639a297753a9477f3565620cdfa035d6f32eb600c8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/e/entr/entr_5.7-1_loongarch64.deb) |
 | `fclones` | `0.35.0-2` | `loongarch64` | `a18aae2aaed64cd8a08e29cc1d8d35b6032793ca8c15123af7368680952418e1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fclones/fclones_0.35.0-2_loongarch64.deb) |
+| `freeze` | `0.2.2-1` | `loongarch64` | `c7740641af43dc3ae0db387c9c267e1057395caaf5eebb388eadaee7ba9a1948` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/freeze/freeze_0.2.2-1_loongarch64.deb) |
 | `fx` | `40.0.1-1` | `loongarch64` | `002c89ebd75ae62b5603f2e86ebbf811c53807699fa96c14c2c100c79d7ee817` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fx/fx_40.0.1-1_loongarch64.deb) |
 | `git-branchless` | `0.11.1-3` | `loongarch64` | `c7f3a8f1e7a8a6d1af3b3c047ba2573781f6040d53d8023f06a9ffd8755f313b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-branchless/git-branchless_0.11.1-3_loongarch64.deb) |
 | `git-sizer` | `1.6.0-3` | `loongarch64` | `670780953f24db03b6fa26aa832e25aa2272d41ab8409868d22b812c4ef6d4dc` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-sizer/git-sizer_1.6.0-3_loongarch64.deb) |
@@ -117,6 +118,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `oha` | `1.17.0-1` | `loongarch64` | `a1c845299747557bc7bff5039e791fb7904a9997985b5b9d6e833a4675fa6f68` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/oha/oha_1.17.0-1_loongarch64.deb) |
 | `ov` | `0.55.0-2` | `loongarch64` | `d21b0da33dcd682b973e980d700bbf5f315c37eec4af7c6c42e26886ddfe2282` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/ov/ov_0.55.0-2_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.4-1` | `loongarch64` | `2db5b5c21cd93eab9997e25fbd2593e56a9c2aa263c4340790be378b23aad505` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.4-1_loongarch64.deb) |
+| `pop` | `0.5.0-1` | `loongarch64` | `68d06378a5945e6107336f99e11d757474924eb8e29a4ebcac62e0306ba2f2fd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pop/pop_0.5.0-1_loongarch64.deb) |
 | `prettyping` | `1.1.0-1` | `all` | `ab3c7076a17c10333ff4561402f93d0979a26e56bc3e8ad4b978317c455a2fea` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/prettyping/prettyping_1.1.0-1_all.deb) |
 | `procs` | `0.14.12-1` | `loongarch64` | `4192e6f29d25617eac468664f99a861d6dd4cc03d8ec810d24d910ce3d98d4f7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/procs/procs_0.14.12-1_loongarch64.deb) |
 | `pueue` | `4.0.4-1` | `loongarch64` | `508d843c6407f55766ce857e7e885e1c458a9e5dc74da7e2ae90739d5bba0f86` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pueue/pueue_4.0.4-1_loongarch64.deb) |
