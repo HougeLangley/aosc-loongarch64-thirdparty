@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **96 个最新 deb 条目、96 个不同包名**；索引共保留 116 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **97 个最新 deb 条目、97 个不同包名**；索引共保留 117 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -130,6 +130,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `moar` | `2.19.7-1` | `loongarch64` | `4882f022798f5447a52b4315766e8616296cd113fb7d5a7e880ef910607dd436` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/moar/moar_2.19.7-1_loongarch64.deb) |
 | `muffet` | `2.11.8-1` | `loongarch64` | `d6f74097a63a7926a96c7e6cf4e426ef9d6104231473e2b675ac901b7ab6c0a2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/muffet/muffet_2.11.8-1_loongarch64.deb) |
 | `navi` | `2.24.0-1` | `loongarch64` | `066b126ec503a0a88ebd4164fa53bd17098d390a30d23d32ad1d0fbcdca7a5e5` | [下载](https://homebrewloongarch64.site/aosc/pool/main/n/navi/navi_2.24.0-1_loongarch64.deb) |
+| `nu` | `0.117.0-1` | `loongarch64` | `d2704199c02895b33339208dde503b0f39473595e402906e18edb2aaa1a6ef77` | [下载](https://homebrewloongarch64.site/aosc/pool/main/n/nu/nu_0.117.0-1_loongarch64.deb) |
 | `oha` | `1.17.0-1` | `loongarch64` | `2bfb3e8164bf007f09abcc9adcbe19b724f80b400155bf265352ae2ff3dc22d7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/oha/oha_1.17.0-1_loongarch64.deb) |
 | `ov` | `0.55.0-2` | `loongarch64` | `277415179726d7e9c4440fddc111d89a90015028515d63c35351e07c116febfb` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/ov/ov_0.55.0-2_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.4-1` | `loongarch64` | `2db5b5c21cd93eab9997e25fbd2593e56a9c2aa263c4340790be378b23aad505` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.4-1_loongarch64.deb) |
