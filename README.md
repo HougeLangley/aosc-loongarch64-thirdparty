@@ -67,70 +67,96 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **17 个最新 deb 条目、17 个不同包名**；索引共保留 32 个 deb。
+当前列出 **86 个最新 deb 条目、86 个不同包名**；索引共保留 86 个 deb，每个包只保留最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
 | 软件包 | 版本 | 架构 | SHA-256 | deb |
 |---|---|---|---|---|
-| `age` | `1.3.2-1` | `loongarch64` | `a686380f1984517f68c0d9e8eb085eaffa95e1d88b540659339b3e2f43a30e2f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/a/age/age_1.3.2-1_loongarch64.deb) |
+| `age` | `1.3.2-2` | `loongarch64` | `1d84c3226b7de0891a032953f0d8073ffe6c503c19ff0d627d6ff2233da40c8e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/a/age/age_1.3.2-2_loongarch64.deb) |
 | `bandwhich` | `0.23.1-1` | `loongarch64` | `526b2d043b1e1f2c491c9ff76ec9e6b1f1bf5913d3b261945853ed72a665c109` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/bandwhich/bandwhich_0.23.1-1_loongarch64.deb) |
+| `bashtop` | `0.9.25-1` | `all` | `22d343ee1635463a9dff222f3ad41565adcd10adcfdb05367475d757cdf67839` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/bashtop/bashtop_0.9.25-1_all.deb) |
+| `bat-extras` | `20200408-1` | `all` | `973bf00bdd948230f922490fced3d1b9815b71990771961834d1b33ac148001d` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/bat-extras/bat-extras_20200408-1_all.deb) |
+| `bmake` | `20260912-3` | `loongarch64` | `b7d6fc3d23060b31b95799db9d850b851aa4f39811a5803d2ef75ea3bf738464` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/bmake/bmake_20260912-3_loongarch64.deb) |
 | `brew-ui-linux` | `0.1.0-5` | `loongarch64` | `f31a56110f420390f32cb2f795b8984109f41187382cbd4cc7e374184c30f481` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/brew-ui-linux/brew-ui-linux_0.1.0-5_loongarch64.deb) |
 | `broot` | `1.62.0-1` | `loongarch64` | `cd989fee3a2c1ccbc142636c56f9855594bc2e9b14054bbf2059d5495e4cea8e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/broot/broot_1.62.0-1_loongarch64.deb) |
 | `btrbk` | `0.32.7-1` | `all` | `706a7edc85be026beec1e3fdd7418a7285f92223f2cc9c9f5b9fab6c9e771846` | [下载](https://homebrewloongarch64.site/aosc/pool/main/b/btrbk/btrbk_0.32.7-1_all.deb) |
 | `codespell` | `2.4.3-1` | `all` | `d4e23975944ab061c2ac21a2a3d40c12128041e2786c06d662ab18eeb3ee882e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/c/codespell/codespell_2.4.3-1_all.deb) |
 | `csvlens` | `0.15.1-1` | `loongarch64` | `4455040c5915b3320e04f5ff25d21045fa5593662c2ec7c3d4453141f69c4c89` | [下载](https://homebrewloongarch64.site/aosc/pool/main/c/csvlens/csvlens_0.15.1-1_loongarch64.deb) |
-| `curlie` | `1.8.2-1` | `loongarch64` | `7f5f945bac229b3bd12a4856c60a8747bfd1b312f9b59a731c2d44200e5c9f2d` | [下载](https://homebrewloongarch64.site/aosc/pool/main/c/curlie/curlie_1.8.2-1_loongarch64.deb) |
+| `curlie` | `1.8.2-2` | `loongarch64` | `81067e8c5bc35003e8d757e893cc8b2faaafcb48a56f85495146bf4db822cb94` | [下载](https://homebrewloongarch64.site/aosc/pool/main/c/curlie/curlie_1.8.2-2_loongarch64.deb) |
 | `dua-cli` | `3.0.3-1` | `loongarch64` | `0d16dea59a4f4d1d716440eaa16cc467b427e0a0fdbe3d8c0602ff6f8338073f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/d/dua-cli/dua-cli_3.0.3-1_loongarch64.deb) |
 | `dysk` | `3.8.2-1` | `loongarch64` | `247e01aeb68b5d7e9621fc8a7c3e34c9e6b51deacf702a07fdb332aa9607d077` | [下载](https://homebrewloongarch64.site/aosc/pool/main/d/dysk/dysk_3.8.2-1_loongarch64.deb) |
 | `entr` | `5.7-1` | `loongarch64` | `5a9c6cbaaf75d67c63e771639a297753a9477f3565620cdfa035d6f32eb600c8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/e/entr/entr_5.7-1_loongarch64.deb) |
 | `fclones` | `0.35.0-2` | `loongarch64` | `a18aae2aaed64cd8a08e29cc1d8d35b6032793ca8c15123af7368680952418e1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fclones/fclones_0.35.0-2_loongarch64.deb) |
+| `fx` | `40.0.1-1` | `loongarch64` | `002c89ebd75ae62b5603f2e86ebbf811c53807699fa96c14c2c100c79d7ee817` | [下载](https://homebrewloongarch64.site/aosc/pool/main/f/fx/fx_40.0.1-1_loongarch64.deb) |
 | `git-branchless` | `0.11.1-3` | `loongarch64` | `c7f3a8f1e7a8a6d1af3b3c047ba2573781f6040d53d8023f06a9ffd8755f313b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-branchless/git-branchless_0.11.1-3_loongarch64.deb) |
-| `git-sizer` | `1.6.0-2` | `loongarch64` | `88ccecad8c0a2636a1a1d87e707287bfefa6c9e35620250fb36d4ac658fdd3b6` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-sizer/git-sizer_1.6.0-2_loongarch64.deb) |
-| `gitleaks` | `8.30.1-1` | `loongarch64` | `920fe9a515b015f336d2328ff68807ce8fe32cf679ddf3bd5454ec06997e9626` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gitleaks/gitleaks_8.30.1-1_loongarch64.deb) |
-| `gofumpt` | `0.12.0-1` | `loongarch64` | `c2d074ad5c39869bf41f295c6f3f5ce8e600b6fa8dc4d804c5681fde2aa5fcc7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gofumpt/gofumpt_0.12.0-1_loongarch64.deb) |
-| `golangci-lint` | `2.15.0-2` | `loongarch64` | `c990e94297c47f5ddbb8141babad45fb89fb510200caaa0f7c5a2b4a3f95e2ca` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/golangci-lint/golangci-lint_2.15.0-2_loongarch64.deb) |
+| `git-sizer` | `1.6.0-3` | `loongarch64` | `670780953f24db03b6fa26aa832e25aa2272d41ab8409868d22b812c4ef6d4dc` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/git-sizer/git-sizer_1.6.0-3_loongarch64.deb) |
+| `gitleaks` | `8.30.1-2` | `loongarch64` | `46f339a365aedecc15997c0ecd8188393a080e4408d22dc802d1c19cd207164f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gitleaks/gitleaks_8.30.1-2_loongarch64.deb) |
+| `gofumpt` | `0.12.0-2` | `loongarch64` | `586a183266a92be1d0650bbf5fc6578d425747075a859436ba9f6a1a762b12b4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gofumpt/gofumpt_0.12.0-2_loongarch64.deb) |
+| `golangci-lint` | `2.15.0-3` | `loongarch64` | `cd45839f14cb8d6616a3681ea6c039238203492b01042c91c1ebe675a60a20fd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/golangci-lint/golangci-lint_2.15.0-3_loongarch64.deb) |
+| `gpg-tui` | `0.11.2-1` | `loongarch64` | `08bfc557c3d5e12da63ec8c4119c5e22420481fee3ff9b599447fbf5c28af96b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gpg-tui/gpg-tui_0.11.2-1_loongarch64.deb) |
 | `greeter` | `0.2.0-1` | `loongarch64` | `e076fa0e64256c51c8fc8c749cde6375536825f501a4957362524410599cb05e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/greeter/greeter_0.2.0-1_loongarch64.deb) |
-| `gron` | `0.7.1-1` | `loongarch64` | `9841fa22feb495e437829c2e2023e9acba08c5d5e87d1946e787febfce2e7f22` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gron/gron_0.7.1-1_loongarch64.deb) |
+| `gron` | `0.7.1-2` | `loongarch64` | `f7fff1b40814c5493c31173f198afaa9432ca9db0bfbe395104a51ead783ff80` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gron/gron_0.7.1-2_loongarch64.deb) |
+| `gum` | `2.0.2-3` | `loongarch64` | `a789bc467b90c97442ae995260abd5329ff5cce40de12ddb72539c1ec43f571f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gum/gum_2.0.2-3_loongarch64.deb) |
 | `hello` | `1.0.0-1` | `loongarch64` | `5394a85cc56c50e8ec5a2593c23089755fd376e786a1e09d2d97f25f7b443952` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hello/hello_1.0.0-1_loongarch64.deb) |
-| `jaq` | `3.1.2-1` | `loongarch64` | `ae614c16839364abf304808487d7f8b5cfd9220d626d9d6ef4bb440da1d7a5f8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-1_loongarch64.deb) |
+| `hexyl` | `0.17.0-1` | `loongarch64` | `c46033fb779ba302359b90598b3d8da6572c00d55945527c74003383f7b437a1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hexyl/hexyl_0.17.0-1_loongarch64.deb) |
+| `hurl` | `8.1.0-1` | `loongarch64` | `3774efbb9a8d45f1720ea6359228a8e0ac66cd4f0279a7e2296141bf481bb63a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hurl/hurl_8.1.0-1_loongarch64.deb) |
+| `hwatch` | `0.4.2-1` | `loongarch64` | `477f3489b6c019f04137067a0c68badc9f790f22d87f089e81c1e50610df79dd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hwatch/hwatch_0.4.2-1_loongarch64.deb) |
+| `igrep` | `1.3.0-1` | `loongarch64` | `31d2567596aa814855b2df4ddf79d90bc06773516544cddc7e2a6e49029b83bc` | [下载](https://homebrewloongarch64.site/aosc/pool/main/i/igrep/igrep_1.3.0-1_loongarch64.deb) |
+| `jaq` | `3.1.2-2` | `loongarch64` | `ffcd0b4f85ecedad23a8dfa0218673e77a147b069e6fe29d4e95db14024fba47` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-2_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
-| `lf` | `42-1` | `loongarch64` | `176cea2762663bf707fb7f23ca121aaa62a3b99ccd723bf64a620033e1d7cc52` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lf/lf_42-1_loongarch64.deb) |
+| `lf` | `42-3` | `loongarch64` | `9f365c68fb23c9a81ba84ab3cec63330570e9dfe4daa043008892fd41ddfeea7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lf/lf_42-3_loongarch64.deb) |
 | `lhasa` | `0.6.0-1` | `loongarch64` | `773c0bc859c0974c14ff1bfbd2632a4644c0d8ffa43a022646da4a9317f21c57` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lhasa/lhasa_0.6.0-1_loongarch64.deb) |
+| `libmspack` | `1.12-2` | `loongarch64` | `fd1360cad94e9e04de080647e0686f848b3c58f8038a1b62de6cc7c3ce8168c3` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libmspack/libmspack_1.12-2_loongarch64.deb) |
 | `libpng` | `1.6.59-3` | `loongarch64` | `4d3256386ab61bfbb98b842f7fda3eb208095f7cd540f8759085d21ac30d230f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libpng/libpng_1.6.59-3_loongarch64.deb) |
+| `linux-headers-mainline-16k-rt-7.3.1-clang-lto` | `7.3.1-2` | `loongarch64` | `608248fae9ed23444fcd025237a518359b6b65be0cca59f511d4162c02817d01` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.1-clang-lto/linux-headers-mainline-16k-rt-7.3.1-clang-lto_7.3.1-2_loongarch64.deb) |
+| `linux-headers-mainline-16k-rt-7.3.1-gcc-o3` | `7.3.1-1` | `loongarch64` | `a37f12183c8b4bb52e342b41e255be62ef2566f4b7d3617b17cdb453c3712771` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.1-gcc-o3/linux-headers-mainline-16k-rt-7.3.1-gcc-o3_7.3.1-1_loongarch64.deb) |
 | `linux-headers-mainline-16k-rt-7.3.4-clang-lto` | `7.3.4-1` | `loongarch64` | `1cbe0e39990aa4a5560f8bc83ee309c74a0ca66dfdd92bab696aebca7c6c7d01` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.4-clang-lto/linux-headers-mainline-16k-rt-7.3.4-clang-lto_7.3.4-1_loongarch64.deb) |
 | `linux-headers-mainline-16k-rt-7.3.4-gcc-o3` | `7.3.4-1` | `loongarch64` | `b45acae18cd3a35274321cf773debd43acf24f29544e8742177c512e24d4725c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-headers-mainline-16k-rt-7.3.4-gcc-o3/linux-headers-mainline-16k-rt-7.3.4-gcc-o3_7.3.4-1_loongarch64.deb) |
+| `linux-kernel-mainline-16k-rt-7.3.1-clang-lto` | `7.3.1-2` | `loongarch64` | `cd63a33ab05050191cbebfaf4b9be435201a7f419c06087d67400006ccdbecfb` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.1-clang-lto/linux-kernel-mainline-16k-rt-7.3.1-clang-lto_7.3.1-2_loongarch64.deb) |
+| `linux-kernel-mainline-16k-rt-7.3.1-gcc-o3` | `7.3.1-1` | `loongarch64` | `b56f2e2d37fc2b9db45687f5ee6d064f3782fb875c085e4bb5fccc7088604988` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.1-gcc-o3/linux-kernel-mainline-16k-rt-7.3.1-gcc-o3_7.3.1-1_loongarch64.deb) |
 | `linux-kernel-mainline-16k-rt-7.3.4-clang-lto` | `7.3.4-1` | `loongarch64` | `cd75bf73bc2b502f74c2a12fdf23f04b88f2a28c2670334ada01f7d3dbdc4e50` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.4-clang-lto/linux-kernel-mainline-16k-rt-7.3.4-clang-lto_7.3.4-1_loongarch64.deb) |
 | `linux-kernel-mainline-16k-rt-7.3.4-gcc-o3` | `7.3.4-1` | `loongarch64` | `2b91a94d42e636651410463aeb8098ae3f3752192e58b555c6162a4f7db58cd4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linux-kernel-mainline-16k-rt-7.3.4-gcc-o3/linux-kernel-mainline-16k-rt-7.3.4-gcc-o3_7.3.4-1_loongarch64.deb) |
 | `linuxsampler` | `2.4.2-1` | `loongarch64` | `6b6a13524ed44e0c493dd9dc594181ac7569150ab822079754550969c4b4f7d8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linuxsampler/linuxsampler_2.4.2-1_loongarch64.deb) |
-| `loonggpu-kernel-dkms` | `2:1.0.2+lnd25.1-3` | `loongarch64` | `6c9dee5ee696f7ceb8c5bfbae4fc140c60131e08cf99650eb4703129a9509116` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loonggpu-kernel-dkms/loonggpu-kernel-dkms_1.0.2%2Blnd25.1-3_loongarch64.deb) |
+| `loonggpu-kernel-dkms` | `2:1.0.2+lnd25.1-3` | `loongarch64` | `6c9dee5ee696f7ceb8c5bfbae4fc140c60131e08cf99650eb4703129a9509116` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loonggpu-kernel-dkms/loonggpu-kernel-dkms_1.0.2+lnd25.1-3_loongarch64.deb) |
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
 | `miniupnpc` | `2.2.8-2` | `loongarch64` | `363e280e30968a1af677301181c39b852a7e7a1c189573535e167b07b1ab5768` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/miniupnpc/miniupnpc_2.2.8-2_loongarch64.deb) |
-| `mkcert` | `1.4.4-1` | `loongarch64` | `93f6a13851a066959d4d8cd49e14f5406d52b4cbeb62b1fdc60e0ada76af0de1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mkcert/mkcert_1.4.4-1_loongarch64.deb) |
+| `mkcert` | `1.4.4-2` | `loongarch64` | `5bec4afdb3a68c127c03d3690ab97c203e0874bc7481b1680f59797444342b5c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mkcert/mkcert_1.4.4-2_loongarch64.deb) |
+| `moar` | `2.19.7-1` | `loongarch64` | `f732b07ff071977633dcf70fb234c34acc0ab81fff47db7ea42412c0871ba216` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/moar/moar_2.19.7-1_loongarch64.deb) |
 | `navi` | `2.24.0-1` | `loongarch64` | `3f519626c914eacf5279d0801b075bae2af363c2633b3a1fefad711ec79b26c1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/n/navi/navi_2.24.0-1_loongarch64.deb) |
 | `oha` | `1.17.0-1` | `loongarch64` | `a1c845299747557bc7bff5039e791fb7904a9997985b5b9d6e833a4675fa6f68` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/oha/oha_1.17.0-1_loongarch64.deb) |
+| `ov` | `0.55.0-2` | `loongarch64` | `d21b0da33dcd682b973e980d700bbf5f315c37eec4af7c6c42e26886ddfe2282` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/ov/ov_0.55.0-2_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.4-1` | `loongarch64` | `2db5b5c21cd93eab9997e25fbd2593e56a9c2aa263c4340790be378b23aad505` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.4-1_loongarch64.deb) |
+| `prettyping` | `1.1.0-1` | `all` | `ab3c7076a17c10333ff4561402f93d0979a26e56bc3e8ad4b978317c455a2fea` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/prettyping/prettyping_1.1.0-1_all.deb) |
 | `procs` | `0.14.12-1` | `loongarch64` | `4192e6f29d25617eac468664f99a861d6dd4cc03d8ec810d24d910ce3d98d4f7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/procs/procs_0.14.12-1_loongarch64.deb) |
-| `pyenv` | `2.8.14-1` | `all` | `eb97c21ad5c8f9e2aada41e71f6be466fee470017c1d48f5f6b451783cdd4cf8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pyenv/pyenv_2.8.14-1_all.deb) |
+| `pueue` | `4.0.4-1` | `loongarch64` | `508d843c6407f55766ce857e7e885e1c458a9e5dc74da7e2ae90739d5bba0f86` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pueue/pueue_4.0.4-1_loongarch64.deb) |
+| `pyenv` | `2.8.14-2` | `all` | `34515f7397e162a085892971404d5920201b82aece9ef081e84f8efc7936e6e1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pyenv/pyenv_2.8.14-2_all.deb) |
 | `ripgrep-all` | `0.10.10-1` | `loongarch64` | `89100a80964126c0c20bcc0c89a555fae6a8dc0d943a308e8d4d8459103fa9c1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ripgrep-all/ripgrep-all_0.10.10-1_loongarch64.deb) |
 | `ruby` | `4.0.9-2` | `loongarch64` | `a6775b8b0c33cb20eec41ad496ba5bf252ed7bcd6ce8c5de56bc57b5eace2f03` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ruby/ruby_4.0.9-2_loongarch64.deb) |
 | `sad` | `0.4.33-1` | `loongarch64` | `3e15789267ac2271b780a45b43137662d5e7c44824a52ef50dbdd988d4daef0c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sad/sad_0.4.33-1_loongarch64.deb) |
-| `sd` | `1.1.0-1` | `loongarch64` | `fb59c5fad6cf7b940b6ae790063b2df740045c226dc5acdf565a22d8e8418508` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sd/sd_1.1.0-1_loongarch64.deb) |
+| `sd` | `1.1.0-5` | `loongarch64` | `ef0848067b81646fa107aab8c6b78e2a15c45d787023f3dfa23b8af0c2da56e0` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sd/sd_1.1.0-5_loongarch64.deb) |
+| `shellharden` | `4.3.2-1` | `loongarch64` | `6254d2768d6abff708dc5c57075b679cebd4d9568460ed2f444040860e9d7f9a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/shellharden/shellharden_4.3.2-1_loongarch64.deb) |
 | `skim` | `5.9.0-1` | `loongarch64` | `142ebc1be6e60a9159cb3b3a11edbb8c1691240c8355c875ecb1bf2b92c8e37e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/skim/skim_5.9.0-1_loongarch64.deb) |
-| `sops` | `3.13.3-1` | `loongarch64` | `c9fbef05d6de9c374a26fde711cc6ea9ce5ec718bdb7e1abecd0216ebf9d89c0` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sops/sops_3.13.3-1_loongarch64.deb) |
-| `staticcheck` | `0.8.2-1` | `loongarch64` | `066d372913e479b060936068037901428a85dc0e56749c9165c4389e67e73323` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/staticcheck/staticcheck_0.8.2-1_loongarch64.deb) |
+| `sops` | `3.13.3-3` | `loongarch64` | `01614ae992b2ad4e08ed39053ce03c7cb53689b64c09d20ea353c11829e52556` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sops/sops_3.13.3-3_loongarch64.deb) |
+| `speedtest-cli` | `2.1.3-1` | `all` | `f28f32d7bed597c710c2260067eef82fd6cf7f24d6eeb10e676a6810819b7214` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/speedtest-cli/speedtest-cli_2.1.3-1_all.deb) |
+| `spirv-cross` | `1.4.363.0-6` | `loongarch64` | `6ebf133b693b5c56f7cb698eada3c390e11ab9438c8f4d0f958f35af952a1a41` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/spirv-cross/spirv-cross_1.4.363.0-6_loongarch64.deb) |
+| `staticcheck` | `0.8.2-2` | `loongarch64` | `a7d938499d18d420e7815b2f00477578a4106ab0aa34b472987bd4ae3cb01ca1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/staticcheck/staticcheck_0.8.2-2_loongarch64.deb) |
+| `superfile` | `1.6.0-2` | `loongarch64` | `019fdadec61325a288f943d644b4a01d0c0ca767f9d99e857b54ea3ec3da2d4a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/superfile/superfile_1.6.0-2_loongarch64.deb) |
+| `tdf` | `0.5.0-2` | `loongarch64` | `b249f27735a9adf0971c3be40583ab392ec7cb539c0dcc11ef20b536fdc64459` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/tdf/tdf_0.5.0-2_loongarch64.deb) |
 | `tectonic` | `0.17.0-1` | `loongarch64` | `f3c1e852825ef2360b79c9717943c623dd71614a84ab18fe8f0b9653dd775a70` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/tectonic/tectonic_0.17.0-1_loongarch64.deb) |
 | `trippy` | `0.13.0-2` | `loongarch64` | `2f863e6694708da9bf38096151f231530eb25ad8f76dc24b2b942d92eaead67c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/trippy/trippy_0.13.0-2_loongarch64.deb) |
-| `trivy` | `0.76.2-1` | `loongarch64` | `2b321b303e63c57bac5466f4ec40234b0485451515e5ee53da489505c3beb34e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/trivy/trivy_0.76.2-1_loongarch64.deb) |
-| `v2raya` | `2.5.15-1` | `loongarch64` | `e0bac29690bd02ef72ad09030ba5f50eee99dee7d631c8ecf753ceb696c7615b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.15-1_loongarch64.deb) |
+| `trivy` | `0.76.2-2` | `loongarch64` | `7da3410a08d19682b28928b286b10c353f9320f7561f085bc6ddfec59955b4e3` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/trivy/trivy_0.76.2-2_loongarch64.deb) |
+| `v2raya` | `2.5.15-1` | `loongarch64` | `9e827366f7fc6465f89d2de98c84fecbef1f7ee1f87096572226016836779855` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/v2raya/v2raya_2.5.15-1_loongarch64.deb) |
 | `valkey` | `9.1.3-1` | `loongarch64` | `571d5c0ae79d1225ea2bce46c05cbc40aefb6d640bd4f66c46e712f913913a86` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/valkey/valkey_9.1.3-1_loongarch64.deb) |
-| `vegeta` | `12.13.0-2` | `loongarch64` | `4e82ff74fa25ade9e647717b74eba25ec88b25bc25cbdfdfdae156fabfcbf38d` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vegeta/vegeta_12.13.0-2_loongarch64.deb) |
+| `vegeta` | `12.13.0-3` | `loongarch64` | `203f2ff2828556e9e7b0acd1cea9531bbc4011eecbb1d33c251c2080a926e1b9` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vegeta/vegeta_12.13.0-3_loongarch64.deb) |
+| `visidata` | `3.5-1` | `all` | `13f94f914e1d8f15dc916882d45e66ed8badb3470d20ab28cb5414fba770ced4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/visidata/visidata_3.5-1_all.deb) |
 | `vkgl-loonggpu` | `0.1.35-1` | `loongarch64` | `25fd8f043a5b4db68dde660961840f4898aeb2a207dbb74d83e6b9dd42289cda` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkgl-loonggpu/vkgl-loonggpu_0.1.35-1_loongarch64.deb) |
 | `vkmark` | `2025.01-4` | `loongarch64` | `5cbda2cb85b902f590b6fdf0d2e8ad4cd1f84887c8f27020b6596d6a5085356a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/v/vkmark/vkmark_2025.01-4_loongarch64.deb) |
 | `watchexec` | `2.8.0-2` | `loongarch64` | `f208ba6124acb7a38fff3a1facd8374a0e94623e45e5c30ae6c142bcee097b1c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/watchexec/watchexec_2.8.0-2_loongarch64.deb) |
-| `wowtype` | `0.3.12-1` | `loongarch64` | `4877dfec834f39e84bf3dd27cdce7428ae0f66452500a9fc8dbe4d96b5973050` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/wowtype/wowtype_0.3.12-1_loongarch64.deb) |
+| `wowtype` | `0.4.0-1` | `loongarch64` | `0ea8deecb807aafa400c1324464ed8eee78bcfab1b76fad44d9cf29eea35df93` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/wowtype/wowtype_0.4.0-1_loongarch64.deb) |
 | `wrk` | `4.2.0-1` | `loongarch64` | `96e4e61dce0105ec066d302317a155c1fe5732289d85d0dd52a56c49a531dd2b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/w/wrk/wrk_4.2.0-1_loongarch64.deb) |
 | `xh` | `0.26.3-1` | `loongarch64` | `8d8a2d2c9d766aa27945cc7fd39c7cb806c1e5eadb5cfbad4123b5249e53e530` | [下载](https://homebrewloongarch64.site/aosc/pool/main/x/xh/xh_0.26.3-1_loongarch64.deb) |
+| `xsv` | `0.13.0-1` | `loongarch64` | `29d365afa193b24f3034314fa2085b221cfa8e00c1d755b69b29986b2ab81be1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/x/xsv/xsv_0.13.0-1_loongarch64.deb) |
 | `yamllint` | `1.38.0-2` | `all` | `16423e21c7e53d6bc965452dce0f80df725fb645bd467ecf477517ec3bbfead9` | [下载](https://homebrewloongarch64.site/aosc/pool/main/y/yamllint/yamllint_1.38.0-2_all.deb) |
 | `zerotier-one` | `1.16.2-3` | `loongarch64` | `1c81bc8752334a32c4b8fe546be6f770ac7c7aafeb7eb41963b9845bb0c51ea5` | [下载](https://homebrewloongarch64.site/aosc/pool/main/z/zerotier-one/zerotier-one_1.16.2-3_loongarch64.deb) |
 
