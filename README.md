@@ -103,7 +103,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `helm-docs` | `1.14.2-1` | `loongarch64` | `8b9b30b5b6188bca85ef87aaa917de7e7966d1d962da33005d43ef13c04b0dfd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/helm-docs/helm-docs_1.14.2-1_loongarch64.deb) |
 | `hexyl` | `0.17.0-1` | `loongarch64` | `c5eae91a3f3247e380392fac5b17b7205407140c9c9a700a5843bf4b21b77a6c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hexyl/hexyl_0.17.0-1_loongarch64.deb) |
 | `hurl` | `8.1.0-1` | `loongarch64` | `8d7a88d7d5947978ea377abe554e07b6785247b6047be9f28ecff0f81357ca30` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hurl/hurl_8.1.0-1_loongarch64.deb) |
-| `hwatch` | `0.4.2-1` | `loongarch64` | `477f3489b6c019f04137067a0c68badc9f790f22d87f089e81c1e50610df79dd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hwatch/hwatch_0.4.2-1_loongarch64.deb) |
+| `hwatch` | `0.4.2-1` | `loongarch64` | `e1eaf7c3031301471ea41a1e5e33abc3175ea8cb813ff3cd6d7e3beb63f5261f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hwatch/hwatch_0.4.2-1_loongarch64.deb) |
 | `igrep` | `1.3.0-1` | `loongarch64` | `a2e96a1252db12c0856003b0806c21acc76a298274470e24998777d5bc8bd00b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/i/igrep/igrep_1.3.0-1_loongarch64.deb) |
 | `jaq` | `3.1.2-2` | `loongarch64` | `6d5d73b1a263d054d6a184efe1184ad6aadf92a6dc246240dd92c51973e3a6e8` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-2_loongarch64.deb) |
 | `jira-cli` | `1.7.0-2` | `loongarch64` | `7e1b0c93251d2622d9cd43dbfc8ced702422d55998ed9d20d82c9daacf3aabea` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jira-cli/jira-cli_1.7.0-2_loongarch64.deb) |
