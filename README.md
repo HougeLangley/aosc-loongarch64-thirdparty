@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **85 个最新 deb 条目、85 个不同包名**；索引共保留 92 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **87 个最新 deb 条目、87 个不同包名**；索引共保留 94 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -106,6 +106,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `jaq` | `3.1.2-2` | `loongarch64` | `ffcd0b4f85ecedad23a8dfa0218673e77a147b069e6fe29d4e95db14024fba47` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-2_loongarch64.deb) |
 | `jira-cli` | `1.7.0-2` | `loongarch64` | `58f700c31edc8370f7179df6642b81ead3c0d22464627acaec109a311b6c5706` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jira-cli/jira-cli_1.7.0-2_loongarch64.deb) |
 | `k9s` | `0.51.0-1` | `loongarch64` | `640b55b71457a3999faa6d1f99337f90f4895dd0a2daf279d4fefaf252c6097b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/k9s/k9s_0.51.0-1_loongarch64.deb) |
+| `kube-score` | `1.20.0-1` | `loongarch64` | `c8f0bd326435709badd44389341f4ede29acf598ce0f21f846f424f4699668c3` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kube-score/kube-score_1.20.0-1_loongarch64.deb) |
 | `kubeconform` | `0.8.0-1` | `loongarch64` | `c2d0e7d334a4eb7b452183714acf175a8ef5ab3e89e136a15bf7ba48fc88ed7c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubeconform/kubeconform_0.8.0-1_loongarch64.deb) |
 | `kubectl-tree` | `0.6.0-1` | `loongarch64` | `8d4434dbffe439120fedfc88fdea5f5d55e8123166c2228449634966cbd3f726` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-tree/kubectl-tree_0.6.0-1_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
@@ -124,6 +125,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `ov` | `0.55.0-2` | `loongarch64` | `d21b0da33dcd682b973e980d700bbf5f315c37eec4af7c6c42e26886ddfe2282` | [下载](https://homebrewloongarch64.site/aosc/pool/main/o/ov/ov_0.55.0-2_loongarch64.deb) |
 | `plasma-loonggpu-compat` | `1.0.4-1` | `loongarch64` | `2db5b5c21cd93eab9997e25fbd2593e56a9c2aa263c4340790be378b23aad505` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/plasma-loonggpu-compat/plasma-loonggpu-compat_1.0.4-1_loongarch64.deb) |
 | `pop` | `0.5.0-1` | `loongarch64` | `68d06378a5945e6107336f99e11d757474924eb8e29a4ebcac62e0306ba2f2fd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pop/pop_0.5.0-1_loongarch64.deb) |
+| `popeye` | `0.22.1-1` | `loongarch64` | `8917962331a26abd5ef37d593135ceade1b29d4224d6f2c49c1e1e1657fd8208` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/popeye/popeye_0.22.1-1_loongarch64.deb) |
 | `prettyping` | `1.1.0-1` | `all` | `ab3c7076a17c10333ff4561402f93d0979a26e56bc3e8ad4b978317c455a2fea` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/prettyping/prettyping_1.1.0-1_all.deb) |
 | `procs` | `0.14.12-1` | `loongarch64` | `4192e6f29d25617eac468664f99a861d6dd4cc03d8ec810d24d910ce3d98d4f7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/procs/procs_0.14.12-1_loongarch64.deb) |
 | `pueue` | `4.0.4-1` | `loongarch64` | `508d843c6407f55766ce857e7e885e1c458a9e5dc74da7e2ae90739d5bba0f86` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pueue/pueue_4.0.4-1_loongarch64.deb) |
