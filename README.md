@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **75 个最新 deb 条目、75 个不同包名**；索引共保留 81 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **77 个最新 deb 条目、77 个不同包名**；索引共保留 83 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -123,6 +123,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `pyenv` | `2.8.14-2` | `all` | `34515f7397e162a085892971404d5920201b82aece9ef081e84f8efc7936e6e1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/p/pyenv/pyenv_2.8.14-2_all.deb) |
 | `ripgrep-all` | `0.10.10-1` | `loongarch64` | `89100a80964126c0c20bcc0c89a555fae6a8dc0d943a308e8d4d8459103fa9c1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/r/ripgrep-all/ripgrep-all_0.10.10-1_loongarch64.deb) |
 | `sad` | `0.4.33-1` | `loongarch64` | `3e15789267ac2271b780a45b43137662d5e7c44824a52ef50dbdd988d4daef0c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sad/sad_0.4.33-1_loongarch64.deb) |
+| `samurai` | `1.3-1` | `loongarch64` | `3c6f441f8db059994f1abaccf3c617da94786bd9fea3ab872c33cbae93274251` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/samurai/samurai_1.3-1_loongarch64.deb) |
 | `sd` | `1.1.0-5` | `loongarch64` | `ef0848067b81646fa107aab8c6b78e2a15c45d787023f3dfa23b8af0c2da56e0` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/sd/sd_1.1.0-5_loongarch64.deb) |
 | `shellharden` | `4.3.2-1` | `loongarch64` | `6254d2768d6abff708dc5c57075b679cebd4d9568460ed2f444040860e9d7f9a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/shellharden/shellharden_4.3.2-1_loongarch64.deb) |
 | `skim` | `5.9.0-1` | `loongarch64` | `142ebc1be6e60a9159cb3b3a11edbb8c1691240c8355c875ecb1bf2b92c8e37e` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/skim/skim_5.9.0-1_loongarch64.deb) |
@@ -131,6 +132,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `spirv-cross` | `1.4.363.0-6` | `loongarch64` | `6ebf133b693b5c56f7cb698eada3c390e11ab9438c8f4d0f958f35af952a1a41` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/spirv-cross/spirv-cross_1.4.363.0-6_loongarch64.deb) |
 | `staticcheck` | `0.8.2-2` | `loongarch64` | `a7d938499d18d420e7815b2f00477578a4106ab0aa34b472987bd4ae3cb01ca1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/staticcheck/staticcheck_0.8.2-2_loongarch64.deb) |
 | `superfile` | `1.6.0-2` | `loongarch64` | `019fdadec61325a288f943d644b4a01d0c0ca767f9d99e857b54ea3ec3da2d4a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/s/superfile/superfile_1.6.0-2_loongarch64.deb) |
+| `taplo` | `0.10.0-1` | `loongarch64` | `fa9a0b0d214fdce07ed44e4369f606836accd5ca73519e6572f4c18f4e1884ab` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/taplo/taplo_0.10.0-1_loongarch64.deb) |
 | `tdf` | `0.5.0-2` | `loongarch64` | `b249f27735a9adf0971c3be40583ab392ec7cb539c0dcc11ef20b536fdc64459` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/tdf/tdf_0.5.0-2_loongarch64.deb) |
 | `tectonic` | `0.17.0-1` | `loongarch64` | `f3c1e852825ef2360b79c9717943c623dd71614a84ab18fe8f0b9653dd775a70` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/tectonic/tectonic_0.17.0-1_loongarch64.deb) |
 | `trippy` | `0.13.0-2` | `loongarch64` | `2f863e6694708da9bf38096151f231530eb25ad8f76dc24b2b942d92eaead67c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/t/trippy/trippy_0.13.0-2_loongarch64.deb) |
