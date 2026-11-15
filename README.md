@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **91 个最新 deb 条目、91 个不同包名**；索引共保留 99 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **93 个最新 deb 条目、93 个不同包名**；索引共保留 101 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -107,9 +107,11 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `jaq` | `3.1.2-2` | `loongarch64` | `ffcd0b4f85ecedad23a8dfa0218673e77a147b069e6fe29d4e95db14024fba47` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-2_loongarch64.deb) |
 | `jira-cli` | `1.7.0-2` | `loongarch64` | `58f700c31edc8370f7179df6642b81ead3c0d22464627acaec109a311b6c5706` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jira-cli/jira-cli_1.7.0-2_loongarch64.deb) |
 | `k9s` | `0.51.0-1` | `loongarch64` | `640b55b71457a3999faa6d1f99337f90f4895dd0a2daf279d4fefaf252c6097b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/k9s/k9s_0.51.0-1_loongarch64.deb) |
+| `kube-capacity` | `0.8.0-1` | `loongarch64` | `17609a37e3ba3519ff9450cc605798fd7892de5a2b3068323619a546bf82d5de` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kube-capacity/kube-capacity_0.8.0-1_loongarch64.deb) |
 | `kube-score` | `1.20.0-1` | `loongarch64` | `c8f0bd326435709badd44389341f4ede29acf598ce0f21f846f424f4699668c3` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kube-score/kube-score_1.20.0-1_loongarch64.deb) |
 | `kubecolor` | `0.0.25-1` | `loongarch64` | `b56eaa7b7c7e0d6ffb0b4db4180c69bb0731512ff2c6a71f4eabdd9103b91b2a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubecolor/kubecolor_0.0.25-1_loongarch64.deb) |
 | `kubeconform` | `0.8.0-1` | `loongarch64` | `c2d0e7d334a4eb7b452183714acf175a8ef5ab3e89e136a15bf7ba48fc88ed7c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubeconform/kubeconform_0.8.0-1_loongarch64.deb) |
+| `kubectl-ai` | `0.0.31-1` | `loongarch64` | `95bf86cba7b914d07ff905a3f0e2ef61da2fc8cd6486957b0732c520bfed18da` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-ai/kubectl-ai_0.0.31-1_loongarch64.deb) |
 | `kubectl-neat` | `2.0.4-1` | `loongarch64` | `01d415f4fcfe3ae5ff772d3cd9da4252231eccc2b5201726c1f8f138013f8ce1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-neat/kubectl-neat_2.0.4-1_loongarch64.deb) |
 | `kubectl-tree` | `0.6.0-1` | `loongarch64` | `8d4434dbffe439120fedfc88fdea5f5d55e8123166c2228449634966cbd3f726` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-tree/kubectl-tree_0.6.0-1_loongarch64.deb) |
 | `kubeswitch` | `0.9.3-2` | `loongarch64` | `fca5e568e0d52e9efcd806fa0354dca215925f95defae63fa5b10eabe43a1a34` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubeswitch/kubeswitch_0.9.3-2_loongarch64.deb) |
