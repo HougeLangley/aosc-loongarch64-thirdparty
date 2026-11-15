@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **89 个最新 deb 条目、89 个不同包名**；索引共保留 96 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **90 个最新 deb 条目、90 个不同包名**；索引共保留 98 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -111,6 +111,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `kubeconform` | `0.8.0-1` | `loongarch64` | `c2d0e7d334a4eb7b452183714acf175a8ef5ab3e89e136a15bf7ba48fc88ed7c` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubeconform/kubeconform_0.8.0-1_loongarch64.deb) |
 | `kubectl-neat` | `2.0.4-1` | `loongarch64` | `01d415f4fcfe3ae5ff772d3cd9da4252231eccc2b5201726c1f8f138013f8ce1` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-neat/kubectl-neat_2.0.4-1_loongarch64.deb) |
 | `kubectl-tree` | `0.6.0-1` | `loongarch64` | `8d4434dbffe439120fedfc88fdea5f5d55e8123166c2228449634966cbd3f726` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubectl-tree/kubectl-tree_0.6.0-1_loongarch64.deb) |
+| `kubeswitch` | `0.9.3-2` | `loongarch64` | `fca5e568e0d52e9efcd806fa0354dca215925f95defae63fa5b10eabe43a1a34` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kubeswitch/kubeswitch_0.9.3-2_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
 | `lazydocker` | `0.25.2-2` | `loongarch64` | `e297aec7d560ebaa831859ae8bddf368786efe511bfa2c052bb8ab81b7960296` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazydocker/lazydocker_0.25.2-2_loongarch64.deb) |
 | `lazysql` | `0.7.0-1` | `loongarch64` | `474fae3d59ca5a315d38f49c3b8183acb50a451bc5cf5e9b4099ddfb1221c523` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazysql/lazysql_0.7.0-1_loongarch64.deb) |
