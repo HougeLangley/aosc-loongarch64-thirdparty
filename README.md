@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **86 个最新 deb 条目、86 个不同包名**；索引共保留 86 个 deb，每个包只保留最新版本。
+当前列出 **88 个最新 deb 条目、88 个不同包名**；索引共保留 88 个 deb，每个包只保留最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -104,7 +104,9 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `hwatch` | `0.4.2-1` | `loongarch64` | `477f3489b6c019f04137067a0c68badc9f790f22d87f089e81c1e50610df79dd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/hwatch/hwatch_0.4.2-1_loongarch64.deb) |
 | `igrep` | `1.3.0-1` | `loongarch64` | `31d2567596aa814855b2df4ddf79d90bc06773516544cddc7e2a6e49029b83bc` | [下载](https://homebrewloongarch64.site/aosc/pool/main/i/igrep/igrep_1.3.0-1_loongarch64.deb) |
 | `jaq` | `3.1.2-2` | `loongarch64` | `ffcd0b4f85ecedad23a8dfa0218673e77a147b069e6fe29d4e95db14024fba47` | [下载](https://homebrewloongarch64.site/aosc/pool/main/j/jaq/jaq_3.1.2-2_loongarch64.deb) |
+| `k9s` | `0.51.0-1` | `loongarch64` | `640b55b71457a3999faa6d1f99337f90f4895dd0a2daf279d4fefaf252c6097b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/k9s/k9s_0.51.0-1_loongarch64.deb) |
 | `kustomize` | `5.8.3-1` | `loongarch64` | `e3103a4b4389e9c9d9cd32101e00e5c3c250ec959a5d3ebebc19db5529d67ff2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/k/kustomize/kustomize_5.8.3-1_loongarch64.deb) |
+| `lazydocker` | `0.25.2-2` | `loongarch64` | `e297aec7d560ebaa831859ae8bddf368786efe511bfa2c052bb8ab81b7960296` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lazydocker/lazydocker_0.25.2-2_loongarch64.deb) |
 | `lf` | `42-3` | `loongarch64` | `9f365c68fb23c9a81ba84ab3cec63330570e9dfe4daa043008892fd41ddfeea7` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lf/lf_42-3_loongarch64.deb) |
 | `lhasa` | `0.6.0-1` | `loongarch64` | `773c0bc859c0974c14ff1bfbd2632a4644c0d8ffa43a022646da4a9317f21c57` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/lhasa/lhasa_0.6.0-1_loongarch64.deb) |
 | `libmspack` | `1.12-2` | `loongarch64` | `fd1360cad94e9e04de080647e0686f848b3c58f8038a1b62de6cc7c3ce8168c3` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libmspack/libmspack_1.12-2_loongarch64.deb) |
