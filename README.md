@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **94 个最新 deb 条目、94 个不同包名**；索引共保留 102 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **95 个最新 deb 条目、95 个不同包名**；索引共保留 103 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -97,6 +97,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `gofumpt` | `0.12.0-2` | `loongarch64` | `586a183266a92be1d0650bbf5fc6578d425747075a859436ba9f6a1a762b12b4` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gofumpt/gofumpt_0.12.0-2_loongarch64.deb) |
 | `golangci-lint` | `2.15.0-3` | `loongarch64` | `cd45839f14cb8d6616a3681ea6c039238203492b01042c91c1ebe675a60a20fd` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/golangci-lint/golangci-lint_2.15.0-3_loongarch64.deb) |
 | `gpg-tui` | `0.11.2-1` | `loongarch64` | `08bfc557c3d5e12da63ec8c4119c5e22420481fee3ff9b599447fbf5c28af96b` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gpg-tui/gpg-tui_0.11.2-1_loongarch64.deb) |
+| `grex` | `1.4.6-1` | `loongarch64` | `04006d5ef23afc6e1623049d626142e6fc76a1ed62dfcdbc2ee65ba7a9f933d2` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/grex/grex_1.4.6-1_loongarch64.deb) |
 | `gron` | `0.7.1-2` | `loongarch64` | `f7fff1b40814c5493c31173f198afaa9432ca9db0bfbe395104a51ead783ff80` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gron/gron_0.7.1-2_loongarch64.deb) |
 | `gum` | `2.0.2-3` | `loongarch64` | `a789bc467b90c97442ae995260abd5329ff5cce40de12ddb72539c1ec43f571f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/g/gum/gum_2.0.2-3_loongarch64.deb) |
 | `helm-docs` | `1.14.2-1` | `loongarch64` | `0ff3b8d05f6b76c46630c77d857c4ad5ff67248824c54d406899f300732a488f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/h/helm-docs/helm-docs_1.14.2-1_loongarch64.deb) |
