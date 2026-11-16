@@ -1,0 +1,8 @@
+PKGNAME=entr
+PKGSEC=utils
+PKGDES="Run arbitrary commands when files change"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP=""
+PKGRECOM=""
+ABTYPE=self
+PKGHOMEPAGE="https://eradman.com/entrproject/"

@@ -1,0 +1,2 @@
+# 路径泄露防护（L102/L104）
+export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$SRCDIR=/usr/src"

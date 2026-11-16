@@ -1,0 +1,6 @@
+VER=2.0.4
+REL=1
+# 上游 tag 真实形式为 "v2.0.4"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v2.0.4::https://github.com/itaysk/kubectl-neat"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=itaysk/kubectl-neat"

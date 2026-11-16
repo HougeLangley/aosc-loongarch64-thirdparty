@@ -1,0 +1,10 @@
+VER=5.8.3
+REL=1
+# kustomize 的 tag 带模块前缀（kustomize/v5.8.3）；仓库根只有 go.work，
+# 没有 go.mod，CLI 模块与入口（main.go, package main）位于子目录 kustomize/。
+# 注意：不要用 SUBDIR —— autobuild4 的 gomod 模板不会把 SUBDIR 作用到 $SRCDIR，
+# 会让 `go get $SRCDIR/.` 落在仓库根而报 "go.mod file not found"。
+# 正确做法是用 GO_PACKAGES=("./kustomize") 显式指向模块目录（见 autobuild/defines）。
+SRCS="git::commit=tags/kustomize/v$VER::https://github.com/kubernetes-sigs/kustomize"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=kubernetes-sigs/kustomize"

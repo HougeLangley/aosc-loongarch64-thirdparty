@@ -1,0 +1,12 @@
+PKGNAME=curlie
+PKGSEC=net
+PKGDES="Curl-like HTTP client with httpie-style output"
+PKGDEP="glibc"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/rs/curlie"
+
+ABTYPE=gomod
+GO_PACKAGES=(".")
+GO_LDFLAGS=("-s -w")
+ABSPLITDBG=0
+ABSTRIP=0

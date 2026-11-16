@@ -1,0 +1,14 @@
+PKGNAME=yamllint
+PKGSEC=devel
+PKGDES="A linter for YAML files"
+# yamllint 的 pyproject 声明：pathspec >= 1.0.0 与 pyyaml。
+# 这两个是纯 Python 运行时依赖，不产生 ELF NEEDED，
+# 因此 selfcheck 与 parity 闸门都查不出来——只有 T2 功能冒烟能抓
+# （实测：只写 python-3 时 `yamllint --version` 直接 ModuleNotFoundError: pathspec）。
+PKGDEP="python-3 pathspec pyyaml"
+BUILDDEP="python-build python-installer"
+PKGHOMEPAGE="https://github.com/adrienverge/yamllint"
+
+ABTYPE=pep517
+NOPYTHON2=1
+ABHOST=noarch

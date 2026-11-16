@@ -1,0 +1,6 @@
+VER=0.13.0
+REL=4
+# xsv 的 tag 形如 0.13.0（无 v 前缀）
+SRCS="git::commit=tags/$VER::https://github.com/BurntSushi/xsv"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=BurntSushi/xsv"

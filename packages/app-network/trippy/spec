@@ -1,0 +1,6 @@
+VER=0.13.0
+REL=2
+# trippy 的 tag 形如 0.13.0（无 v 前缀）
+SRCS="git::commit=tags/$VER::https://github.com/fujiapple852/trippy"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=fujiapple852/trippy"

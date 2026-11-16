@@ -1,0 +1,9 @@
+PKGNAME=hexyl
+PKGSEC=utils
+PKGDES="Command-line hex viewer with colorized output"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1
+NOLTO=1

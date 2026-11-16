@@ -1,0 +1,6 @@
+VER=0.5.0
+REL=3
+# 上游仓库 itsjunetime/tdf，crate 名为 tdf-viewer，但二进制叫 tdf。
+SRCS="git::commit=tags/v$VER::https://github.com/itsjunetime/tdf"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=itsjunetime/tdf"

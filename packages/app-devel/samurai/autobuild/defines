@@ -1,0 +1,6 @@
+PKGNAME=samurai
+PKGSEC=devel
+PKGDES="Ninja-compatible build tool written in C"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="gcc make"
+ABTYPE=self

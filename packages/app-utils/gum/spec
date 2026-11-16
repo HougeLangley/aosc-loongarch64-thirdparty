@@ -1,0 +1,7 @@
+VER=2.0.2
+REL=3
+# 覆盖官方 app-utils/gum（官方 0.17.0，陈旧）。
+# 上游 tag 形如 v2.0.2。
+SRCS="git::commit=tags/v$VER::https://github.com/charmbracelet/gum"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=charmbracelet/gum"

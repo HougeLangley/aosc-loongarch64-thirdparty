@@ -1,0 +1,6 @@
+VER=0.0.31
+REL=1
+# 上游 tag 真实形式为 "v0.0.31"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v0.0.31::https://github.com/GoogleCloudPlatform/kubectl-ai"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=GoogleCloudPlatform/kubectl-ai"

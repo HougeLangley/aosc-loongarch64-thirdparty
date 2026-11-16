@@ -1,0 +1,33 @@
+#!/bin/bash
+# btrbk 是纯 Perl 脚本（只用 core 模块），无需编译。
+# 不走上游 Makefile：它的 install-man 依赖 asciidoctor 从 .asciidoc 生成 man，
+# 而 man 不是本包的必需交付物；这里只装二进制、示例配置、文档与补全。
+
+abinfo "Installing btrbk binaries ..."
+install -Dvm755 "$SRCDIR/btrbk" "$PKGDIR/usr/bin/btrbk"
+ln -sfn btrbk "$PKGDIR/usr/bin/lsbtr"
+
+if [[ -f "$SRCDIR/ssh_filter_btrbk.sh" ]]; then
+	install -Dvm755 "$SRCDIR/ssh_filter_btrbk.sh" \
+		"$PKGDIR/usr/lib/btrbk/ssh_filter_btrbk.sh"
+fi
+
+abinfo "Installing example configuration ..."
+install -Dvm644 "$SRCDIR/btrbk.conf.example" \
+	"$PKGDIR/etc/btrbk/btrbk.conf.example"
+
+abinfo "Installing completion (if any) ..."
+for f in "$SRCDIR"/contrib/*completion*; do
+	[[ -e "$f" ]] || continue
+	install -Dvm644 "$f" "$PKGDIR/usr/share/bash-completion/completions/btrbk"
+done
+
+abinfo "Installing documentation ..."
+install -Dvm644 "$SRCDIR/COPYING" "$PKGDIR/usr/share/doc/btrbk/COPYING"
+for f in FAQ.md install.md; do
+	[[ -f "$SRCDIR/doc/$f" ]] && install -Dvm644 "$SRCDIR/doc/$f" "$PKGDIR/usr/share/doc/btrbk/$f"
+done
+
+abinfo "Verifying layout ..."
+[[ -x "$PKGDIR/usr/bin/btrbk" ]] || abdie "missing /usr/bin/btrbk"
+[[ -L "$PKGDIR/usr/bin/lsbtr" ]] || abdie "missing lsbtr symlink"

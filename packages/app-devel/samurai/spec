@@ -1,0 +1,7 @@
+# 注意：samu --version 输出的是它兼容的 ninja 版本（1.9.0），不是本包版本 1.3。
+# 见上游 parse.h: "supported ninja version"。不要据 --version 判断包版本是否错。
+VER=1.3
+REL=1
+SRCS="git::commit=tags/1.3::https://github.com/michaelforney/samurai"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=michaelforney/samurai"

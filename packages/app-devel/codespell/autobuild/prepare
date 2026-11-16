@@ -1,0 +1,15 @@
+# codespell 的 pyproject 用 setuptools_scm 从 git 历史推导版本，
+# 而 ACBS 拉源码后不带 .git，scm 无法推导 → build backend 直接失败。
+#
+# 两个坑（都实测过）：
+#   1. prepare 环境里 $VER 是空的，必须用 autobuild 注入的 $PKGVER。
+#   2. setuptools_scm 10.x 优先认「按发行版名区分」的变量，
+#      通用变量 SETUPTOOLS_SCM_PRETEND_VERSION 在新版本下会被忽略。
+#      报错原文建议：SETUPTOOLS_SCM_PRETEND_VERSION_FOR_CODESPELL
+#                   或 VCS_VERSIONING_PRETEND_VERSION_FOR_CODESPELL
+_v="${PKGVER:-${VER:-}}"
+export SETUPTOOLS_SCM_PRETEND_VERSION="$_v"
+export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_CODESPELL="$_v"
+export VCS_VERSIONING_PRETEND_VERSION="$_v"
+export VCS_VERSIONING_PRETEND_VERSION_FOR_CODESPELL="$_v"
+abinfo "codespell version override = '$_v'"

@@ -1,0 +1,6 @@
+VER=1.32.0
+REL=1
+# 上游 tag 真实形式为 "v1.32.0-rc2"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v1.32.0::https://github.com/zizmorcore/zizmor"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=zizmorcore/zizmor"

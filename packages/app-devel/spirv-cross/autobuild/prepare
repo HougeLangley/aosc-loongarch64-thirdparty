@@ -1,0 +1,5 @@
+# 下游要把这些静态库链进共享库（.so），必须用位置无关代码编译，
+# 否则链接时报 R_LARCH_PCALA_LO12 cannot be used against symbol ... recompile with -fPIC。
+# 注：GNU ld 遇到这种错误会直接以信号 11 崩溃，只有 lld 会给出清晰提示。
+export CFLAGS="${CFLAGS:-} -fPIC"
+export CXXFLAGS="${CXXFLAGS:-} -fPIC"

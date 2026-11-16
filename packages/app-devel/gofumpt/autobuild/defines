@@ -1,0 +1,16 @@
+PKGNAME=gofumpt
+PKGSEC=devel
+PKGDES="Stricter gofmt"
+PKGDEP="glibc"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/mvdan/gofumpt"
+
+ABTYPE=gomod
+GO_PACKAGES=(".")
+GO_LDFLAGS=("-s -w")
+# 版本说明：gofumpt 不用 ldflags，而是 internal/version/gofumptVersion() 里
+# 调 debug.ReadBuildInfo() 读模块版本。从源码树直接 go build 时模块版本是
+# "(devel)"，没有变量可 -X 注入。除非改用 `go install mvdan.cc/gofumpt@vX`
+# 从模块代理构建，否则 --version 一定打印 (devel)。这是上游设计，如实保留。
+ABSPLITDBG=0
+ABSTRIP=0

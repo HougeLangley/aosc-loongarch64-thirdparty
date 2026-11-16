@@ -1,0 +1,28 @@
+#!/bin/bash
+# pyenv 是纯 shell 工具，运行期需要自己的完整目录树（plugins/、libexec/、shims/、
+# versions/ 等），因此不能按 FHS 拆散，整棵装到 /usr/lib/pyenv，只在 /usr/bin 放入口。
+#
+# 注意：autobuild4 的 self 模板里 $PKGDIR 位于 $SRCDIR 内部（$SRCDIR/abdist），
+# 直接 `cp -a "$SRCDIR"/. "$PKGDIR/..."` 会报 "cannot copy directory into itself"。
+# 因此必须逐项复制，并跳过 abdist（产物目录）与 .git（体积 + 无意义）。
+abinfo "Installing pyenv tree to /usr/lib/pyenv ..."
+install -vd "$PKGDIR/usr/lib/pyenv" "$PKGDIR/usr/bin"
+
+shopt -s dotglob nullglob
+for entry in "$SRCDIR"/*; do
+	name="$(basename "$entry")"
+	case "$name" in
+		abdist|.git|autobuild) continue ;;
+		*.log) continue ;;   # acbs 会把构建日志放进 $SRCDIR，不能打进包
+	esac
+	cp -a "$entry" "$PKGDIR/usr/lib/pyenv/" || abdie "failed to copy $name"
+done
+shopt -u dotglob nullglob
+
+abinfo "Linking pyenv entrypoint ..."
+ln -s /usr/lib/pyenv/bin/pyenv "$PKGDIR/usr/bin/pyenv" || abdie "failed to link pyenv"
+
+abinfo "Verifying layout ..."
+[[ -x "$PKGDIR/usr/lib/pyenv/bin/pyenv" ]] || abdie "missing pyenv launcher"
+[[ -L "$PKGDIR/usr/bin/pyenv" ]] || abdie "missing /usr/bin/pyenv symlink"
+[[ -d "$PKGDIR/usr/lib/pyenv/plugins" ]] || abinfo "note: no plugins/ dir in this tag"

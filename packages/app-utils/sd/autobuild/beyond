@@ -1,0 +1,16 @@
+#!/bin/bash
+# 本文件曾两次被覆盖：先写的是「移除构建辅助工具 xtask」，后写 man 页时整份替换，
+# 导致 xtask 又回到包里（教训 L154：改写 beyond 前必须把已有内容读全并合并）。
+#
+# ① 载荷净化：rust 模板会把 target/release 下所有可执行文件装进 /usr/bin，
+#    sd 的 workspace 里带一个构建辅助工具 xtask，用户不需要。
+abinfo "Removing build helper xtask ..."
+[[ -e "$PKGDIR/usr/bin/xtask" ]] && rm -fv "$PKGDIR/usr/bin/xtask"
+
+# ② 补 man 页：sd 上游自带 gen/sd.1，但 rust 模板只装二进制，man 页不会被安装。
+abinfo "Installing man page ..."
+if [[ -f "$SRCDIR/gen/sd.1" ]]; then
+	install -Dvm644 "$SRCDIR/gen/sd.1" "$PKGDIR/usr/share/man/man1/sd.1"
+elif [[ -f "$SRCDIR/sd.1" ]]; then
+	install -Dvm644 "$SRCDIR/sd.1" "$PKGDIR/usr/share/man/man1/sd.1"
+fi

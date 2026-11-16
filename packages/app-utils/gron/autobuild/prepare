@@ -1,0 +1,4 @@
+# 构建路径泄露：Go 二进制默认嵌入完整构建路径。
+# -trimpath 会把路径裁剪成稳定形式，既消除泄露也让构建可复现。
+export GOFLAGS="${GOFLAGS:-} -trimpath"
+abinfo "GOFLAGS=$GOFLAGS"

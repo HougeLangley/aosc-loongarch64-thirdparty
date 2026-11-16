@@ -1,0 +1,9 @@
+# xsv 0.13.0 是 2018 年的项目，Cargo.lock 锁着 libc 0.2.40，
+# 在新 Rust 上编译报 "cannot find type c_char in this scope"。
+# 实测 cargo update -p libc 升到 0.2.191 后构建通过。
+cargo update -p libc || abdie "cargo update -p libc failed"
+
+# 关于 LASX：实测过 -Ctarget-feature=+lasx 的版本（2563 条 LASX 指令），
+# 但 xsv stats 处理 9.1MB CSV 的耗时与 LSX 版完全相同（259ms vs 259ms）。
+# 热路径是逐字节 CSV 解析，不可向量化；而 LASX 会让二进制无法在 3A5000 上运行。
+# 结论：不做这个优化。详见 reports/OPT-LASX-POLICY.md。

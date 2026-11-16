@@ -1,0 +1,6 @@
+#!/bin/bash
+# GO_PACKAGES="./cmd" 会按目录名产出 usr/bin/cmd（教训 L260）。改名。
+if [[ -f "$PKGDIR/usr/bin/cmd" ]]; then
+    mv "$PKGDIR/usr/bin/cmd" "$PKGDIR/usr/bin/kubectl-ai"
+    abinfo "renamed usr/bin/cmd -> usr/bin/kubectl-ai"
+fi

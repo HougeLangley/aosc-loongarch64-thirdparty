@@ -1,0 +1,14 @@
+#!/bin/bash
+# lhasa 的 autogen.sh 会 autoreconf 并直接 configure，因此这里只跑它一次。
+abinfo "Bootstrapping and configuring (single configure pass) ..."
+( cd "$SRCDIR" && ./autogen.sh --prefix=/usr --disable-static ) \
+	|| abdie "autogen/configure failed"
+
+abinfo "Building lhasa ..."
+make -C "$SRCDIR" -j"${ABTHREADS}" || abdie "make failed"
+
+abinfo "Installing lhasa ..."
+make -C "$SRCDIR" DESTDIR="$PKGDIR" install || abdie "make install failed"
+
+abinfo "Verifying layout ..."
+[[ -x "$PKGDIR/usr/bin/lha" ]] || [[ -x "$PKGDIR/usr/bin/lhasa" ]] || abdie "missing lhasa binary"

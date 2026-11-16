@@ -1,0 +1,10 @@
+PKGNAME=trippy
+PKGSEC=net
+PKGDES="Network diagnostic tool combining traceroute and ping"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/fujiapple852/trippy"
+
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1

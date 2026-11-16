@@ -1,0 +1,10 @@
+PKGNAME=skim
+PKGSEC=utils
+PKGDES="Fuzzy finder in Rust, with an fzf-compatible interface"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/lotabout/skim"
+
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1

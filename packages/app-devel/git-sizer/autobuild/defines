@@ -1,0 +1,14 @@
+PKGNAME=git-sizer
+PKGSEC=devel
+PKGDES="Compute various size metrics for a Git repository"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/github/git-sizer"
+
+ABTYPE=gomod
+GO_PACKAGES=(".")
+# 上游 Makefile 用 -X main.BuildVersion=$(git describe --tags --always --dirty)
+# 不注入时 `git-sizer --version` 打印 "git-sizer build "（版本为空）。
+GO_LDFLAGS=("-s -w" "-X main.BuildVersion=v$PKGVER")
+ABSPLITDBG=0
+ABSTRIP=0

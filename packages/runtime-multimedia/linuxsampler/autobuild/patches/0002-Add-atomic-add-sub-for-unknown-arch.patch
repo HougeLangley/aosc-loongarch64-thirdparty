@@ -1,0 +1,32 @@
+--- a/src/common/atomic.h
++++ b/src/common/atomic.h
+@@ -1463,6 +1463,29 @@
+ #define atomic_read(v)		((v)->counter)
+ #define atomic_set(v,i)		((v)->counter = (i))
+ 
++/* 上游缺口：这个「未知 Linux 架构」兜底段只给了 inc/dec，没有 add/sub，
++ * 于是任何未被上面逐个 #ifdef 覆盖的架构都会编译失败，例如 loongarch64。
++ * 用 GCC 的 __atomic 内建实现，语义严格正确且自动适配任意架构。 */
++static __inline__ void atomic_add(int i, atomic_t *v)
++{
++	__atomic_fetch_add(&v->counter, i, __ATOMIC_SEQ_CST);
++}
++
++static __inline__ int atomic_add_return(int i, atomic_t *v)
++{
++	return __atomic_add_fetch(&v->counter, i, __ATOMIC_SEQ_CST);
++}
++
++static __inline__ void atomic_sub(int i, atomic_t *v)
++{
++	__atomic_fetch_sub(&v->counter, i, __ATOMIC_SEQ_CST);
++}
++
++static __inline__ int atomic_sub_return(int i, atomic_t *v)
++{
++	return __atomic_sub_fetch(&v->counter, i, __ATOMIC_SEQ_CST);
++}
++
+ static __inline__ void atomic_inc(atomic_t *v)
+ {
+ 	v->counter++;

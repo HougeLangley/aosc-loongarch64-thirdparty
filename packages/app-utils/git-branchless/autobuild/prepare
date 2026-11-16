@@ -1,0 +1,12 @@
+# 消除二进制里的构建机绝对路径（可复现性）。
+#
+# 现象：payload-check.sh 报 git-branchless 的 5 个二进制里嵌着
+#   /var/cache/acbs/build/acbs.<随机>/git-branchless/target/release/build/
+#   git-branchless-revset-<hash>/out//grammar.rs
+# 来源：build.rs 把 OUT_DIR 下的生成文件路径编进了 panic 消息（file!() 的绝对形式）。
+# 影响：对用户无害，但泄漏构建机目录结构，且破坏可复现构建。
+#
+# prepare 是被 source 的，export 会延续到后续构建阶段；
+# 而 RUSTFLAGS 在 12-arch-flags.sh 里已算好，这里追加可生效。
+export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$SRCDIR=/usr/src"
+abinfo "RUSTFLAGS += --remap-path-prefix=\$SRCDIR=/usr/src"

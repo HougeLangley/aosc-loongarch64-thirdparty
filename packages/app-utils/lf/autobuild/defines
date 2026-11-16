@@ -1,0 +1,13 @@
+PKGNAME=lf
+PKGSEC=utils
+PKGDES="Terminal file manager with vi-like keybindings"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/gokcehan/lf"
+
+ABTYPE=gomod
+GO_PACKAGES=(".")
+# lf 的版本变量在 main 包：-X main.gVersion=r<VER>
+GO_LDFLAGS=("-s -w" "-X main.gVersion=r$PKGVER")
+ABSPLITDBG=0
+ABSTRIP=0

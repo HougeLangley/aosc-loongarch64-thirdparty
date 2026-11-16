@@ -1,0 +1,34 @@
+#!/bin/bash
+# kustomize 必须走 ABTYPE=self，不能用 gomod 模板。
+#
+# 原因（已实测）：autobuild4 的 15-gomod.sh 会 `cd "$SRCDIR/abbuild"` 后执行
+#   go get "$SRCDIR/<GO_PACKAGES>"
+# 而 `go get <本地路径>` 依赖“当前目录或其祖先目录里存在 go.mod”。
+# kustomize 仓库根只有 go.work（55 个 use 模块），没有 go.mod；CLI 模块在
+# kustomize/ 子目录。因此无论 GO_PACKAGES 指向哪里，模板都会在 go get 阶段
+# 报 `go.mod file not found in current directory or any parent directory`。
+# 这里直接在 CLI 模块目录里用 `go install`，不经过 go get。
+
+MODDIR="$SRCDIR/kustomize"
+[[ -f "$MODDIR/go.mod" ]] || abdie "missing go.mod in $MODDIR"
+
+abinfo "Building kustomize (module dir: $MODDIR) ..."
+export GO111MODULE=on
+export GOBIN="$PKGDIR/usr/bin"
+# 仓库根有 go.work（workspace 覆盖 55 个子模块）。workspace 模式下 Go 只允许
+# -mod=readonly 或 -mod=vendor，因此这里不能用 -mod=mod；直接用 GOWORK=off
+# 把构建限制在 kustomize/ 这个独立模块内（它有完整 go.mod + go.sum）。
+export GOWORK=off
+export GOFLAGS="${GOFLAGS:-}"
+
+install -vd "$PKGDIR/usr/bin"
+
+(
+	cd "$MODDIR" || exit 1
+	go install -v -trimpath \
+		-ldflags "-s -w -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/autobuild3/specs/hardened-ld'" \
+		.
+) || abdie "go install failed"
+
+abinfo "Verifying installed binary ..."
+[[ -x "$PKGDIR/usr/bin/kustomize" ]] || abdie "missing /usr/bin/kustomize"

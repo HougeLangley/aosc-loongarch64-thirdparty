@@ -1,0 +1,5 @@
+VER=0.26.3
+REL=1
+SRCS="git::commit=tags/v$VER::https://github.com/ducaale/xh"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=ducaale/xh"

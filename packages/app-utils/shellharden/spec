@@ -1,0 +1,6 @@
+VER=4.3.2
+REL=1
+# 上游 tag 真实形式为 "v4.3.2"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v4.3.2::https://github.com/anordal/shellharden"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=anordal/shellharden"

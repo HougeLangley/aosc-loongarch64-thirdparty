@@ -1,0 +1,6 @@
+VER=1.14.2
+REL=1
+# 上游 tag 真实形式为 "v1.14.2"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v1.14.2::https://github.com/norwoodj/helm-docs"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=norwoodj/helm-docs"

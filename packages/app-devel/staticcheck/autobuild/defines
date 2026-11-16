@@ -1,0 +1,12 @@
+PKGNAME=staticcheck
+PKGSEC=devel
+PKGDES="State of the art linter for Go"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/dominikh/go-tools"
+
+ABTYPE=gomod
+GO_PACKAGES=("./cmd/staticcheck")
+GO_LDFLAGS=("-s -w")
+ABSPLITDBG=0
+ABSTRIP=0

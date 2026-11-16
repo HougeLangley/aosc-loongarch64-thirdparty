@@ -1,0 +1,11 @@
+PKGNAME=pop
+PKGSEC=utils
+PKGDES="Send emails from your terminal"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+# 只编根包：./... 会编出 examples/ 下的示例，可能与系统包撞名（L162）
+GO_PACKAGES="."
+
+# 版本注入（自动探测）：上游 main 包里有 main.Version 变量（教训 L164/L196）。
+GO_LDFLAGS=("-X main.Version=$PKGVER")

@@ -1,0 +1,12 @@
+PKGNAME=superfile
+PKGSEC=utils
+PKGDES="Pretty fancy terminal file manager"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/yorukot/superfile"
+
+ABTYPE=gomod
+GO_PACKAGES=(".")
+GO_LDFLAGS=("-s -w")
+ABSPLITDBG=0
+ABSTRIP=0

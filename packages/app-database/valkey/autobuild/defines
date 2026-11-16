@@ -1,0 +1,8 @@
+PKGNAME=valkey
+PKGSEC=database
+PKGDES="High-performance in-memory key-value database (Redis fork)"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP=""
+PKGHOMEPAGE="https://github.com/valkey-io/valkey"
+
+ABTYPE=self

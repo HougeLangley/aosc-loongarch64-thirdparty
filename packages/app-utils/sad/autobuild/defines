@@ -1,0 +1,10 @@
+PKGNAME=sad
+PKGSEC=utils
+PKGDES="CLI search and replace with diff preview, committed per hunk"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/ms-jpq/sad"
+
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1

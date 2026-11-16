@@ -1,0 +1,13 @@
+PKGNAME=ov
+PKGSEC=utils
+PKGDES="Feature-rich terminal pager"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+# 只编根包：./... 会把 examples/ 下的 tail、simple、search 等示例全编出来，
+# 其中 examples/tail 产出的二进制名叫 tail，会与 coreutils 的 /usr/bin/tail 冲突（教训 L162）。
+GO_PACKAGES="."
+
+# 版本注入：上游用 -X main.Version= / -X main.Revision=（大写 V/R），
+# 不注入的话 ov --version 会显示 dev rev:HEAD。
+GO_LDFLAGS=("-X main.Version=$PKGVER" "-X main.Revision=unknown")

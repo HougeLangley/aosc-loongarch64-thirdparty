@@ -1,0 +1,12 @@
+PKGNAME=codespell
+PKGSEC=devel
+PKGDES="Fix common misspellings in text files"
+PKGDEP="python-3"
+# codespell 的 pyproject 用 setuptools.build_meta + setuptools_scm[toml] 推导版本，
+# 因此必须提供 setuptools-scm；setuptools/wheel 由 python-3 环境自带。
+BUILDDEP="python-build python-installer setuptools-scm"
+PKGHOMEPAGE="https://github.com/codespell-project/codespell"
+
+ABTYPE=pep517
+NOPYTHON2=1
+ABHOST=noarch

@@ -1,0 +1,8 @@
+PKGNAME=kubeconform
+PKGSEC=utils
+PKGDES="Kubernetes manifest validation tool"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+# 只编根包：./... 会编出 examples/ 下的示例，可能与系统包撞名（L162）
+GO_PACKAGES="./cmd/kubeconform"

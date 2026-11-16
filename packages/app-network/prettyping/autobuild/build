@@ -1,0 +1,3 @@
+#!/bin/bash
+abinfo "Installing prettyping ..."
+install -Dvm755 "$SRCDIR/prettyping" "$PKGDIR/usr/bin/prettyping"

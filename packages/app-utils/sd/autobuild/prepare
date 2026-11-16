@@ -1,0 +1,3 @@
+# 构建路径泄露：Rust 二进制默认嵌入源码绝对路径。
+# --remap-path-prefix 把 $SRCDIR 改写为稳定的 /usr/src，消除泄露且构建可复现。
+export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$SRCDIR=/usr/src"

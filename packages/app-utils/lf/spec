@@ -1,0 +1,6 @@
+VER=42
+REL=3
+# lf 的 tag 形如 r42（无 v 前缀）
+SRCS="git::commit=tags/r$VER::https://github.com/gokcehan/lf"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=gokcehan/lf"

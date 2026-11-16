@@ -1,0 +1,47 @@
+PKGNAME=libpng
+PKGSEC=libs
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP=""
+PKGDES="Library and programs for reading and writing PNG files (LoongArch LSX filters enabled)"
+PKGHOMEPAGE="https://www.libpng.org/"
+
+ABTYPE=autotools
+
+# ---------------------------------------------------------------------------
+# 本第三方包与 AOSC 官方 libpng 1.6.59 的唯一差异：
+#
+#   AOSC 官方配方在通用 AUTOTOOLS_AFTER 里传了
+#       --disable-hardware-optimizations
+#   即使 AUTOTOOLS_AFTER__LOONGARCH64 又传了 --enable-loongarch-lsx=yes，
+#   上游 configure 的总开关会把它覆盖掉，导致 libpng 自带的 LoongArch LSX
+#   滤波内核根本不被编译。
+#
+#   实测证据（3A6000 / AOSC 14.0.1 / libpng16.so.16.59.0）：
+#     官方产物：186 条 LSX 向量指令，0 条 LASX
+#     去掉总开关后：326 条 LSX 向量指令，仍为 0 条 LASX（3A5000 兼容）
+#     PNG 解码基准：79.4 MB/s -> 92~95 MB/s（+17.9%~19.9%）
+#
+#   【重要】除 LSX 开关外，其余必须与 AOSC 官方构建保持一致：
+#   AOSC 当前 stable 分支的 libpng 配方已被精简（无 patches/、无 beyond），
+#   但**实际发布的官方包**是用 ABBS 提交 6907d460215 构建的，该提交包含：
+#     - autobuild/patches/0001-Import-APNG-patch.patch  (55451 bytes, APNG 支持)
+#     - autobuild/beyond                                (pngminus: png2pnm/pnm2png/pngtopnm/pnmtopng)
+#   只抄当前 HEAD 会丢掉 APNG 的 19 个导出符号，构成功能回退。
+#   本配方已按官方构建提交补齐上述两项；REL 从 2 提升到 3 以区分之前的有缺陷版本。
+#
+#   因此这里只移除该总开关，其余保持与 AOSC 一致（含 RECONF=0、FAIL_ARCH）。
+#   ABI 不变（同为 libpng16.so.16.59.0），不引入 LASX。
+# ---------------------------------------------------------------------------
+AUTOTOOLS_AFTER=(
+	"--enable-tools"
+)
+AUTOTOOLS_AFTER__LOONGARCH64=(
+	"${AUTOTOOLS_AFTER[@]}"
+	"--enable-loongarch-lsx=yes"
+)
+
+# 上游自带 configure，不需要重新 autogen
+RECONF=0
+
+# 与 AOSC 官方保持一致，避免在非 mainline/retro 产物上误发
+FAIL_ARCH="!(mainline|retro)"

@@ -1,0 +1,6 @@
+# 打包路径泄露：/usr/bin/pngfix 的字符串表里有构建目录（/var/cache/acbs/build/...）。
+# 用 -ffile-prefix-map 把源码路径改写成稳定的 /usr/src，
+# 这样二进制里不会泄露构建机路径，也能让构建可复现。
+export CFLAGS="${CFLAGS:-} -ffile-prefix-map=$SRCDIR=/usr/src"
+export CXXFLAGS="${CXXFLAGS:-} -ffile-prefix-map=$SRCDIR=/usr/src"
+abinfo "CFLAGS=$CFLAGS"

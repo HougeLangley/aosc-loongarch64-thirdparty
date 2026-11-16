@@ -1,0 +1,5 @@
+VER=5.9.0
+REL=1
+SRCS="git::commit=tags/v$VER::https://github.com/lotabout/skim"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=lotabout/skim"

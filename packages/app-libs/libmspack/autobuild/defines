@@ -1,0 +1,12 @@
+PKGNAME=libmspack
+PKGSEC=libs
+PKGDEP="@AB_AUTO_SO_DEPS@"
+PKGDES="A library for Microsoft compression formats"
+ABSHADOW=0
+BUILDDEP="autoconf automake libtool m4"
+
+# 1.12 的 GitHub tarball 把库和工具放在两个子目录：
+#   libmspack-1.12/libmspack/   <- 要构建的库
+#   libmspack-1.12/cabextract/  <- 独立工具，本包不涉及
+# autobuild4 的构建系统探测在顶层找不到 configure 会失败，因此显式 self。
+ABTYPE=self

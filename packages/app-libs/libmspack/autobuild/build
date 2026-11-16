@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+cd "$SRCDIR/libmspack"
+
+# 1.12 的 GitHub tarball 是**未生成的源码树**：只有 configure.ac / Makefile.am / autogen.sh，
+# 没有现成的 configure。必须先跑 autogen.sh（autoreconf）生成。
+abinfo "Generating configure (autoreconf) ..."
+if [[ -x ./autogen.sh ]]; then
+	./autogen.sh
+else
+	autoreconf -fi
+fi
+
+abinfo "Configuring ..."
+./configure --prefix=/usr --libdir=/usr/lib --disable-static --enable-shared
+
+abinfo "Building ..."
+make
+
+abinfo "Installing ..."
+make DESTDIR="$PKGDIR" install
+
+abinfo "Verifying ..."
+ls "$PKGDIR"/usr/lib/libmspack.so* >/dev/null 2>&1 || abdie "missing libmspack.so"

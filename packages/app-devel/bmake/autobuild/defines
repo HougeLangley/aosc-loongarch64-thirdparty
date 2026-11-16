@@ -1,0 +1,14 @@
+PKGNAME=bmake
+PKGSEC=devel
+PKGDES="Portable version of the NetBSD make(1) built on GNU make"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="make gcc"
+PKGHOMEPAGE="https://www.crufty.net/help/sjg/bmake.html"
+
+# bmake 用自举脚本构建，不走 autobuild 的模板。
+ABTYPE=self
+ABSPLITDBG=0
+
+# bmake 是 BSD make 的实现，用于构建使用 BSD make 语法的项目
+# （如 lowdown 3.x、NetBSD 派生工具）。AOSC 此前没有这个包。
+NOLTO=1

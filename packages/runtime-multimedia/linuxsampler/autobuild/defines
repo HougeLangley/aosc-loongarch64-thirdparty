@@ -1,0 +1,36 @@
+PKGNAME=linuxsampler
+PKGSEC=sound
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="dssi bison flex ladspa-sdk"
+PKGDES="Sampler backend, including sampler engine, audio and MIDI drivers, network layer (LSCP) API and native C++ API"
+PKGHOMEPAGE="https://www.linuxsampler.org/"
+
+# 2.3.0 -> 2.4.2 的共享库 SONAME 从 liblinuxsampler.so.7 升到 .so.8，
+# 属 ABI 断裂。按打包规范用 PKGBREAK 声明，让 apt 在升级时报出依赖方。
+PKGBREAK="linuxsampler<=2.3.0"
+
+
+ABTYPE=autotools
+AUTOTOOLS_AFTER=(
+    "--prefix=/usr"
+    # 官方配方写的是 $PKGDIR/var/lib/...，那会把构建目录字符串编进二进制
+    # （payload-check.sh 的构建机路径检查会报）。这里用运行时真实路径。
+    "--enable-default-instruments-db-location=/var/lib/linuxsampler/instruments.db"
+)
+ABSHADOW=0
+NOPARALLEL=1
+
+# ---- 与官方配方的差异：移除 FAIL_ARCH，并附带 LoongArch 时间戳补丁 ----
+#
+# 官方原文：
+#   # FIXME:
+#   # RTMath.cpp:85:8: error: #error "Sorry, LinuxSampler lacks time stamp code for your system."
+#   FAIL_ARCH="@(loongarch64|loongarch64_nosimd|loongson3|riscv64)"
+#
+# 这个限制是**真实的代码缺口**（不是过期备注）：RTMath.cpp 的 GetTimeStamp()
+# 只有 x86/powerpc/alpha/aarch64/arm/apple 分支，其余直接 #error。
+#
+# 本包用 patches/0001-Add-LoongArch-timestamp-support.patch 补上 __loongarch__ 分支，
+# 实现方式与 aarch64 分支（mrs cntvct_el0）等价，改用 LoongArch 的稳定计数器：
+#     __asm__ __volatile__ ("rdtime.d %0, $zero" : "=r" (t));
+# 该指令已单独验证：编译通过，反汇编确认 rdtime.d，计数单调递增。

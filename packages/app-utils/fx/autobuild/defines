@@ -1,0 +1,7 @@
+PKGNAME=fx
+PKGSEC=utils
+PKGDES="Terminal JSON viewer"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+GO_PACKAGES="./..."

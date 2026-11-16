@@ -1,0 +1,3 @@
+# sops 是 gomod（Go）项目，不是 Rust——用 GOFLAGS 而不是 RUSTFLAGS。
+# 教训 L109：flag 写给错的工具链不会报错，只会静默无效。
+export GOFLAGS="${GOFLAGS:-} -trimpath"

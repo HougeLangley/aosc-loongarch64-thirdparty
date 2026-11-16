@@ -1,0 +1,11 @@
+PKGNAME=btrbk
+PKGSEC=admin
+PKGDES="Btrfs snapshot backup tool with retention policies"
+PKGDEP="perl btrfs-progs"
+BUILDDEP=""
+PKGHOMEPAGE="https://github.com/digint/btrbk"
+
+ABHOST=noarch
+ABTYPE=self
+ABSPLITDBG=0
+ABSTRIP=0

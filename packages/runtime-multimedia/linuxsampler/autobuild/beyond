@@ -1,0 +1,22 @@
+#!/bin/bash
+# 两部分：① 官方配方原有的两件事；② 本包额外的一处修正。
+#
+# ① 上游工具名撞车（所有架构都有，与龙芯无关）：
+#      linuxsampler 的 /usr/bin/lscp（LinuxSampler Control Protocol 客户端）
+#      与 nilfs-utils 的 /usr/bin/lscp（list checkpoint）同名。
+#    官方 aosc-os-abbs 的做法是把 lscp 改名为 lscpsh，本配方照做以保持一致。
+#
+#    linuxsampler 的共享库装在非标准路径 /usr/lib/linuxsampler，
+#    必须写 ld.so.conf.d 条目，否则运行时找不到库。官方配方同样有这一段。
+abinfo "Renaming lscp -> lscpsh (avoid clash with nilfs-utils) ..."
+if [[ -e "$PKGDIR/usr/bin/lscp" ]]; then
+	mv -v "$PKGDIR/usr/bin/lscp" "$PKGDIR/usr/bin/lscpsh"
+fi
+for m in "$PKGDIR"/usr/share/man/man1/lscp.1*; do
+	[[ -e "$m" ]] || continue
+	mv -v "$m" "${m/lscp.1/lscpsh.1}"
+done
+
+abinfo "Registering /usr/lib/linuxsampler in ld.so.conf.d ..."
+install -d "$PKGDIR/etc/ld.so.conf.d"
+echo "/usr/lib/linuxsampler" > "$PKGDIR/etc/ld.so.conf.d/linuxsampler.conf"

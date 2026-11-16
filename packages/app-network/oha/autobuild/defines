@@ -1,0 +1,10 @@
+PKGNAME=oha
+PKGSEC=net
+PKGDES="HTTP load generator with a TUI, written in Rust"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/hatoo/oha"
+
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1

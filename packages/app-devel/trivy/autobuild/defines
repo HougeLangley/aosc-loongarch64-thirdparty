@@ -1,0 +1,30 @@
+PKGNAME=trivy
+PKGSEC=devel
+PKGDES="A software security scanner for multiple kinds of inputs"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/aquasecurity/trivy"
+
+ABTYPE=gomod
+GO_PACKAGES=("./cmd/trivy")
+# 版本注入取自上游 magefiles/magefile.go 的 buildLdflags()：
+#   -s -w -X=github.com/aquasecurity/trivy/pkg/version/app.ver=<ver>
+# 不加 -s -w 时产物 351 MB（未 strip 且未注入版本，--version 只报 dev）。
+GO_LDFLAGS=("-s -w -X=github.com/aquasecurity/trivy/pkg/version/app.ver=$PKGVER")
+
+# Go 二进制不参与分拆调试符号；strip 已由 -s -w 完成，别再动它。
+ABSPLITDBG=0
+ABSTRIP=0
+
+# ---- 与官方配方的差异：移除 FAIL_ARCH，且不再依赖 goreleaser ----
+#
+# 官方 app-devel/trivy 原文：
+#   BUILDDEP="go goreleaser"
+#   FAIL_ARCH="@(loongarch64|loongarch64_nosimd|loongson3|riscv64)"
+#   # FIXME: goreleaser does not build properly on these archs
+# 官方版本停在 0.55.0。
+#
+# 本机实测（龙芯 3A6000 / AOSC OS 14.0.1 / Go 1.99.1）：
+#   用纯 `go build ./cmd/trivy` 即可完成构建，全套 gomod 模板通过，
+#   不需要 goreleaser —— 官方那条 FIXME 限制的是**打包工具**，不是 Go 或龙芯。
+# 本配方同时把版本从 0.55.0 更新到 0.76.2。

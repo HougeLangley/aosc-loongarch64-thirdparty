@@ -1,0 +1,12 @@
+PKGNAME=bat-extras
+PKGSEC=utils
+PKGDES="Bash scripts that integrate bat with various command line tools"
+PKGDEP="bat"
+PKGRECOM="fzf delta fd ripgrep man"
+BUILDDEP=""
+PKGHOMEPAGE="https://github.com/eth-p/bat-extras"
+
+ABHOST=noarch
+ABTYPE=self
+ABSPLITDBG=0
+ABSTRIP=0

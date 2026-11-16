@@ -1,0 +1,12 @@
+PKGNAME=kustomize
+PKGSEC=admin
+PKGDES="A tool for building Kubernetes configurations using kustomization files"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/kubernetes-sigs/kustomize"
+
+ABTYPE=self
+# 仓库根只有 go.work、没有 go.mod；CLI 模块在 kustomize/ 子目录。
+# 因 gomod 模板的 go get 依赖祖先目录存在 go.mod，这里改用 ABTYPE=self 自行构建。
+# 注意：仓库根存在 go.work（workspace 覆盖全部子模块），Go 1.27 下 workspace 模式的
+# `go get`/`go install` 均可用；若未来模板报 workspace 相关错误，可显式 GOWORK=off。

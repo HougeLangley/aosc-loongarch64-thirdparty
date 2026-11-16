@@ -1,0 +1,11 @@
+PKGNAME=bashtop
+PKGSEC=admin
+PKGDES="Linux resource monitor written in bash"
+PKGDEP="bash coreutils procps"
+BUILDDEP=""
+PKGHOMEPAGE="https://github.com/aristocratos/bashtop"
+
+ABHOST=noarch
+ABTYPE=self
+ABSPLITDBG=0
+ABSTRIP=0

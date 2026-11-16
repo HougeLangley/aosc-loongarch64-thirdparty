@@ -1,0 +1,12 @@
+#!/bin/bash
+# trippy 的 cargo workspace 里有示例 crate（hello-world、toy-traceroute）。
+# rust 模板的 fallback 会把 target/release 下所有可执行文件都装进 /usr/bin，
+# 于是示例程序一起被打包。用户只需要 trip 本身。
+# 注意：这两个名字不含 "test"，所以 payload-check.sh 的测试辅助检测抓不到，
+# 属另一类「示例/演示二进制」污染。
+abinfo "Removing example binaries ..."
+for b in hello-world toy-traceroute; do
+	if [[ -e "$PKGDIR/usr/bin/$b" ]]; then
+		rm -fv "$PKGDIR/usr/bin/$b"
+	fi
+done

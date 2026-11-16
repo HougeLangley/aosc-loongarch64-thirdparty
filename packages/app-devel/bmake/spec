@@ -1,0 +1,5 @@
+VER=20260912
+REL=6
+# 上游只在 crufty.net / ftp.netbsd.org 发布日期快照，无 GitHub 仓库。
+SRCS="tbl::https://www.crufty.net/ftp/pub/sjg/bmake-$VER.tar.gz"
+CHKSUMS="sha256::b6bd32964cbe451be2838822c9d200b7c7e76a2a5947c03feb71dc6bd72988bd"

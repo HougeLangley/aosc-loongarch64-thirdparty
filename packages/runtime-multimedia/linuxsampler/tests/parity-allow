@@ -1,0 +1,11 @@
+# 本文件申明「相对官方 2.3.0 的预期差异」，不是回退。
+# 每行一个相对路径；# 之后为注释。
+
+# 上游 2.4.x 已移除该内部头文件（2.4.2 源码树中 find 不到 lsatomic*）
+usr/include/linuxsampler/common/lsatomic.h
+
+# SONAME 从 .so.7 升到 .so.8（libtool -version-info 变更），属 ABI 断裂。
+# 新的文件名是 usr/lib/linuxsampler/liblinuxsampler.so.8*，已在本包中提供；
+# 依赖旧 SONAME 的包通过 PKGBREAK 声明。
+usr/lib/linuxsampler/liblinuxsampler.so.7
+usr/lib/linuxsampler/liblinuxsampler.so.7.0.0

@@ -1,0 +1,7 @@
+PKGNAME=moar
+PKGSEC=utils
+PKGDES="Nice pager with syntax highlighting"
+PKGDEP="glibc"
+BUILDDEP="go"
+ABTYPE=gomod
+GO_PACKAGES="./..."

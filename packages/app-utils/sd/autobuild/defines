@@ -1,0 +1,11 @@
+PKGNAME=sd
+PKGSEC=utils
+PKGDES="An intuitive find and replace CLI (a sed alternative)"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/chmln/sd"
+
+ABTYPE=rust
+USECLANG=1
+# 第三方构建不引入 cargo-audit 供应链审计环节（无长期维护的 advisory 库）
+NOCARGOAUDIT=1

@@ -1,0 +1,12 @@
+PKGNAME=lazydocker
+PKGSEC=utils
+PKGDES="Terminal UI for docker and docker-compose"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+# 只编根包：./... 会编出 examples/ 下的示例，可能与系统包撞名（L162）
+GO_PACKAGES="."
+
+# 版本注入：上游 main.go 里是 version = DEFAULT_VERSION（小写 version），
+# 不注入时显示 unversioned（教训 L164）。
+GO_LDFLAGS=("-X main.version=$PKGVER")

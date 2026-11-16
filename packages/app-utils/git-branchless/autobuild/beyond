@@ -1,0 +1,14 @@
+#!/bin/bash
+# rust 模板在没有单 bin target 时走 fallback：cargo build --workspace 后把
+# target/release 下所有可执行文件都装进 /usr/bin，于是 workspace 里的
+# 测试辅助程序 git-branchless-test 也被打进来（同 L18：fclones/watchexec）。
+# 上游 `cargo install git-branchless` 不会装它，AOSC 规范也要求不打包测试代码。
+abinfo "Removing test-only binaries ..."
+for b in git-branchless-test; do
+	if [[ -e "$PKGDIR/usr/bin/$b" ]]; then
+		rm -fv "$PKGDIR/usr/bin/$b"
+	fi
+done
+
+# 保留的是真正面向用户的 git 子命令：
+#   git-branchless（主命令）+ -hook/-init/-query/-record/-smartlog/-submit

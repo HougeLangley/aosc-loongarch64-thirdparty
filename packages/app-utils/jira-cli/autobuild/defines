@@ -1,0 +1,11 @@
+PKGNAME=jira-cli
+PKGSEC=utils
+PKGDES="Feature-rich interactive Jira CLI"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+# 只编根包：./... 会编出 examples/ 下的示例，可能与系统包撞名（L162）
+GO_PACKAGES="./cmd/jira"
+
+# 版本注入（newpkg.sh 的探测只覆盖 main 包，这里是 internal/version 包）
+GO_LDFLAGS=("-X github.com/ankitpokhrel/jira-cli/internal/version.Version=$PKGVER")

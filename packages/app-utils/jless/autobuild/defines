@@ -1,0 +1,14 @@
+PKGNAME=jless
+PKGSEC=utils
+PKGDES="A command-line JSON viewer"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm libxcb"
+PKGHOMEPAGE="https://github.com/PaulJuliusMartinez/jless"
+
+ABTYPE=rust
+USECLANG=1
+# 第三方构建不引入 cargo-audit 供应链审计环节（无长期维护的 advisory 库）
+NOCARGOAUDIT=1
+# jless -> clipboard 0.5 -> x11-clipboard -> xcb 0.8.2：xcb 的 build.rs 在需要时用
+# python3 重新生成绑定（python-3 已在 BuildKit 中，lint L013 已确认），并以
+# #[link(name="xcb")] 链接系统 libxcb，因此 BUILDDEP/PKGDEP 都需要 libxcb。

@@ -1,0 +1,6 @@
+VER=0.4.2
+REL=1
+# 上游 tag 真实形式为 "0.4.2"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/0.4.2::https://github.com/blacknon/hwatch"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=blacknon/hwatch"

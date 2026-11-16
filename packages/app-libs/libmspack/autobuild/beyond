@@ -1,0 +1,5 @@
+#!/bin/bash
+# 对等性检查发现：官方包带 usr/share/doc/libmspack/COPYING.LIB，我们的没有。
+# 1.12 的 make install 不再安装这个许可证文件，但许可证必须随包分发。
+abinfo "Installing license ..."
+install -Dvm644 "$SRCDIR/libmspack/COPYING.LIB" "$PKGDIR/usr/share/doc/libmspack/COPYING.LIB"

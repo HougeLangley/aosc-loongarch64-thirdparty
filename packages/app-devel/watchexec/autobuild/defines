@@ -1,0 +1,10 @@
+PKGNAME=watchexec
+PKGSEC=devel
+PKGDES="Run commands when files change, with a rich filter language"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/watchexec/watchexec"
+
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1

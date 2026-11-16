@@ -1,0 +1,9 @@
+PKGNAME=zizmor
+PKGSEC=devel
+PKGDES="Static analysis tool for GitHub Actions"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1
+NOLTO=1

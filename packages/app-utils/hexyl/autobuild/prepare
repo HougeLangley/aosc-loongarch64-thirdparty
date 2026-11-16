@@ -1,0 +1,2 @@
+# 构建路径泄露：Rust 二进制默认嵌入源码绝对路径（教训 L102/L104）。
+export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$SRCDIR=/usr/src"

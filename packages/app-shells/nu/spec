@@ -1,0 +1,6 @@
+VER=0.117.0
+REL=2
+# 上游 tag 真实形式为 "0.117.0"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/0.117.0::https://github.com/nushell/nushell"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=nushell/nushell"

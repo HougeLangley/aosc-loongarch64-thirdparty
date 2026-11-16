@@ -1,0 +1,5 @@
+VER=20200408
+REL=1
+SRCS="git::commit=tags/v$VER::https://github.com/eth-p/bat-extras"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=eth-p/bat-extras"

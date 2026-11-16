@@ -1,0 +1,11 @@
+PKGNAME=sops
+PKGSEC=admin
+PKGDES="A tool for managing secrets with encrypted files"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/getsops/sops"
+
+ABTYPE=gomod
+# 二进制入口不在仓库根（根目录没有 package main），必须指向 cmd/sops。
+GO_PACKAGES=("./cmd/sops")
+GO_LDFLAGS=("-X github.com/getsops/sops/v3/version.Version=$PKGVER")

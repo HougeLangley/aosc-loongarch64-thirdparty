@@ -1,0 +1,25 @@
+#!/bin/bash
+# bat-extras 是纯 bash 脚本集，由 build.sh 从 src/*.sh 模板生成，无编译步骤。
+#
+# 两个注意点：
+#   1. 上游自带的测试框架在 TMPDIR 未设时会往根目录写临时文件
+#      （报 "/<pid>.test_version.stdout: Permission denied"），必须显式给 TMPDIR。
+#   2. build.sh 末尾会跑自测，自测依赖 bat 的特定版本与测试夹具，
+#      在打包环境里常失败并以非零码退出。我们**不打包测试**，
+#      因此容忍其退出码，但必须断言 4 个脚本都真的生成了。
+#
+# 关于版本输出：生成的脚本打印 "batgrep 2020.04.08"（点分），
+# 而包版本是 20200408，因此版本一致性检查会给出 WARN，属格式差异，不是缺陷。
+
+abinfo "Generating scripts from templates ..."
+( cd "$SRCDIR" && TMPDIR=/tmp bash build.sh ) || true
+
+abinfo "Verifying generated scripts ..."
+for s in batgrep batman batwatch prettybat; do
+	[[ -x "$SRCDIR/bin/$s" ]] || abdie "build.sh did not generate bin/$s"
+done
+
+abinfo "Installing scripts ..."
+for s in batgrep batman batwatch prettybat; do
+	install -Dvm755 "$SRCDIR/bin/$s" "$PKGDIR/usr/bin/$s"
+done

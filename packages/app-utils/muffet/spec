@@ -1,0 +1,6 @@
+VER=2.11.8
+REL=1
+# 上游 tag 真实形式为 "v2.11.8"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v2.11.8::https://github.com/raviqqe/muffet"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=raviqqe/muffet"

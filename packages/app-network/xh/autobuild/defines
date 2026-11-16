@@ -1,0 +1,15 @@
+PKGNAME=xh
+PKGSEC=net
+PKGDES="A friendly and fast tool for sending HTTP requests"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm openssl"
+PKGHOMEPAGE="https://github.com/ducaale/xh"
+
+ABTYPE=rust
+USECLANG=1
+# 第三方构建不引入 cargo-audit 供应链审计环节（无长期维护的 advisory 库）
+NOCARGOAUDIT=1
+# 上游默认特性 rustls -> reqwest/rustls -> aws-lc-sys；aws-lc-sys 对 loongarch64
+# 没有预生成 bindings，需要 cmake + libclang/bindgen 才能出包。改用系统 OpenSSL
+# （native-tls）绕开该原生依赖，TLS 行为与 AOSC 其他包保持一致。
+CARGO_AFTER=(--no-default-features --features=native-tls,network-interface)

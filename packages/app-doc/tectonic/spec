@@ -1,0 +1,6 @@
+VER=0.17.0
+REL=1
+# tectonic 用 crate 前缀式 tag：tectonic@0.17.0
+SRCS="git::commit=tags/tectonic@$VER::https://github.com/tectonic-typesetting/tectonic"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=tectonic-typesetting/tectonic"

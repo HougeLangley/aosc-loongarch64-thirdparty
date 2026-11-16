@@ -1,0 +1,7 @@
+#!/bin/bash
+# GO_PACKAGES="./cmd" 会按目录名产出 usr/bin/cmd（教训 L260）。
+# 这里把它改名为正确的命令名。
+if [[ -f "$PKGDIR/usr/bin/cmd" ]]; then
+    mv "$PKGDIR/usr/bin/cmd" "$PKGDIR/usr/bin/kubeswitch"
+    abinfo "renamed usr/bin/cmd -> usr/bin/kubeswitch"
+fi

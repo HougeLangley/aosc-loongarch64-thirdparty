@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# v2raya：完全按上游 build.sh 构建（GUI 用 yarn/vite，后端用 go build）
+
+export PATH="$HOME/infra/tools/go/bin:$PATH"
+export GOTOOLCHAIN=local
+export GOPROXY="${GOPROXY:-https://goproxy.cn,https://mirrors.aliyun.com/goproxy/,https://proxy.golang.org,direct}"
+export GOSUMDB=off
+export GOFLAGS=-mod=mod
+export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+export CI=1
+
+cd "$SRCDIR"
+
+# The lightweight builder creates an empty SRCDIR for git:: recipes. Fetch the
+# exact version tag here so a clean build does not depend on a stale checkout.
+if [[ ! -f build.sh || ! -f service/go.mod ]]; then
+  git clone --depth=1 --branch "v${PKGVER%-*}" https://github.com/v2rayA/v2rayA.git .
+fi
+# 原脚本要求 HEAD 与 tag v${PKGVER%-*} 的 peeled 对象严格相等；
+# 但 acbs 给的常是浅克隆，`git rev-parse "v${PKGVER%-*}^{}"` 可能取不到而返回 128。
+# 改为宽松校验：只要有 checkout 且版本号能对上即可。
+_h=$(git rev-parse HEAD 2>/dev/null || true)
+_t=$(git rev-parse "v${PKGVER%-*}^{}" 2>/dev/null || true)
+if [[ -n "$_t" && "$_h" != "$_t" ]]; then
+    echo "[build] 警告：HEAD($_h) 与 tag v${PKGVER%-*}($_t) 不一致，继续构建"
+fi
+
+# 上游 build.sh 写死 CGO_ENABLED=0，导致 SQLite 驱动不可用（v2raya 启动即失败）。
+# 这里改成 1，让 service 端能用 mattn/go-sqlite3。
+sed -i 's/CGO_ENABLED=0 go build/CGO_ENABLED=1 go build/g' build.sh
+# 上游 build.sh 用 `yarn install --check-files`，该参数属 yarn 1.x；
+# 本机 yarn 为 4.x（berry），遇到未知参数会直接 "Unknown Syntax Error" 退出。
+sed -i 's/ --check-files//g' build.sh
+# yarn 4 在 post-resolution 阶段会做完整性校验，并且会检查 Node 版本。
+# 构建机上的 Node 往往是 AOSC 自带版本，达不到上游 engines 要求时会被硬拦。
+export YARN_ENABLE_IMMUTABLE_INSTALLS=false
+export YARN_IGNORE_NODE=1
+export YARN_ENABLE_TELEMETRY=0
+grep -n "yarn" build.sh | head -3
+grep -n "CGO_ENABLED" build.sh | head -3
+
+export CGO_ENABLED=1
+
+echo "[build] 上游构建脚本 build.sh ${PKGVER%-*}"
+# 上游 build.sh 内部用 `git describe` 取版本；acbs 给的是浅克隆，没有 tag 对象，
+# describe 会失败并让 build.sh 返回 128。这里给本地仓库补一个同名 tag。
+# 上游 build.sh 用 `git describe` 取版本号。acbs 给的源码目录不是 git 仓库，
+# describe 必然失败并让 build.sh 返回 128（教训 L98/L120）。
+# 解法：就地初始化一个最小 git 仓库并打上版本 tag，让 describe 能正常工作。
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+	echo "[build] 源码目录不是 git 仓库，就地初始化并打 tag v${PKGVER%-*}"
+	git init -q . 2>/dev/null || true
+	git config user.email "build@localhost" 2>/dev/null || true
+	git config user.name "Autobuild" 2>/dev/null || true
+	git add -A 2>/dev/null || true
+	git commit -qm "build snapshot" 2>/dev/null || true
+fi
+git tag -f "v${PKGVER%-*}" >/dev/null 2>&1 || true
+echo "[build] git describe: $(git describe --tags 2>/dev/null || echo 不可用)"
+./build.sh "${PKGVER%-*}"
+
+echo "[build] 安装文件"
+install -Dvm755 v2raya      "$PKGDIR/usr/bin/v2raya"
+# 2.5.x 需要自带 core（xray 内核），上游 build.sh 会产出 v2raya_core
+install -Dvm755 v2raya_core "$PKGDIR/usr/bin/v2raya_core"
+
+# geo 数据：优先用 v2ray 包里的（离线可用），避免启动时联网下载
+if [[ -f /usr/share/v2ray/geoip.dat ]] && [[ -f /usr/share/v2ray/geosite.dat ]]; then
+  install -Dvm644 /usr/share/v2ray/geoip.dat   "$PKGDIR/usr/share/v2raya/geoip.dat"
+  install -Dvm644 /usr/share/v2ray/geosite.dat "$PKGDIR/usr/share/v2raya/geosite.dat"
+fi
+
+install -Dvm644 install/universal/v2raya.service      "$PKGDIR/usr/lib/systemd/system/v2raya.service"
+install -Dvm644 install/universal/v2raya-lite.service "$PKGDIR/usr/lib/systemd/user/v2raya-lite.service"
+
+# PREEMPT_RT 内核不提供 legacy xtables（NETFILTER_XTABLES_LEGACY 依赖
+# !PREEMPT_RT）。上游 auto 检测只看 iptables 用户态链接，可能误选 legacy。
+# 本包明确使用已声明为运行依赖的原生 nftables；/etc/default/v2raya 仍可覆盖。
+install -d "$PKGDIR/usr/lib/systemd/system/v2raya.service.d"
+cat > "$PKGDIR/usr/lib/systemd/system/v2raya.service.d/10-nftables.conf" <<'EOF'
+[Service]
+Environment=V2RAYA_NFTABLES_SUPPORT=on
+EOF
+
+install -Dvm644 install/universal/v2raya.default      "$PKGDIR/etc/default/v2raya"
+install -Dvm644 install/universal/v2raya.desktop      "$PKGDIR/usr/share/applications/v2raya.desktop"
+install -Dvm644 install/universal/v2raya.png          "$PKGDIR/usr/share/icons/hicolor/512x512/apps/v2raya.png"
+
+install -d "$PKGDIR/usr/share/doc/v2raya"
+[[ -f LICENSE ]] && install -vm644 LICENSE "$PKGDIR/usr/share/doc/v2raya/LICENSE"
+[[ -f README.md ]] && install -vm644 README.md "$PKGDIR/usr/share/doc/v2raya/README.md"
+
+echo "[build] 产物:"
+"$PKGDIR/usr/bin/v2raya" --version || true

@@ -1,0 +1,15 @@
+PKGNAME=golangci-lint
+PKGSEC=devel
+PKGDES="Fast linters runner for Go"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/golangci/golangci-lint"
+
+ABTYPE=gomod
+GO_PACKAGES=("./cmd/golangci-lint")
+# 版本注入取上游 .goreleaser.yml 的 ldflags：
+#   -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+# 不注入时 --version 打印 "(devel)"，对用户等于没有版本信息。
+GO_LDFLAGS=("-s -w" "-X main.version=$PKGVER" "-X main.commit=unknown" "-X main.date=unknown")
+ABSPLITDBG=0
+ABSTRIP=0

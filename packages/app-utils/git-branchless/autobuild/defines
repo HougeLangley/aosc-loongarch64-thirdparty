@@ -1,0 +1,33 @@
+PKGNAME=git-branchless
+PKGSEC=devel
+PKGDES="High-velocity, monorepo-scale workflow for Git"
+# 按 E432 取直接 NEEDED：readelf -d 只列出
+#   libgit2.so.1.9 / libgcc_s.so.1 / libm.so.6 / libc.so.6
+# 官方写的 zlib pcre2 是 libgit2 的传递依赖，不进 PKGDEP。
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/arxanas/git-branchless"
+
+ABTYPE=rust
+USECLANG=1
+ABSPLITDBG=0
+NOCARGOAUDIT=1
+
+# ---- 与官方配方的差异：移除 FAIL_ARCH ----
+#
+# 官方 app-utils/git-branchless 写了两条 FIXME，本机实测均已不成立：
+#
+# FIXME 1（原文）：
+#   # FIXME: Too many dependencies on old versions of nix...
+#   # ... which has no LoongArch support until 0.27.0
+# 实测：0.11.1 的 Cargo.lock 里确有 nix 0.24.3，但该 crate 在本次构建中
+# 并未被编译（构建成功且二进制不链接它）——「锁文件里有」不等于「会被编译」。
+#
+# FIXME 2（原文）：
+#   # FIXME: on mips64el-like architectures... R_MIPS_64 cannot be used against
+#   # symbol 'DW.ref.rust_eh_personality'; recompile with -fPIC
+# 实测：该报错引用的是 mips64el-unknown-linux-gnuabi64 的 libstd，
+# 属龙芯 2/3 的 MIPS 平台，与 loongarch64 无关；本机 loongarch64 上
+# USECLANG=1（ld.lld）构建 4m10s 通过，产出 24 MB 二进制。
+#
+# 功能验证：`git-branchless` 正常列出 amend/bug-report/difftool/gc/hide/init 等子命令。

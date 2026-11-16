@@ -1,0 +1,10 @@
+PKGNAME=visidata
+PKGSEC=utils
+PKGDES="Interactive terminal multitool for tabular data"
+PKGDEP="python-3 dateutil requests pyyaml"
+BUILDDEP="python-build python-installer"
+PKGHOMEPAGE="https://github.com/saulpw/visidata"
+
+ABTYPE=pep517
+NOPYTHON2=1
+ABHOST=noarch

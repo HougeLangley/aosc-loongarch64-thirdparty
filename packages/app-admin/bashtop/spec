@@ -1,0 +1,5 @@
+VER=0.9.25
+REL=1
+SRCS="git::commit=tags/v$VER::https://github.com/aristocratos/bashtop"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=aristocratos/bashtop"

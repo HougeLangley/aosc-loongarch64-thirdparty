@@ -1,0 +1,11 @@
+PKGNAME=gron
+PKGSEC=utils
+PKGDES="Transform JSON into greppable assignment statements"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/tomnomnom/gron"
+
+ABTYPE=gomod
+GO_PACKAGES="."
+# gomod 模板要求 ABSHADOW 为 true（out-of-tree 构建），写 0 会被 abdie
+ABSHADOW=1

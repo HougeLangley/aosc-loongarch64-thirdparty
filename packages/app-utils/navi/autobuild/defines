@@ -1,0 +1,10 @@
+PKGNAME=navi
+PKGSEC=utils
+PKGDES="Cheatsheet tool for the command line"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+PKGHOMEPAGE="https://github.com/denisidoro/navi"
+
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1

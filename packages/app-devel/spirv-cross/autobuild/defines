@@ -1,0 +1,21 @@
+# 下游 build-vkgl.sh 用 -flto 把静态库链进 .so；若 .a 本身是 LTO 对象，ld 会段错误。
+# 与 wowtype 的 LTO+Rust 静态库断链同源（L121）。
+NOLTO=1
+# 下游（vkgl-loonggpu 的 build-vkgl.sh）需要 libspirv-cross-*.a 静态库。
+# autobuild4 的 70-lib_archives.sh 在 NOSTATIC 为真时会删掉所有 .a，必须关掉。
+NOSTATIC=0
+PKGNAME=spirv-cross
+PKGSEC=devel
+PKGDES="SPIR-V reflection and cross-compilation tool and library"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="cmake ninja python-3"
+ABTYPE=cmakeninja
+CMAKE_AFTER="-DSPIRV_CROSS_ENABLE_TESTS=OFF \
+             -DSPIRV_CROSS_STATIC=ON \
+             -DSPIRV_CROSS_CLI=ON \
+             -DSPIRV_CROSS_ENABLE_REFLECT=ON \
+             -DSPIRV_CROSS_ENABLE_GLSL=ON \
+             -DSPIRV_CROSS_ENABLE_HLSL=ON \
+             -DSPIRV_CROSS_ENABLE_MSL=ON \
+             -DSPIRV_CROSS_ENABLE_CPP=ON \
+             -DCMAKE_INSTALL_PREFIX=/usr"

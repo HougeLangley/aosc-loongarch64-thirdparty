@@ -1,0 +1,5 @@
+VER=2.5.15
+REL=1
+SRCS="git::commit=tags/v$VER::https://github.com/v2rayA/v2rayA"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=v2rayA/v2rayA"

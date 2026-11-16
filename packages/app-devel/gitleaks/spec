@@ -1,0 +1,5 @@
+VER=8.30.1
+REL=2
+SRCS="git::commit=tags/v$VER::https://github.com/gitleaks/gitleaks"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=gitleaks/gitleaks"

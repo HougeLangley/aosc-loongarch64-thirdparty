@@ -1,0 +1,11 @@
+PKGNAME=gitleaks
+PKGSEC=devel
+PKGDES="A tool for detecting hardcoded secrets in git repositories"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/gitleaks/gitleaks"
+
+ABTYPE=gomod
+# main 包位于仓库根（root main.go），默认 GO_PACKAGES=('.') 即可。
+GO_PACKAGES=(".")
+GO_LDFLAGS=("-X github.com/zricethezav/gitleaks/v8/version.Version=$PKGVER")

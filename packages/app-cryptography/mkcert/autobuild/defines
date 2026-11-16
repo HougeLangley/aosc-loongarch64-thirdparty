@@ -1,0 +1,9 @@
+PKGNAME=mkcert
+PKGSEC=admin
+PKGDES="Simple zero-config tool to make locally trusted development certificates"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/FiloSottile/mkcert"
+
+ABTYPE=gomod
+GO_LDFLAGS=("-X main.Version=$PKGVER")

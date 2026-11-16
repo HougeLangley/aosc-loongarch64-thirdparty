@@ -1,0 +1,5 @@
+VER=9.1.3
+REL=1
+SRCS="git::commit=tags/$VER::https://github.com/valkey-io/valkey"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=valkey-io/valkey"

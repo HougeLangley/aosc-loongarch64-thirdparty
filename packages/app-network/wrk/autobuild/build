@@ -1,0 +1,21 @@
+#!/bin/bash
+# wrk 的 Makefile 默认会去编 deps/ 下自带的 LuaJIT 与 OpenSSL。
+# 两个都不能用自带版本：
+#   1. 自带 LuaJIT-2.1 的 Makefile 在 loongarch64 上直接报
+#      "Unsupported target architecture"（上游 LuaJIT 不支持龙芯）；
+#   2. 自带 OpenSSL 同样不适合发行版打包。
+# WITH_LUAJIT=0 → 改用系统 luajit；WITH_OPENSSL=1 → 链系统 libssl/libcrypto。
+# 两者缺一都会静默降级：WITH_LUAJIT=0 单独不足以让 HTTPS 生效，
+# 实测不加 WITH_OPENSSL=1 时 ldd 里没有 libssl，HTTPS 请求会失败。
+abinfo "Building wrk against system luajit and OpenSSL ..."
+make -C "$SRCDIR" -j"${ABTHREADS}" WITH_LUAJIT=0 WITH_OPENSSL=1 \
+	|| abdie "make failed"
+
+abinfo "Installing wrk ..."
+# 上游没有 install 目标
+install -Dvm755 "$SRCDIR/wrk" "$PKGDIR/usr/bin/wrk"
+
+abinfo "Verifying linked libraries ..."
+if ! ldd "$PKGDIR/usr/bin/wrk" | grep -q 'libssl'; then
+	abdie "wrk 未链接 libssl，HTTPS 将不可用（检查 WITH_OPENSSL）"
+fi

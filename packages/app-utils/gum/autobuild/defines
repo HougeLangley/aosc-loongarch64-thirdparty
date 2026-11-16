@@ -1,0 +1,10 @@
+PKGNAME=gum
+PKGSEC=utils
+PKGDES="Helpers for creating shell-based user interfaces"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+# gum 2.x 的版本变量是 main.Version（大写 V）；
+# 官方 0.17 时代的 -X main.version 注入不到，会让 --version 打出
+# "unknown (built from source)"。
+GO_LDFLAGS=("-X main.Version=$PKGVER")

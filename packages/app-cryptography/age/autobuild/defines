@@ -1,0 +1,10 @@
+PKGNAME=age
+PKGSEC=admin
+PKGDES="A simple, modern and secure file encryption tool"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+PKGHOMEPAGE="https://github.com/FiloSottile/age"
+
+ABTYPE=gomod
+# age 仓库有两个命令入口，必须都装，否则缺 age-keygen
+GO_PACKAGES=("./cmd/age" "./cmd/age-keygen")

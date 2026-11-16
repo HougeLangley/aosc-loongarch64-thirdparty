@@ -1,0 +1,6 @@
+VER=0.11.2
+REL=1
+# 上游 tag 真实形式为 "v0.11.2"；直接写完整 ref，不做前缀加工（教训 L160）。
+SRCS="git::commit=tags/v0.11.2::https://github.com/orhun/gpg-tui"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=orhun/gpg-tui"

@@ -1,0 +1,28 @@
+#!/bin/bash
+# valkey 是 Redis 的社区分支，构建系统沿用 Redis 风格：
+#   构建：make -C src
+#   安装：make -C src install，但它用 INSTALL_BIN/INSTALL_LIB 而不是 DESTDIR，
+#         所以必须把这两个变量直接指到 $PKGDIR 下，否则会往 /usr/bin 写。
+#
+# 两个构建选择：
+#   MALLOC=libc      —— 用系统 libc 分配器，避免打包自带 jemalloc（体积小、行为可预期）
+#   USE_SYSTEMD=no   —— 本包不附带 systemd unit，因此不引入 sd_notify，
+#                       以免为一个数据库服务拖 systemd 的运行时依赖
+
+abinfo "Building valkey (MALLOC=libc, USE_SYSTEMD=no) ..."
+make -C "$SRCDIR/src" -j"${ABTHREADS}" MALLOC=libc USE_SYSTEMD=no \
+	|| abdie "make failed"
+
+abinfo "Installing valkey binaries ..."
+make -C "$SRCDIR/src" install \
+	MALLOC=libc USE_SYSTEMD=no \
+	INSTALL_BIN="$PKGDIR/usr/bin" \
+	INSTALL_LIB="$PKGDIR/usr/lib" \
+	|| abdie "make install failed"
+
+abinfo "Installing default configuration ..."
+install -Dvm644 "$SRCDIR/valkey.conf" "$PKGDIR/etc/valkey/valkey.conf"
+
+abinfo "Verifying payload ..."
+[[ -x "$PKGDIR/usr/bin/valkey-server" ]] || abdie "missing valkey-server"
+[[ -x "$PKGDIR/usr/bin/valkey-cli" ]]    || abdie "missing valkey-cli"

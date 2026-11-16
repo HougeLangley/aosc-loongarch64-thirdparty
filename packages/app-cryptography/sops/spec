@@ -1,0 +1,5 @@
+VER=3.13.3
+REL=3
+SRCS="git::commit=tags/v$VER::https://github.com/getsops/sops"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=getsops/sops"

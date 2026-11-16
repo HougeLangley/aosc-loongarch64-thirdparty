@@ -1,0 +1,9 @@
+PKGNAME=jnv
+PKGSEC=utils
+PKGDES="Interactive JSON filter using jq"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+USECLANG=1
+NOCARGOAUDIT=1
+NOLTO=1

@@ -1,0 +1,25 @@
+#!/bin/bash
+# 构件补齐（教训 L92 / L135）：CMake 的 install(TARGETS ...) 只覆盖 CLI 与头文件，
+# SPIRV_CROSS_STATIC=ON 编出的静态库没有被装进 /usr/lib。
+# 而下游（如 vkgl-loonggpu 的 build-vkgl.sh）需要 libspirv-cross-glsl.a 等。
+#
+# 注意（教训 L93/L138）：beyond 是被 source 的，绝不能改动 shopt/set 等 shell 状态，
+# 否则会渗漏到 autobuild4 自己的后期脚本（如 81-pdb.sh 依赖 extglob 的 glob）。
+# 因此这里用 find 而不是 shell glob。
+abinfo "Installing SPIRV-Cross static libraries ..."
+found=0
+while IFS= read -r lib; do
+	[[ -n "$lib" ]] || continue
+	install -Dvm644 "$lib" "$PKGDIR/usr/lib/$(basename "$lib")" || abdie "install failed: $lib"
+	found=$((found+1))
+done < <(find "$SRCDIR" -maxdepth 2 -name '*.a' -type f 2>/dev/null)
+
+if [[ "$found" -eq 0 ]]; then
+	abwarn "No static libraries found; downstream consumers may fail to link."
+fi
+abinfo "Installed $found static libraries."
+
+abinfo "Verifying key headers ..."
+for h in spirv_glsl.hpp spirv_cross.hpp spirv_common.hpp; do
+	[[ -f "$PKGDIR/usr/include/spirv_cross/$h" ]] || abdie "missing header $h"
+done

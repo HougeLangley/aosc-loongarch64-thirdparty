@@ -1,0 +1,11 @@
+PKGNAME=prettyping
+PKGSEC=net
+PKGDES="Wrapper around ping with nicer, colorized output"
+PKGDEP="iputils"
+BUILDDEP=""
+PKGHOMEPAGE="https://github.com/denilsonsa/prettyping"
+
+ABHOST=noarch
+ABTYPE=self
+ABSPLITDBG=0
+ABSTRIP=0

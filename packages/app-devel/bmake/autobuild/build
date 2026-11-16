@@ -1,0 +1,25 @@
+#!/bin/bash
+# acbs 会注入 MAKEFLAGS=-j9，而 boot-strap 内部的 make 不是并行安全的（L393）。
+# 必须在调用 boot-strap 前清掉，否则竞态导致 boot-strap 退出非 0。
+unset MAKEFLAGS MFLAGS MAKELEVEL
+set -e
+# boot-strap 的两个关键点（都踩过）：
+#   1. 不加 --install 时只构建并「打印」一条安装命令，不会真安装。
+#   2. --prefix 会被**烤进二进制**作为 sys.mk 的默认搜索路径。
+#      若写成 --prefix="$PKGDIR/usr"，装完后那个暂存路径不存在，
+#      bmake 会报 "no system rules (sys.mk)"，完全不可用。
+# 正解：--prefix 用最终运行时路径 /usr，另用 --install-destdir 控制装到哪。
+# 构建路径泄露：bmake 二进制里嵌入了构建目录。
+export CFLAGS="${CFLAGS:-} -ffile-prefix-map=$SRCDIR=/usr/src"
+abinfo "CFLAGS=$CFLAGS"
+abinfo "Bootstrapping bmake (prefix=/usr, destdir=$PKGDIR) ..."
+"$SRCDIR"/boot-strap --prefix=/usr --install --install-destdir="$PKGDIR"
+
+abinfo "Verifying ..."
+[[ -x "$PKGDIR/usr/bin/bmake" ]] || abdie "missing usr/bin/bmake"
+[[ -f "$PKGDIR/usr/share/mk/sys.mk" ]] || abdie "missing usr/share/mk/sys.mk"
+
+# 直接用打好的二进制自检：能吃到自己的 sys.mk 才算真的可用
+if ! "$PKGDIR/usr/bin/bmake" -V MAKE_VERSION >/dev/null 2>&1; then
+	abdie "bmake cannot resolve its own sys.mk"
+fi

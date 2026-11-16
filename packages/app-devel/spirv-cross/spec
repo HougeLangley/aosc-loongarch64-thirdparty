@@ -1,0 +1,7 @@
+VER=1.4.363.0
+REL=6
+# AOSC 官方有 spirv-tools / spirv-headers / spirv-llvm-translator，但没有 spirv-cross。
+# 它是 vkgl-loonggpu 与 mesa-vulkan-loonggpu 的构建依赖。
+SRCS="git::commit=tags/vulkan-sdk-$VER::https://github.com/KhronosGroup/SPIRV-Cross"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=KhronosGroup/SPIRV-Cross"

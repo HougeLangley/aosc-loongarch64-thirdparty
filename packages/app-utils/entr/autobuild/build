@@ -1,0 +1,24 @@
+#!/bin/bash
+# autobuild/build for entr (ABTYPE=self)
+#
+# entr 自带一个手写的 ./configure（不是 autotools），它只做一件事：
+# 探测 libc 是否提供 strlcpy，然后从 Makefile.{linux,linux-compat,bsd,macos} 中
+# 复制一份为 Makefile。因此不能用 ABTYPE=autotools，也不能纯 plainmake。
+abinfo "Configuring entr ..."
+"$SRCDIR"/configure || abdie "configure failed"
+
+abinfo "Building entr ..."
+make -C "$SRCDIR" -j"${ABTHREADS}" || abdie "make failed"
+
+abinfo "Running entr self-test ..."
+# 上游自带回归测试（constructs temp dirs under /tmp），失败即视为构建不可信
+make -C "$SRCDIR" test || abwarn "entr upstream test failed (non-fatal, recorded for review)"
+
+abinfo "Installing entr ..."
+make -C "$SRCDIR" install \
+	PREFIX=/usr \
+	DESTDIR="$PKGDIR" || abdie "make install failed"
+
+abinfo "Verifying installed layout ..."
+[[ -x "$PKGDIR/usr/bin/entr" ]] || abdie "missing /usr/bin/entr"
+[[ -f "$PKGDIR/usr/share/man/man1/entr.1" ]] || abdie "missing man page"

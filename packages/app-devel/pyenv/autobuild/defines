@@ -1,0 +1,11 @@
+PKGNAME=pyenv
+PKGSEC=devel
+PKGDES="Simple Python version management"
+PKGDEP="glibc bash curl git"
+BUILDDEP=""
+PKGHOMEPAGE="https://github.com/pyenv/pyenv"
+
+ABHOST=noarch
+ABTYPE=self
+ABSPLITDBG=0
+ABSTRIP=0

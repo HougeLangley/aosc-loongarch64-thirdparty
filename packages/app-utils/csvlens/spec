@@ -1,0 +1,5 @@
+VER=0.15.1
+REL=1
+SRCS="git::commit=tags/v$VER::https://github.com/YS-L/csvlens"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=YS-L/csvlens"

@@ -1,0 +1,9 @@
+#!/bin/bash
+# 同 fclones：workspace 构建会把测试辅助程序装进 /usr/bin。
+# watchexec 的 test-socketfd 是集成测试用的 socket 传递辅助程序，不是用户工具。
+abinfo "Removing test-only binaries ..."
+for b in test-socketfd; do
+	if [[ -e "$PKGDIR/usr/bin/$b" ]]; then
+		rm -fv "$PKGDIR/usr/bin/$b"
+	fi
+done

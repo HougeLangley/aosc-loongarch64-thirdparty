@@ -1,0 +1,5 @@
+VER=40.0.1
+REL=1
+SRCS="git::commit=tags/$VER::https://github.com/antonmedv/fx"
+CHKSUMS="SKIP"
+CHKUPDATE="github::repo=antonmedv/fx"

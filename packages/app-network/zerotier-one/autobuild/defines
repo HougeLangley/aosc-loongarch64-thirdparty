@@ -1,0 +1,8 @@
+PKGNAME=zerotier-one
+PKGSEC=net
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="gcc git make miniupnpc"
+PKGDES="A client for ZeroTier network virtualization service"
+PKGHOMEPAGE="https://www.zerotier.com/"
+ABTYPE=self
+REL=3

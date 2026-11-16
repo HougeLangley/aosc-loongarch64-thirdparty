@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+# bashtop 是单文件 bash 脚本 + 同目录的 themes/（主题文件）。
+abinfo "Installing bashtop ..."
+install -Dvm755 "$SRCDIR/bashtop" "$PKGDIR/usr/bin/bashtop"
+
+# 注意：cp -a <src> <dst> 要求 dst 的父目录已存在，
+# 否则报 "cannot create directory ... : No such file or directory"。
+if [[ -d "$SRCDIR/themes" ]]; then
+    install -dvm755 "$PKGDIR/usr/share/bashtop/themes"
+    cp -av "$SRCDIR/themes/." "$PKGDIR/usr/share/bashtop/themes/"
+fi
+
+abinfo "Verifying layout ..."
+[[ -x "$PKGDIR/usr/bin/bashtop" ]] || abdie "missing /usr/bin/bashtop"
