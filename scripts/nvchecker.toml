@@ -1,0 +1,555 @@
+# 自动生成：92 个第三方包
+# 由 scripts/nvchecker-gen.py 产出，勿手改
+
+["bashtop"]
+source = "git"
+git = "https://github.com/aristocratos/bashtop"
+use_max_tag = true
+prefix = "v"   # 当前 0.9.25
+
+["btrbk"]
+source = "git"
+git = "https://github.com/digint/btrbk"
+use_max_tag = true
+prefix = "v"   # 当前 0.32.7
+
+["kustomize"]
+source = "git"
+git = "https://github.com/kubernetes-sigs/kustomize"
+use_max_tag = true
+prefix = "kustomize/v"   # 当前 5.8.3
+
+["procs"]
+source = "git"
+git = "https://github.com/dalance/procs"
+use_max_tag = true
+prefix = "v"   # 当前 0.14.12
+
+["age"]
+source = "git"
+git = "https://github.com/FiloSottile/age"
+use_max_tag = true
+prefix = "v"   # 当前 1.3.2
+
+["mkcert"]
+source = "git"
+git = "https://github.com/FiloSottile/mkcert"
+use_max_tag = true
+prefix = "v"   # 当前 1.4.4
+
+["sops"]
+source = "git"
+git = "https://github.com/getsops/sops"
+use_max_tag = true
+prefix = "v"   # 当前 3.13.3
+
+["valkey"]
+source = "git"
+git = "https://github.com/valkey-io/valkey"
+use_max_tag = true
+prefix = ""   # 当前 9.1.3
+
+["codespell"]
+source = "git"
+git = "https://github.com/codespell-project/codespell"
+use_max_tag = true
+prefix = "v"   # 当前 2.4.3
+
+["git-sizer"]
+source = "git"
+git = "https://github.com/github/git-sizer"
+use_max_tag = true
+prefix = "v"   # 当前 1.6.0
+
+["gitleaks"]
+source = "git"
+git = "https://github.com/gitleaks/gitleaks"
+use_max_tag = true
+prefix = "v"   # 当前 8.30.1
+
+["gofumpt"]
+source = "git"
+git = "https://github.com/mvdan/gofumpt"
+use_max_tag = true
+prefix = "v"   # 当前 0.12.0
+
+["golangci-lint"]
+source = "git"
+git = "https://github.com/golangci/golangci-lint"
+use_max_tag = true
+prefix = "v"   # 当前 2.15.0
+
+["helm-docs"]
+source = "git"
+git = "https://github.com/norwoodj/helm-docs"
+use_max_tag = true
+prefix = "v"   # 当前 1.14.2
+
+["pyenv"]
+source = "git"
+git = "https://github.com/pyenv/pyenv"
+use_max_tag = true
+prefix = "v"   # 当前 2.8.15
+
+["samurai"]
+source = "git"
+git = "https://github.com/michaelforney/samurai"
+use_max_tag = true
+# 前缀推断为 '1.'（SRCS 可能硬编码版本）  当前 1.3
+
+["spirv-cross"]
+source = "git"
+git = "https://github.com/KhronosGroup/SPIRV-Cross"
+use_max_tag = true
+# 前缀推断为 'vulkan-sdk-'（SRCS 可能硬编码版本）  当前 1.4.363.0
+
+["staticcheck"]
+source = "git"
+git = "https://github.com/dominikh/go-tools"
+use_max_tag = true
+prefix = ""   # 当前 2026.2.2
+
+["taplo"]
+source = "git"
+git = "https://github.com/tamasfe/taplo"
+use_max_tag = true
+# 前缀推断为 '0.'（SRCS 可能硬编码版本）  当前 0.10.0
+
+["trivy"]
+source = "git"
+git = "https://github.com/aquasecurity/trivy"
+use_max_tag = true
+prefix = "v"   # 当前 0.76.2
+
+["watchexec"]
+source = "git"
+git = "https://github.com/watchexec/watchexec"
+use_max_tag = true
+prefix = "v"   # 当前 2.8.0
+
+["yamllint"]
+source = "git"
+git = "https://github.com/adrienverge/yamllint"
+use_max_tag = true
+prefix = "v"   # 当前 1.38.0
+
+["zizmor"]
+source = "git"
+git = "https://github.com/zizmorcore/zizmor"
+use_max_tag = true
+prefix = "v"   # 当前 1.32.0
+
+["tectonic"]
+source = "git"
+git = "https://github.com/tectonic-typesetting/tectonic"
+use_max_tag = true
+# 前缀推断为 'tectonic@'（SRCS 可能硬编码版本）  当前 0.17.0
+
+["libmspack"]
+source = "git"
+git = "https://github.com/kyz/libmspack"
+use_max_tag = true
+prefix = ""   # 当前 1.12
+
+["bandwhich"]
+source = "git"
+git = "https://github.com/imsnif/bandwhich"
+use_max_tag = true
+prefix = "v"   # 当前 0.23.1
+
+["curlie"]
+source = "git"
+git = "https://github.com/rs/curlie"
+use_max_tag = true
+prefix = "v"   # 当前 1.8.2
+
+["hurl"]
+source = "git"
+git = "https://github.com/Orange-OpenSource/hurl"
+use_max_tag = true
+prefix = ""   # 当前 8.1.0
+
+["oha"]
+source = "git"
+git = "https://github.com/hatoo/oha"
+use_max_tag = true
+prefix = "v"   # 当前 1.17.0
+
+["prettyping"]
+source = "git"
+git = "https://github.com/denilsonsa/prettyping"
+use_max_tag = true
+prefix = "v"   # 当前 1.1.0
+
+["speedtest-cli"]
+source = "git"
+git = "https://github.com/sivel/speedtest-cli"
+use_max_tag = true
+prefix = "v"   # 当前 2.1.3
+
+["trippy"]
+source = "git"
+git = "https://github.com/fujiapple852/trippy"
+use_max_tag = true
+# 前缀推断为 '$VER::https://github.com/fujiapple'（SRCS 可能硬编码版本）  当前 0.13.0
+
+["vegeta"]
+source = "git"
+git = "https://github.com/tsenart/vegeta"
+use_max_tag = true
+prefix = "v"   # 当前 12.13.0
+
+["wrk"]
+source = "git"
+git = "https://github.com/wg/wrk"
+use_max_tag = true
+prefix = ""   # 当前 4.2.0
+
+["xh"]
+source = "git"
+git = "https://github.com/ducaale/xh"
+use_max_tag = true
+prefix = "v"   # 当前 0.26.3
+
+["zerotier-one"]
+source = "git"
+git = "https://github.com/zerotier/ZeroTierOne"
+use_max_tag = true
+# 前缀推断为 '1.'（SRCS 可能硬编码版本）  当前 1.16.2
+
+["v2raya"]
+source = "git"
+git = "https://github.com/v2rayA/v2rayA"
+use_max_tag = true
+prefix = "v"   # 当前 2.5.15
+
+["nu"]
+source = "git"
+git = "https://github.com/nushell/nushell"
+use_max_tag = true
+# 前缀推断为 '0.'（SRCS 可能硬编码版本）  当前 0.117.0
+
+["bat-extras"]
+source = "git"
+git = "https://github.com/eth-p/bat-extras"
+use_max_tag = true
+prefix = "v"   # 当前 20200408
+
+["broot"]
+source = "git"
+git = "https://github.com/Canop/broot"
+use_max_tag = true
+prefix = "v"   # 当前 1.62.0
+
+["csvlens"]
+source = "git"
+git = "https://github.com/YS-L/csvlens"
+use_max_tag = true
+prefix = "v"   # 当前 0.15.1
+
+["dua-cli"]
+source = "git"
+git = "https://github.com/Byron/dua-cli"
+use_max_tag = true
+prefix = "v"   # 当前 3.0.3
+
+["dysk"]
+source = "git"
+git = "https://github.com/Canop/dysk"
+use_max_tag = true
+prefix = "v"   # 当前 3.8.2
+
+["fclones"]
+source = "git"
+git = "https://github.com/pkolaczk/fclones"
+use_max_tag = true
+prefix = "v"   # 当前 0.35.0
+
+["freeze"]
+source = "git"
+git = "https://github.com/charmbracelet/freeze"
+use_max_tag = true
+prefix = "v"   # 当前 0.2.2
+
+["fx"]
+source = "git"
+git = "https://github.com/antonmedv/fx"
+use_max_tag = true
+prefix = ""   # 当前 40.0.1
+
+["git-branchless"]
+source = "git"
+git = "https://github.com/arxanas/git-branchless"
+use_max_tag = true
+prefix = "v"   # 当前 0.11.1
+
+["gpg-tui"]
+source = "git"
+git = "https://github.com/orhun/gpg-tui"
+use_max_tag = true
+prefix = "v"   # 当前 0.11.2
+
+["grex"]
+source = "git"
+git = "https://github.com/pemistahl/grex"
+use_max_tag = true
+prefix = "v"   # 当前 1.4.6
+
+["gron"]
+source = "git"
+git = "https://github.com/tomnomnom/gron"
+use_max_tag = true
+prefix = "v"   # 当前 0.7.1
+
+["gum"]
+source = "git"
+git = "https://github.com/charmbracelet/gum"
+use_max_tag = true
+prefix = "v"   # 当前 2.0.2
+
+["hexyl"]
+source = "git"
+git = "https://github.com/sharkdp/hexyl"
+use_max_tag = true
+prefix = "v"   # 当前 0.17.0
+
+["hwatch"]
+source = "git"
+git = "https://github.com/blacknon/hwatch"
+use_max_tag = true
+# 前缀推断为 '0.'（SRCS 可能硬编码版本）  当前 0.4.2
+
+["igrep"]
+source = "git"
+git = "https://github.com/konradsz/igrep"
+use_max_tag = true
+prefix = "v"   # 当前 1.3.0
+
+["jaq"]
+source = "git"
+git = "https://github.com/01mf02/jaq"
+use_max_tag = true
+prefix = "v"   # 当前 3.1.2
+
+["jira-cli"]
+source = "git"
+git = "https://github.com/ankitpokhrel/jira-cli"
+use_max_tag = true
+prefix = "v"   # 当前 1.7.0
+
+["jless"]
+source = "git"
+git = "https://github.com/PaulJuliusMartinez/jless"
+use_max_tag = true
+prefix = "v"   # 当前 0.9.0
+
+["jnv"]
+source = "git"
+git = "https://github.com/ynqa/jnv"
+use_max_tag = true
+prefix = "v"   # 当前 0.7.1
+
+["k9s"]
+source = "git"
+git = "https://github.com/derailed/k9s"
+use_max_tag = true
+prefix = "v"   # 当前 0.51.0
+
+["kube-capacity"]
+source = "git"
+git = "https://github.com/robscott/kube-capacity"
+use_max_tag = true
+prefix = "v"   # 当前 0.8.0
+
+["kube-score"]
+source = "git"
+git = "https://github.com/zegl/kube-score"
+use_max_tag = true
+prefix = "v"   # 当前 1.20.0
+
+["kubecolor"]
+source = "git"
+git = "https://github.com/hidetatz/kubecolor"
+use_max_tag = true
+prefix = "v"   # 当前 0.0.25
+
+["kubeconform"]
+source = "git"
+git = "https://github.com/yannh/kubeconform"
+use_max_tag = true
+prefix = "v"   # 当前 0.8.0
+
+["kubectl-ai"]
+source = "git"
+git = "https://github.com/GoogleCloudPlatform/kubectl-ai"
+use_max_tag = true
+prefix = "v"   # 当前 0.0.31
+
+["kubectl-neat"]
+source = "git"
+git = "https://github.com/itaysk/kubectl-neat"
+use_max_tag = true
+prefix = "v"   # 当前 2.0.4
+
+["kubectl-tree"]
+source = "git"
+git = "https://github.com/ahmetb/kubectl-tree"
+use_max_tag = true
+prefix = "v"   # 当前 0.6.0
+
+["kubeswitch"]
+source = "git"
+git = "https://github.com/danielfoehrKn/kubeswitch"
+use_max_tag = true
+# 前缀推断为 '0.'（SRCS 可能硬编码版本）  当前 0.9.3
+
+["lazydocker"]
+source = "git"
+git = "https://github.com/jesseduffield/lazydocker"
+use_max_tag = true
+prefix = "v"   # 当前 0.25.2
+
+["lazysql"]
+source = "git"
+git = "https://github.com/jorgerojas26/lazysql"
+use_max_tag = true
+prefix = "v"   # 当前 0.7.0
+
+["lf"]
+source = "git"
+git = "https://github.com/gokcehan/lf"
+use_max_tag = true
+# 前缀推断为 'r'（SRCS 可能硬编码版本）  当前 42
+
+["lhasa"]
+source = "git"
+git = "https://github.com/fragglet/lhasa"
+use_max_tag = true
+prefix = "v"   # 当前 0.6.0
+
+["moar"]
+source = "git"
+git = "https://github.com/walles/moar"
+use_max_tag = true
+prefix = "v"   # 当前 2.19.7
+
+["muffet"]
+source = "git"
+git = "https://github.com/raviqqe/muffet"
+use_max_tag = true
+prefix = "v"   # 当前 2.11.8
+
+["navi"]
+source = "git"
+git = "https://github.com/denisidoro/navi"
+use_max_tag = true
+prefix = "v"   # 当前 2.24.0
+
+["ov"]
+source = "git"
+git = "https://github.com/noborus/ov"
+use_max_tag = true
+prefix = "v"   # 当前 0.55.0
+
+["pop"]
+source = "git"
+git = "https://github.com/charmbracelet/pop"
+use_max_tag = true
+prefix = "v"   # 当前 0.5.0
+
+["popeye"]
+source = "git"
+git = "https://github.com/derailed/popeye"
+use_max_tag = true
+prefix = "v"   # 当前 0.22.1
+
+["pueue"]
+source = "git"
+git = "https://github.com/Nukesor/pueue"
+use_max_tag = true
+prefix = "v"   # 当前 4.0.4
+
+["ripgrep-all"]
+source = "git"
+git = "https://github.com/phiresky/ripgrep-all"
+use_max_tag = true
+prefix = "v"   # 当前 0.10.10
+
+["sad"]
+source = "git"
+git = "https://github.com/ms-jpq/sad"
+use_max_tag = true
+prefix = "v"   # 当前 0.4.33
+
+["sd"]
+source = "git"
+git = "https://github.com/chmln/sd"
+use_max_tag = true
+prefix = "v"   # 当前 1.1.0
+
+["shellharden"]
+source = "git"
+git = "https://github.com/anordal/shellharden"
+use_max_tag = true
+prefix = "v"   # 当前 4.3.2
+
+["skim"]
+source = "git"
+git = "https://github.com/lotabout/skim"
+use_max_tag = true
+prefix = "v"   # 当前 5.9.0
+
+["stern"]
+source = "git"
+git = "https://github.com/stern/stern"
+use_max_tag = true
+prefix = "v"   # 当前 1.35.0
+
+["superfile"]
+source = "git"
+git = "https://github.com/yorukot/superfile"
+use_max_tag = true
+prefix = "v"   # 当前 1.6.0
+
+["tdf"]
+source = "git"
+git = "https://github.com/itsjunetime/tdf"
+use_max_tag = true
+prefix = "v"   # 当前 0.5.0
+
+["visidata"]
+source = "git"
+git = "https://github.com/saulpw/visidata"
+use_max_tag = true
+prefix = "v"   # 当前 3.5
+
+["xcp"]
+source = "git"
+git = "https://github.com/tarka/xcp"
+use_max_tag = true
+prefix = "v"   # 当前 0.24.2
+
+["xsv"]
+source = "git"
+git = "https://github.com/BurntSushi/xsv"
+use_max_tag = true
+prefix = ""   # 当前 0.13.0
+
+["vkmark"]
+source = "git"
+git = "https://github.com/vkmark/vkmark"
+use_max_tag = true
+prefix = ""   # 当前 2025.01
+
+["wowtype"]
+source = "git"
+git = "https://github.com/Gloridust/WowType"
+use_max_tag = true
+prefix = "v"   # 当前 0.3.12
+
+["libpng"]
+source = "git"
+git = "https://github.com/pnggroup/libpng"
+use_max_tag = true
+prefix = "v"   # 当前 1.6.59
+
