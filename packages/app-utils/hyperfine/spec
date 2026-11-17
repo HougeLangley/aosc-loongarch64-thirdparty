@@ -1,0 +1,4 @@
+VER=2.0.0
+REL=1
+SRCS="git::commit=tags/v2.0.0::https://github.com/sharkdp/hyperfine"
+CHKSUMS="SKIP"

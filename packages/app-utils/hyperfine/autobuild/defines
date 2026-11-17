@@ -1,0 +1,7 @@
+PKGNAME=hyperfine
+PKGSEC=utils
+PKGDES="Command-line benchmarking tool"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+NOLTO=1
