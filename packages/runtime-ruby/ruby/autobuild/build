@@ -1,7 +1,16 @@
+VER=${PKGVER:?PKGVER not exported by autobuild}
 # Ruby 4.0 —— AOSC 第三方源构建
-cd "$SRCDIR"
+# L621：file:: 源 + ABTYPE=self 时 acbs 只下载不解包（模板型才代劳）——必须自解。
+# SRCDIR 是构建根，tarball 就躺在根上；解出 ruby-$PKGVER/ 后进入。
+RBSRC=$(find "$SRCDIR" -maxdepth 2 -type d -name "ruby-$PKGVER" | head -1)
+if [[ -z "$RBSRC" && -f "$SRCDIR/ruby-$PKGVER.tar.gz" ]]; then
+  tar -xf "$SRCDIR/ruby-$PKGVER.tar.gz" -C "$SRCDIR"
+  RBSRC="$SRCDIR/ruby-$PKGVER"
+fi
+[ -n "$RBSRC" ] || abdie "ruby-$PKGVER source not found in $SRCDIR"
+cd "$RBSRC"
 
-echo "[build] 配置 Ruby $VER"
+echo "[build] 配置 Ruby $PKGVER"
 ./configure \
   --prefix=/usr \
   --enable-shared \
@@ -10,7 +19,7 @@ echo "[build] 配置 Ruby $VER"
   --with-out-ext=tk \
   > "$SRCDIR/configure.log" 2>&1 || { tail -30 "$SRCDIR/configure.log"; exit 1; }
 
-echo "[build] 编译 Ruby $VER（$ABTHREADS 线程）"
+echo "[build] 编译 Ruby $PKGVER（$ABTHREADS 线程）"
 make -j"$ABTHREADS" > "$SRCDIR/make.log" 2>&1 || { tail -40 "$SRCDIR/make.log"; exit 1; }
 
 echo "[build] 安装到 $PKGDIR"
@@ -20,3 +29,6 @@ make install DESTDIR="$PKGDIR" > "$SRCDIR/install.log" 2>&1 || { tail -30 "$SRCD
 rm -rf "$PKGDIR/usr/share/doc/ruby" "$PKGDIR/usr/share/ri" 2>/dev/null || true
 
 echo "[build] 完成，文件数：$(find "$PKGDIR" -type f | wc -l)"
+
+# 载荷闸：test-unit 是上游测试辅助程序，不随发行（L623）
+rm -f "$PKGDIR"/usr/bin/test-unit
