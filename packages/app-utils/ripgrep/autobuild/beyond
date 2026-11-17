@@ -1,0 +1,8 @@
+# 官方件四件套：补全×3 + man。上游 15.2 已删 complete/doc/，改由二进制自生成
+#（采纳 Arch PKGBUILD 实践：rg --generate complete-{bash,zsh,fish} / man，L628）
+RG="$PKGDIR"/usr/bin/rg
+mkdir -p "$PKGDIR"/usr/share/{bash-completion/completions,fish/vendor_completions.d,zsh/site-functions,man/man1}
+"$RG" --generate complete-bash > "$PKGDIR"/usr/share/bash-completion/completions/rg
+"$RG" --generate complete-zsh  > "$PKGDIR"/usr/share/zsh/site-functions/_rg
+"$RG" --generate complete-fish > "$PKGDIR"/usr/share/fish/vendor_completions.d/rg.fish
+"$RG" --generate man          > "$PKGDIR"/usr/share/man/man1/rg.1
