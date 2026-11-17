@@ -1,0 +1,8 @@
+PKGNAME=actionlint
+PKGSEC=devel
+PKGDES="Static analysis for GitHub Actions workflow files"
+PKGDEP="glibc gcc-runtime"
+BUILDDEP="go"
+ABTYPE=gomod
+GO_PACKAGES="./cmd/actionlint"
+ABSPLITDBG=0

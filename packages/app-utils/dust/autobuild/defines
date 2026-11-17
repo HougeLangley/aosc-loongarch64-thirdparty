@@ -1,0 +1,7 @@
+PKGNAME=dust
+PKGSEC=utils
+PKGDES="A more intuitive version of du in rust"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+NOLTO=1

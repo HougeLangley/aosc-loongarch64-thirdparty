@@ -1,0 +1,7 @@
+PKGNAME=act
+PKGSEC=utils
+PKGDES="Run your GitHub Actions locally"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="go"
+ABTYPE=gomod
+GO_PACKAGES="."
