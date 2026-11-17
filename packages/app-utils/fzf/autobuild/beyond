@@ -1,0 +1,13 @@
+# fzf 全家桶：key-bindings/补全/man/vim 插件（官方件 11 文件全对齐，L632）
+S=$(find "$SRCDIR" -maxdepth 2 -type d -name fzf | head -1); S="${S:-$SRCDIR}"
+install -Dm644 "$S/shell/key-bindings.bash" "$PKGDIR"/usr/share/fzf/key-bindings.bash
+install -Dm644 "$S/shell/key-bindings.zsh"  "$PKGDIR"/usr/share/fzf/key-bindings.zsh
+install -Dm644 "$S/shell/completion.bash"   "$PKGDIR"/usr/share/bash-completion/completions/fzf
+install -Dm644 "$S/shell/completion.zsh"    "$PKGDIR"/usr/share/zsh/site-functions/_fzf
+install -Dm644 "$S/shell/key-bindings.fish" "$PKGDIR"/usr/share/fish/functions/fzf_key_bindings.fish
+install -Dm644 "$S/man/man1/fzf.1"          "$PKGDIR"/usr/share/man/man1/fzf.1
+install -Dm644 "$S/man/man1/fzf-tmux.1"     "$PKGDIR"/usr/share/man/man1/fzf-tmux.1
+install -Dm644 "$S/doc/fzf.txt"             "$PKGDIR"/usr/share/vim/vimfiles/doc/fzf.txt
+install -Dm644 "$S/plugin/fzf.vim"          "$PKGDIR"/usr/share/vim/vimfiles/plugin/fzf.vim
+install -Dm644 "$PKGDIR"/usr/share/fzf/key-bindings.bash "$PKGDIR"/etc/bashrc.d/fzf-key-bindings.bash
+install -Dm644 "$PKGDIR"/usr/share/fzf/key-bindings.zsh  "$PKGDIR"/etc/zsh/zshrc.d/fzf-key-bindings.zsh

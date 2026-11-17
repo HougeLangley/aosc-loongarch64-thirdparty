@@ -1,0 +1,7 @@
+PKGNAME=fzf
+PKGSEC=utils
+PKGDES="Fuzzy finder"
+PKGDEP="glibc gcc-runtime"
+BUILDDEP="go"
+ABTYPE=gomod
+GO_PACKAGES="."
