@@ -1,6 +1,6 @@
 PKGNAME=gpg-tui
 PKGSEC=utils
-PKGDES="gpg-tui utility"
+PKGDES="Gpg-tui utility"
 PKGDEP="@AB_AUTO_SO_DEPS@"
 BUILDDEP="rustc llvm"
 ABTYPE=rust

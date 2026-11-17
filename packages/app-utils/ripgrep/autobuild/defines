@@ -1,6 +1,6 @@
 PKGNAME=ripgrep
 PKGSEC=utils
-PKGDES="ripgrep recursively searches directories"
+PKGDES="Ripgrep recursively searches directories"
 PKGDEP="@AB_AUTO_SO_DEPS@"
 BUILDDEP="rustc llvm"
 ABTYPE=rust

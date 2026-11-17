@@ -1,6 +1,6 @@
 PKGNAME=ripgrep-all
 PKGSEC=utils
-PKGDES="ripgrep with support for PDF, E-book, Office, zip and more"
+PKGDES="Ripgrep with support for PDF, E-book, Office, zip and more"
 PKGDEP="@AB_AUTO_SO_DEPS@"
 BUILDDEP="rustc llvm"
 PKGHOMEPAGE="https://github.com/phiresky/ripgrep-all"

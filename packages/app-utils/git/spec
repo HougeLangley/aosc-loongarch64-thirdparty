@@ -1,0 +1,4 @@
+VER=2.56.1
+REL=1
+SRCS="git::commit=tags/v2.56.1::https://github.com/git/git"
+CHKSUMS="SKIP"

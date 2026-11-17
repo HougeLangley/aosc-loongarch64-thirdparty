@@ -1,0 +1,7 @@
+PKGNAME=just
+PKGSEC=utils
+PKGDES="Command runner"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+NOLTO=1

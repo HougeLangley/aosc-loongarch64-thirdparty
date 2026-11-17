@@ -1,6 +1,6 @@
 PKGNAME=kubectl-tree
 PKGSEC=utils
-PKGDES="kubectl plugin to browse Kubernetes object hierarchies"
+PKGDES="Kubectl plugin to browse Kubernetes object hierarchies"
 PKGDEP="@AB_AUTO_SO_DEPS@"
 BUILDDEP="go"
 ABTYPE=gomod

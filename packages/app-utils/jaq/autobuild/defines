@@ -1,6 +1,6 @@
 PKGNAME=jaq
 PKGSEC=utils
-PKGDES="jq clone focused on correctness, speed and simplicity"
+PKGDES="Jq clone focused on correctness, speed and simplicity"
 PKGDEP="@AB_AUTO_SO_DEPS@"
 BUILDDEP="rustc llvm"
 PKGHOMEPAGE="https://github.com/01mf02/jaq"

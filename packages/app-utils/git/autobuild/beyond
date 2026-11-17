@@ -1,0 +1,33 @@
+# 补全与 man（过 parity 对等闸，L628）：①源码树 complete//doc/*.1 优先；
+# ②上游已删文件的（如 ripgrep 15.2），用二进制 --generate 自生成（Arch 实践）。
+CS=$(find "$SRCDIR" -maxdepth 3 -type d \( -name complete -o -name completion \) | head -1)
+if [[ -n "$CS" ]]; then
+  for f in "$CS"/*; do
+    b=$(basename "$f")
+    case "$b" in
+      fdfind.bash) install -Dm644 "$f" "$PKGDIR"/usr/share/bash-completion/completions/fd ;;
+      fdfind.fish) install -Dm644 "$f" "$PKGDIR"/usr/share/fish/vendor_completions.d/fd.fish ;;
+      _fdfind)     install -Dm644 "$f" "$PKGDIR"/usr/share/zsh/site-functions/_fd ;;
+      *.bash)    install -Dm644 "$f" "$PKGDIR"/usr/share/bash-completion/completions/"${b%.bash}" ;;
+      *.fish)    install -Dm644 "$f" "$PKGDIR"/usr/share/fish/vendor_completions.d/"$b" ;;
+      _*)        install -Dm644 "$f" "$PKGDIR"/usr/share/zsh/site-functions/"$b" ;;
+      bash_*)    install -Dm644 "$f" "$PKGDIR"/usr/share/bash-completion/completions/"$b" ;;
+      fish_*)    install -Dm644 "$f" "$PKGDIR"/usr/share/fish/vendor_completions.d/"$b.fish" ;;
+      zsh_*)     install -Dm644 "$f" "$PKGDIR"/usr/share/zsh/site-functions/"$b" ;;
+      _fd)         install -Dm644 "$f" "$PKGDIR"/usr/share/zsh/site-functions/_fd ;;
+    esac
+  done
+fi
+find "$SRCDIR" -maxdepth 3 -path '*/doc/*.1' -name '*.1' | while read -r m; do
+  install -Dm644 "$m" "$PKGDIR"/usr/share/man/man1/"$(basename "$m")"
+done
+# 兜底：主二进制支持 --generate 就补齐缺口
+BIN=$(ls "$PKGDIR"/usr/bin 2>/dev/null | head -1)
+if [[ -n "$BIN" ]] && "$PKGDIR/usr/bin/$BIN" --generate complete-bash >/dev/null 2>&1; then
+  N="${BIN%% *}"
+  mkdir -p "$PKGDIR"/usr/share/{bash-completion/completions,fish/vendor_completions.d,zsh/site-functions,man/man1}
+  [[ -f "$PKGDIR"/usr/share/bash-completion/completions/"$N" ]] || "$PKGDIR/usr/bin/$BIN" --generate complete-bash > "$PKGDIR"/usr/share/bash-completion/completions/"$N"
+  [[ -f "$PKGDIR"/usr/share/zsh/site-functions/_"$N" ]] || "$PKGDIR/usr/bin/$BIN" --generate complete-zsh > "$PKGDIR"/usr/share/zsh/site-functions/_"$N"
+  [[ -f "$PKGDIR"/usr/share/fish/vendor_completions.d/"$N".fish ]] || "$PKGDIR/usr/bin/$BIN" --generate complete-fish > "$PKGDIR"/usr/share/fish/vendor_completions.d/"$N".fish
+  [[ -f "$PKGDIR"/usr/share/man/man1/"$N".1 ]] || "$PKGDIR/usr/bin/$BIN" --generate man > "$PKGDIR"/usr/share/man/man1/"$N".1
+fi

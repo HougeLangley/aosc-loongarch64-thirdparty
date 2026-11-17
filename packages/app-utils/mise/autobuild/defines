@@ -1,0 +1,7 @@
+PKGNAME=mise
+PKGSEC=utils
+PKGDES="Dev tool version manager"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+NOLTO=1
