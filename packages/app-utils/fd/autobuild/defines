@@ -1,0 +1,7 @@
+PKGNAME=fd
+PKGSEC=utils
+PKGDES="Simple, fast file finder"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+NOLTO=1

@@ -1,0 +1,4 @@
+VER=10.5.2
+REL=1
+SRCS="git::commit=tags/v10.5.2::https://github.com/sharkdp/fd"
+CHKSUMS="SKIP"

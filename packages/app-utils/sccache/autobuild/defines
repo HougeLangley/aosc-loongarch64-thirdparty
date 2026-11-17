@@ -1,0 +1,7 @@
+PKGNAME=sccache
+PKGSEC=utils
+PKGDES="Compile cache like ccache with cloud storage"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP="rustc llvm"
+ABTYPE=rust
+NOLTO=1
