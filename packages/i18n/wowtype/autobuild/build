@@ -2,16 +2,20 @@
 
 export CARGO_NET_RETRY=5
 DATA_VER=2026.11.11.3
-DATA_URL="https://github.com/Gloridust/WowType/releases/download/v${VER}/wowtype-data-rime-ice-${DATA_VER}.tar.gz"
+DATA_URL="https://github.com/Gloridust/WowType/releases/download/v${PKGVER}/wowtype-data-rime-ice-${DATA_VER}.tar.gz"
 DATA_SHA=ea07c3e8cf66cbf7d0ebc23ab95cc96384e6f3808fd0cdee1f87905322e51d7c
 
 cd "$SRCDIR"
 
 # abbs-lite 的 git 源可能给出空目录；按 tag 精确补拉
 if [[ ! -f Cargo.lock || ! -d fcitx5-addon ]]; then
-  git clone --depth=1 --branch "v$VER" https://github.com/Gloridust/WowType.git .
+  git clone --depth=1 --branch "v$PKGVER" https://github.com/Gloridust/WowType.git .
 fi
-test "$(git rev-parse HEAD)" = "$(git rev-parse "v$VER^{}")"
+# acbs 抽出的 git 源可能不带 tag ref（rev-parse 直接 128）。tag ref 在才校验，
+# 不在则信任 acbs 的 commit=tags/v$PKGVER 钉定（L608）。
+if git rev-parse -q --verify "refs/tags/v$PKGVER" >/dev/null 2>&1; then
+  test "$(git rev-parse HEAD)" = "$(git rev-parse "v$PKGVER^{}")"
+fi
 
 # 数据档：固定 URL + 固定 sha256（构建期内校验，不依赖生成档案的可复现性）
 DATA_DIR="$SRCDIR/../wowtype-data"
@@ -29,7 +33,8 @@ done
 
 # 下游补丁：由 AOSC 源安装时禁用 GitHub amd64 自更新路径
 # （构建树会被 abbs-lite 复用，先还原再打，保证可重复构建）
-git checkout -- settings/wowtype-config
+# acbs 抽出的源码不是 git 工作树，checkout 会 128 —— 仅在 .git 存在时还原（L609）。
+[ -d .git ] && git checkout -- settings/wowtype-config || true
 python3 - <<'PY'
 from pathlib import Path
 p = Path("settings/wowtype-config")
@@ -64,7 +69,7 @@ cmake -S fcitx5-addon -B build \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_INSTALL_LIBDIR=lib \
-  -DWOWTYPE_VERSION="$VER" \
+  -DWOWTYPE_VERSION="$PKGVER" \
   -DWOWTYPE_VOICE=OFF
 cmake --build build -j"$ABTHREADS"
 DESTDIR="$PKGDIR" cmake --install build
@@ -166,4 +171,4 @@ gcc /tmp/wowtype-dlopen.c -o /tmp/wowtype-dlopen -ldl
 /tmp/wowtype-dlopen "$PKGDIR/usr/lib/fcitx5/libwowtype.so"
 ! ldd "$PKGDIR/usr/lib/fcitx5/libwowtype.so" | grep -q libasound
 
-echo "[build] wowtype $VER 文本版构建与验证完成"
+echo "[build] wowtype $PKGVER 文本版构建与验证完成"
