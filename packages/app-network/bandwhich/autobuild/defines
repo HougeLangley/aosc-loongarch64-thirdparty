@@ -17,3 +17,7 @@ NOCARGOAUDIT=1
 # 用 USECLANG=1（即 ld.lld）编 0.23.1 全程通过，耗时 223s，
 # 三闸门 selfcheck/parity/smoke 全绿 —— 官方那条 FIXME 对当前工具链已不成立。
 # 因此本包是「解除了官方架构限制的更新版」，不是新增包。
+
+# rustc 1.99.1 在 loongarch64 上做增量编译会 ICE（stable_hash_impls.rs 里 Option::unwrap 为 None）。
+# 本包 2026-11-15 用同样参数成功过，说明是增量缓存触发的，不是代码问题。
+export CARGO_INCREMENTAL=0

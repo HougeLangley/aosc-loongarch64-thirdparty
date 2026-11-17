@@ -1,4 +1,3 @@
-#!/bin/bash
 # wrk 的 Makefile 默认会去编 deps/ 下自带的 LuaJIT 与 OpenSSL。
 # 两个都不能用自带版本：
 #   1. 自带 LuaJIT-2.1 的 Makefile 在 loongarch64 上直接报

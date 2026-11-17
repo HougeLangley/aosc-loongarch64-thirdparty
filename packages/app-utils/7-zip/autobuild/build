@@ -1,0 +1,17 @@
+abinfo "Locating the Alone2 bundle"
+# acbs 把 git 源解到「以包名命名」的子目录，包名一改目录就变——不许硬编码。
+ALONE=$(find . -path '*/CPP/7zip/Bundles/Alone2' -type d | head -1)
+[ -n "$ALONE" ] || abdie "Alone2 bundle not found in source tree"
+
+abinfo "Building 7zz via the Alone2 bundle (non-GUI CLI)"
+# GCC16 对 7zip 的 placement-new 有 array-bounds 误报；上游 CFLAGS_WARN 拼在
+# CFLAGS_WARN_WALL(-Werror) 之后，是官方预留的覆盖口——只关误报，不放松其它警告。
+make -j"$ABTHREADS" -C "$ALONE" -f makefile.gcc \
+     CFLAGS_WARN="-Wno-error=array-bounds -Wno-error=stringop-overflow"
+
+abinfo "Installing"
+BIN=$(find "$ALONE" -name 7zz -type f | head -1)
+[ -n "$BIN" ] || abdie "7zz not produced"
+install -Dm755 "$BIN" "$PKGDIR"/usr/bin/7zz
+ln -s 7zz "$PKGDIR"/usr/bin/7z
+install -Dm644 "$ALONE"/../../../../DOC/License.txt "$PKGDIR"/usr/share/licenses/7-zip/LICENSE

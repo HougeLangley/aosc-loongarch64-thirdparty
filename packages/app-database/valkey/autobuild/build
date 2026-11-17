@@ -1,4 +1,3 @@
-#!/bin/bash
 # valkey 是 Redis 的社区分支，构建系统沿用 Redis 风格：
 #   构建：make -C src
 #   安装：make -C src install，但它用 INSTALL_BIN/INSTALL_LIB 而不是 DESTDIR，

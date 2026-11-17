@@ -1,0 +1,8 @@
+PKGNAME=7-zip
+PKGSEC=utils
+PKGDES="Official 7-Zip file archiver with high compression ratio"
+PKGDEP="@AB_AUTO_SO_DEPS@"
+BUILDDEP=""
+PKGHOMEPAGE="https://7-zip.org"
+
+ABTYPE=self

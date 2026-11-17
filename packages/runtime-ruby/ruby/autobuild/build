@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
 # Ruby 4.0 —— AOSC 第三方源构建
-set -euo pipefail
 cd "$SRCDIR"
 
 echo "[build] 配置 Ruby $VER"

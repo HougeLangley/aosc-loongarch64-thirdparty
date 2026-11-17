@@ -1,4 +1,3 @@
-#!/bin/bash
 # pyenv 是纯 shell 工具，运行期需要自己的完整目录树（plugins/、libexec/、shims/、
 # versions/ 等），因此不能按 FHS 拆散，整棵装到 /usr/lib/pyenv，只在 /usr/bin 放入口。
 #

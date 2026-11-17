@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # v2raya：完全按上游 build.sh 构建（GUI 用 yarn/vite，后端用 go build）
 
 export PATH="$HOME/infra/tools/go/bin:$PATH"

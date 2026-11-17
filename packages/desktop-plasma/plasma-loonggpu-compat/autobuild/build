@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # KWin/Plasma compatibility shims for the Loongson LG110 GPU.
 #
 # The vendor Mesa (gsgpu) exposes GLES2/GL2.1 EGL without a usable wl_drm.
@@ -8,7 +7,6 @@
 # Plasmashell must use the driver's WINDOW configs directly; the historical
 # WINDOW->PBUFFER shim is no longer built or injected.
 # plus systemd drop-ins and a Wayland session launcher.
-set -euo pipefail
 FILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/../files" && pwd)"
 CFLAGS="-O2 -fPIC -I/usr/include/libdrm"
 build_so() { # <src> <out>

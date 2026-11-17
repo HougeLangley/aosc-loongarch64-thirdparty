@@ -1,4 +1,3 @@
-#!/bin/bash
 set -e
 # bashtop 是单文件 bash 脚本 + 同目录的 themes/（主题文件）。
 abinfo "Installing bashtop ..."

@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
 # vkgl: Vulkan 1.0 subset implemented on top of the vendor gsgpu GL 2.1 stack.
-set -euo pipefail
 FILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/../files" && pwd)"
 
 SPIRV_CROSS_DIR="${SPIRV_CROSS_DIR:-/usr}" \

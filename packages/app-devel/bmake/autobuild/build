@@ -1,4 +1,3 @@
-#!/bin/bash
 # acbs 会注入 MAKEFLAGS=-j9，而 boot-strap 内部的 make 不是并行安全的（L393）。
 # 必须在调用 boot-strap 前清掉，否则竞态导致 boot-strap 退出非 0。
 unset MAKEFLAGS MFLAGS MAKELEVEL

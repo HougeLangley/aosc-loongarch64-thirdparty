@@ -1,4 +1,3 @@
-#!/bin/bash
 # 载荷污染（教训 L112/L110）：rust 模板的 fallback 会把 target/release 下的
 # 所有可执行文件都装进 /usr/bin，tdf 的 workspace 里带一个 for_profiling 剖析辅助程序，
 # 用户不需要它。

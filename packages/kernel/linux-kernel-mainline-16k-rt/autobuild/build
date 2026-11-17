@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # Build one mainline-16k-rt kernel variant.
 #
 #   VARIANT=gcc-o3    : gcc, KCFLAGS=-O3
@@ -7,7 +6,6 @@
 # The tree must already be patched with the AOSC LoongArch patch set and use
 # autobuild/loongarch64/config.16k from AOSC's linux-kernel package as a base
 # (see files/fetch-aosc-patches.sh and docs/KERNEL.md).
-set -euo pipefail
 VARIANT="${VARIANT:-gcc-o3}"
 cd "$SRCDIR"
 [[ -f .config ]] || { echo "missing .config (see docs/KERNEL.md)" >&2; exit 1; }

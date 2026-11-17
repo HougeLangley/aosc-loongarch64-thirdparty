@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
 # WowType：文本输入构建（不含 voice/voicekey/Tencent 模型）
-set -euo pipefail
 
 export CARGO_NET_RETRY=5
 DATA_VER=2026.11.11.3

@@ -1,4 +1,3 @@
-#!/bin/bash
 # 构件补齐（教训 L92 / L135）：CMake 的 install(TARGETS ...) 只覆盖 CLI 与头文件，
 # SPIRV_CROSS_STATIC=ON 编出的静态库没有被装进 /usr/lib。
 # 而下游（如 vkgl-loonggpu 的 build-vkgl.sh）需要 libspirv-cross-glsl.a 等。

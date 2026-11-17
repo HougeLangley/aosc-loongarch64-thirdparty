@@ -1,4 +1,3 @@
-#!/bin/bash
 # 补齐 man 页：rust/go 模板只装二进制，上游附带的 man 源文件不会被安装。
 # 全量审计发现 54 个有 CLI 的包里 45 个零 man 页（详见 scripts/audit-manpages.sh）。
 # 这里扫描上游常见的 man 位置，找到就装到标准路径。

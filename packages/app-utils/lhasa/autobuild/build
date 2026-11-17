@@ -1,4 +1,3 @@
-#!/bin/bash
 # lhasa 的 autogen.sh 会 autoreconf 并直接 configure，因此这里只跑它一次。
 abinfo "Bootstrapping and configuring (single configure pass) ..."
 ( cd "$SRCDIR" && ./autogen.sh --prefix=/usr --disable-static ) \

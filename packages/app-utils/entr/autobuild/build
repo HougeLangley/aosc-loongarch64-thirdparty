@@ -1,4 +1,3 @@
-#!/bin/bash
 # autobuild/build for entr (ABTYPE=self)
 #
 # entr 自带一个手写的 ./configure（不是 autotools），它只做一件事：

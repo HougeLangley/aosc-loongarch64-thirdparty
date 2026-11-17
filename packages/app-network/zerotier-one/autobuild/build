@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # zerotier-one 的实际构建与暂存（ABTYPE=self）
 
 cd "$SRCDIR"

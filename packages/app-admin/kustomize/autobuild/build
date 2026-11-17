@@ -1,4 +1,3 @@
-#!/bin/bash
 # kustomize 必须走 ABTYPE=self，不能用 gomod 模板。
 #
 # 原因（已实测）：autobuild4 的 15-gomod.sh 会 `cd "$SRCDIR/abbuild"` 后执行

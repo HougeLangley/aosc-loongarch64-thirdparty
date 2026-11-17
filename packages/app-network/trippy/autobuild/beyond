@@ -1,4 +1,3 @@
-#!/bin/bash
 # trippy 的 cargo workspace 里有示例 crate（hello-world、toy-traceroute）。
 # rust 模板的 fallback 会把 target/release 下所有可执行文件都装进 /usr/bin，
 # 于是示例程序一起被打包。用户只需要 trip 本身。
