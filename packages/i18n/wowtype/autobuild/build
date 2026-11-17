@@ -1,9 +1,9 @@
 # WowType：文本输入构建（不含 voice/voicekey/Tencent 模型）
 
 export CARGO_NET_RETRY=5
-DATA_VER=2026.11.11.3
+DATA_VER=2026.11.11.7
 DATA_URL="https://github.com/Gloridust/WowType/releases/download/v${PKGVER}/wowtype-data-rime-ice-${DATA_VER}.tar.gz"
-DATA_SHA=ea07c3e8cf66cbf7d0ebc23ab95cc96384e6f3808fd0cdee1f87905322e51d7c
+DATA_SHA=b35a4af76573ebb1c7b402c5285d33bbb1ce2b3244770bef9e90826c3fcfc8aa
 
 cd "$SRCDIR"
 
@@ -62,6 +62,14 @@ print("[aosc-patch] 更新路径已指向系统包管理器")
 PY
 
 # 文本核心：--no-default-features 排除 wowtype-voice（voicekey/ALSA/Tencent 模型均不进包）
+# L612【真凶】acbs 注入 RUSTFLAGS 含 -Cembed-bitcode=yes -Clinker-plugin-lto：
+# 本意是 Rust↔C++ 跨语言 LTO（clang+plugin），但本包 staticlib 由 g++/BFD 链接，
+# bitcode 成员直接 file format not recognized。摘掉这两个旗标（保留 opt-level 等），
+# Rust 侧产原生 ELF；C++ 侧仍走 CXXFLAGS 的 -flto。
+# profile 的 lto=true 会给 rustc 传 -C lto，与 embed-bitcode=no 互斥——必须同关。
+export CARGO_PROFILE_RELEASE_LTO=false
+export RUSTFLAGS="$(echo "${RUSTFLAGS:-}" | sed -e 's/-Cembed-bitcode=[a-z]*/-Cembed-bitcode=no/g' -e 's/-Clinker-plugin-lto//g')"
+
 cargo build --release --locked -p wowtype-core --no-default-features
 cargo test --locked -p wowtype-core --no-default-features
 
