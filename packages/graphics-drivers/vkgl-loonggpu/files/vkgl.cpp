@@ -38,6 +38,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdint>
+#include <atomic>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -459,6 +460,9 @@ struct CommandBuffer : Obj {
 
 struct Semaphore : Obj {};
 struct Fence : Obj { vkgl_fence::State state; };
+struct Event : Obj {
+   std::atomic<bool> signaled{false};
+};
 
 struct Surface : Obj {
    wl_display *display = nullptr;
@@ -1618,15 +1622,24 @@ static VKAPI_ATTR void VKAPI_CALL vkgl_DestroySemaphore(VkDevice, VkSemaphore s,
    delete from_handle<Semaphore>((uint64_t)s);
 }
 static VKAPI_ATTR VkResult VKAPI_CALL vkgl_CreateEvent(VkDevice, const VkEventCreateInfo *, const VkAllocationCallbacks *, VkEvent *out) {
-   auto *e = new Obj(); e->type = VK_OBJECT_TYPE_EVENT;
+   auto *e = new Event(); e->type = VK_OBJECT_TYPE_EVENT;
    *out = (VkEvent)to_handle(e); reg(e, (uint64_t)*out); return VK_SUCCESS;
 }
 static VKAPI_ATTR void VKAPI_CALL vkgl_DestroyEvent(VkDevice, VkEvent e, const VkAllocationCallbacks *) {
-   unreg((uint64_t)e); delete from_handle<Obj>((uint64_t)e);
+   unreg((uint64_t)e); delete from_handle<Event>((uint64_t)e);
 }
-static VKAPI_ATTR VkResult VKAPI_CALL vkgl_GetEventStatus(VkDevice, VkEvent) { return VK_EVENT_SET; }
-static VKAPI_ATTR VkResult VKAPI_CALL vkgl_SetEvent(VkDevice, VkEvent) { return VK_SUCCESS; }
-static VKAPI_ATTR VkResult VKAPI_CALL vkgl_ResetEvent(VkDevice, VkEvent) { return VK_SUCCESS; }
+static VKAPI_ATTR VkResult VKAPI_CALL vkgl_GetEventStatus(VkDevice, VkEvent e) {
+   const bool signaled = from_handle<Event>((uint64_t)e)->signaled.load(std::memory_order_acquire);
+   return signaled ? VK_EVENT_SET : VK_EVENT_RESET;
+}
+static VKAPI_ATTR VkResult VKAPI_CALL vkgl_SetEvent(VkDevice, VkEvent e) {
+   from_handle<Event>((uint64_t)e)->signaled.store(true, std::memory_order_release);
+   return VK_SUCCESS;
+}
+static VKAPI_ATTR VkResult VKAPI_CALL vkgl_ResetEvent(VkDevice, VkEvent e) {
+   from_handle<Event>((uint64_t)e)->signaled.store(false, std::memory_order_release);
+   return VK_SUCCESS;
+}
 static VKAPI_ATTR VkResult VKAPI_CALL vkgl_CreateQueryPool(VkDevice, const VkQueryPoolCreateInfo *, const VkAllocationCallbacks *, VkQueryPool *out) {
    auto *q = new Obj(); q->type = VK_OBJECT_TYPE_QUERY_POOL;
    *out = (VkQueryPool)to_handle(q); reg(q, (uint64_t)*out); return VK_SUCCESS;
