@@ -67,7 +67,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 
 以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的
 `dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。
-当前列出 **96 个最新 deb 条目、96 个不同包名**；索引共保留 97 个 deb（含历史版本），每个包只列最新版本。
+当前列出 **97 个最新 deb 条目、97 个不同包名**；索引共保留 98 个 deb（含历史版本），每个包只列最新版本。
 旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。
 `mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。
 
@@ -124,6 +124,7 @@ vulkanCapsViewer         # 能力浏览器，设备列表里可见 LG110
 | `libmspack` | `1.12-2` | `loongarch64` | `8ab6d3c0882cfcf64400b4205bce5e11f28dc1dc39cd3bdb1e77b81b91408b04` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libmspack/libmspack_1.12-2_loongarch64.deb) |
 | `libpng` | `1.6.59-3` | `loongarch64` | `4d3256386ab61bfbb98b842f7fda3eb208095f7cd540f8759085d21ac30d230f` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/libpng/libpng_1.6.59-3_loongarch64.deb) |
 | `linuxsampler` | `2.4.2-1` | `loongarch64` | `58f86f24f56160c501f819bd2467ca40da38385cec0013e347be82bb93cef67a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/linuxsampler/linuxsampler_2.4.2-1_loongarch64.deb) |
+| `loongvpu-open` | `0.0.0+git20261118.8d952056-6` | `loongarch64` | `d8a48f3f57bbb5d5cb3c986417d5aa40c92c5e91ad81167312eb2990573aac78` | [下载](https://homebrewloongarch64.site/aosc/pool/main/l/loongvpu-open/loongvpu-open_0.0.0+git20261118.8d952056-6_loongarch64.deb) |
 | `mesa-vulkan-loonggpu` | `26.1.5-1` | `loongarch64` | `3543cc9ea848494b4a2238b212309c39a0a4f119c57e9318e3a843847322e10a` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mesa-vulkan-loonggpu/mesa-vulkan-loonggpu_26.1.5-1_loongarch64.deb) |
 | `mkcert` | `1.4.4-2` | `loongarch64` | `ecac312b0cd6d555ae32f148b6c749ade51416250d35d99149502714f684daf6` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/mkcert/mkcert_1.4.4-2_loongarch64.deb) |
 | `moar` | `2.19.7-1` | `loongarch64` | `4882f022798f5447a52b4315766e8616296cd113fb7d5a7e880ef910607dd436` | [下载](https://homebrewloongarch64.site/aosc/pool/main/m/moar/moar_2.19.7-1_loongarch64.deb) |
