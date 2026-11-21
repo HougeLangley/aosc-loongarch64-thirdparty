@@ -19,9 +19,11 @@ make -C "$SRCDIR/src" install \
 	INSTALL_LIB="$PKGDIR/usr/lib" \
 	|| abdie "make install failed"
 
-abinfo "Installing default configuration ..."
+abinfo "Installing default configuration and state directory ..."
 install -Dvm644 "$SRCDIR/valkey.conf" "$PKGDIR/etc/valkey/valkey.conf"
+install -dvm750 "$PKGDIR/var/lib/valkey"
 
 abinfo "Verifying payload ..."
 [[ -x "$PKGDIR/usr/bin/valkey-server" ]] || abdie "missing valkey-server"
 [[ -x "$PKGDIR/usr/bin/valkey-cli" ]]    || abdie "missing valkey-cli"
+[[ -d "$PKGDIR/var/lib/valkey" ]]        || abdie "missing valkey state directory"
