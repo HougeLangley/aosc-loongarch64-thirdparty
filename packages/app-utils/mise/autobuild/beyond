@@ -31,3 +31,12 @@ if [[ -n "$BIN" ]] && "$PKGDIR/usr/bin/$BIN" --generate complete-bash >/dev/null
   [[ -f "$PKGDIR"/usr/share/fish/vendor_completions.d/"$N".fish ]] || "$PKGDIR/usr/bin/$BIN" --generate complete-fish > "$PKGDIR"/usr/share/fish/vendor_completions.d/"$N".fish
   [[ -f "$PKGDIR"/usr/share/man/man1/"$N".1 ]] || "$PKGDIR/usr/bin/$BIN" --generate man > "$PKGDIR"/usr/share/man/man1/"$N".1
 fi
+
+# Rust 模板的 audit-fix 会尽力升级，但存在无法自动修复的漏洞时仍继续构建。
+# 本包不接受 suppress/ignore；使用刚加载的 advisory DB 再做最终硬门。
+abinfo "Verifying that no known Rust vulnerabilities remain ..."
+AUDIT_LOG="$SRCDIR/.cargo-audit-final.log"
+if ! (cd "$SRCDIR" && cargo audit --no-fetch) >"$AUDIT_LOG" 2>&1; then
+  cat "$AUDIT_LOG"
+  abdie "mise has unpatched Rust vulnerabilities; refusing to package"
+fi
