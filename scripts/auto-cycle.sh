@@ -60,6 +60,8 @@ known_unchanged_failure() {
   local rp rv rh rt stage failed_at probe_mtime probe="$ROOT/scripts/ab-$p.sh"
   while IFS=$'\t' read -r rp rv rh rt stage; do
     [[ "$rp" == "$p" && "$rv" == "$up" && "$stage" != publish ]] || continue
+    # tag 已出现但 release 资产未发布是上游时序，不是配方永久失败。
+    [[ "$stage" == defer ]] && continue
     [[ "$rh" == "$hash" ]] && return 0
     if [[ "$rh" == "$legacy" ]]; then
       # 旧记录没有探针指纹：只有探针在失败之后发生实质变化才重试。
@@ -152,6 +154,25 @@ while read -r line; do
     BLOCKED+=("$p")
     continue
   fi
+  if [[ "$p" == wowtype && -x "$ROOT/scripts/wowtype-release-ready.sh" ]]; then
+    ready_log="$STATE/wowtype-release-ready.log"
+    "$ROOT/scripts/wowtype-release-ready.sh" "$up" "$recipe" >"$ready_log" 2>&1
+    ready_rc=$?
+    if [[ $ready_rc -eq 2 ]]; then
+      say "    $p $up: release 资产尚未就绪，下轮重试（非配方失败）"
+      restore_spec "$p"
+      BLOCKED+=("$p")
+      continue
+    elif [[ $ready_rc -ne 0 ]]; then
+      say "    $p $up: 官方数据清单与配方冲突，禁止构建"
+      cat "$ready_log" >>"$LOG"
+      record_failure "$p" "$up" preflight
+      restore_spec "$p"
+      BLOCKED+=("$p")
+      continue
+    fi
+    cat "$ready_log" >>"$LOG"
+  fi
   hash="$(recipe_fingerprint "$recipe" "$p")"
   legacy_hash="$(legacy_recipe_fingerprint "$recipe")"
   if known_unchanged_failure "$p" "$up" "$hash" "$legacy_hash"; then
@@ -184,7 +205,12 @@ for p in "${QUEUE[@]}"; do
   else
     say "    $p 构建失败"
     FAILED+=("$p")
-    record_failure "$p" "${NEW_VER[$p]}" build
+    failure_stage=build
+    if [[ "$p" == wowtype ]] && grep -q 'curl: (22).*404' "$ROOT/logs/$p.log" 2>/dev/null; then
+      failure_stage=defer
+      say "    $p: 数据资产 404，按 tag-before-release 暂时失败处理"
+    fi
+    record_failure "$p" "${NEW_VER[$p]}" "$failure_stage"
     restore_spec "$p"
   fi
 done
@@ -200,6 +226,9 @@ for p in "${QUEUE[@]}"; do
   elif [[ "$p" == pueue && -x "$ROOT/scripts/ab-pueue.sh" ]]; then
     say "  $p: pueue daemon/client A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-pueue.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
+  elif [[ "$p" == muffet && -x "$ROOT/scripts/ab-muffet.sh" ]]; then
+    say "  $p: muffet local-site A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
+    timeout 2400 "$ROOT/scripts/ab-muffet.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
   elif [[ "$p" == wowtype && -x "$ROOT/scripts/ab-wowtype.sh" ]]; then
     say "  $p: wowtype-bench ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     timeout 2400 "$ROOT/scripts/ab-wowtype.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
