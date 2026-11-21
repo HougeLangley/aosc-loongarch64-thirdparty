@@ -194,6 +194,9 @@ for p in "${QUEUE[@]}"; do
   if [[ "$p" == valkey && -x "$ROOT/scripts/ab-valkey.sh" ]]; then
     say "  $p: valkey-benchmark A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-valkey.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
+  elif [[ "$p" == pueue && -x "$ROOT/scripts/ab-pueue.sh" ]]; then
+    say "  $p: pueue daemon/client A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
+    AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-pueue.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
   elif [[ "$p" == wowtype && -x "$ROOT/scripts/ab-wowtype.sh" ]]; then
     say "  $p: wowtype-bench ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     timeout 2400 "$ROOT/scripts/ab-wowtype.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
