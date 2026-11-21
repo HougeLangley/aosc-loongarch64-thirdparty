@@ -241,7 +241,13 @@ AB_ROUNDS="${AB_ROUNDS:-3}"
 for p in "${QUEUE[@]}"; do
   in_array "$p" "${FAILED[@]}" && continue
   ok=0
-  if [[ "$p" == valkey && -x "$ROOT/scripts/ab-valkey.sh" ]]; then
+  if [[ "$p" == fx && -x "$ROOT/scripts/ab-fx.sh" ]]; then
+    say "  $p: JSON data-path A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
+    timeout 600 "$ROOT/scripts/ab-fx.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
+  elif [[ "$p" == jaq && -x "$ROOT/scripts/ab-jaq.sh" ]]; then
+    say "  $p: JSON filter A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
+    timeout 600 "$ROOT/scripts/ab-jaq.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
+  elif [[ "$p" == valkey && -x "$ROOT/scripts/ab-valkey.sh" ]]; then
     say "  $p: valkey-benchmark A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-valkey.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
   elif [[ "$p" == pueue && -x "$ROOT/scripts/ab-pueue.sh" ]]; then
