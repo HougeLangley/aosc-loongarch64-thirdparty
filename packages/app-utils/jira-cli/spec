@@ -1,6 +1,6 @@
 VER=1.7.0
 REL=2
 # 上游 tag 真实形式为 "v1.7.0"；直接写完整 ref，不做前缀加工（教训 L160）。
-SRCS="git::commit=tags/v1.7.0::https://github.com/ankitpokhrel/jira-cli"
+SRCS="git::commit=tags/v$VER::https://github.com/ankitpokhrel/jira-cli"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=ankitpokhrel/jira-cli"

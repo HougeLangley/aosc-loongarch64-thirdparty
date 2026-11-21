@@ -1,6 +1,6 @@
 VER=0.22.1
 REL=1
 # 上游 tag 真实形式为 "v0.22.1"；直接写完整 ref，不做前缀加工（教训 L160）。
-SRCS="git::commit=tags/v0.22.1::https://github.com/derailed/popeye"
+SRCS="git::commit=tags/v$VER::https://github.com/derailed/popeye"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=derailed/popeye"

@@ -1,6 +1,6 @@
 VER=0.7.1
 REL=1
 # 上游 tag 真实形式为 "v0.7.1"；直接写完整 ref，不做前缀加工（教训 L160）。
-SRCS="git::commit=tags/v0.7.1::https://github.com/ynqa/jnv"
+SRCS="git::commit=tags/v$VER::https://github.com/ynqa/jnv"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=ynqa/jnv"

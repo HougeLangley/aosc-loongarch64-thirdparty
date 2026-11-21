@@ -1,6 +1,6 @@
 VER=0.9.3
 REL=2
 # 上游 tag 真实形式为 "0.9.3"；直接写完整 ref，不做前缀加工（教训 L160）。
-SRCS="git::commit=tags/0.9.3::https://github.com/danielfoehrKn/kubeswitch"
+SRCS="git::commit=tags/$VER::https://github.com/danielfoehrKn/kubeswitch"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=danielfoehrKn/kubeswitch"

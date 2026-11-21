@@ -1,6 +1,6 @@
 VER=0.6.0
 REL=1
 # 上游 tag 真实形式为 "v0.6.0"；直接写完整 ref，不做前缀加工（教训 L160）。
-SRCS="git::commit=tags/v0.6.0::https://github.com/ahmetb/kubectl-tree"
+SRCS="git::commit=tags/v$VER::https://github.com/ahmetb/kubectl-tree"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=ahmetb/kubectl-tree"

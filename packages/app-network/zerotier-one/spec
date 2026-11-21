@@ -1,5 +1,5 @@
 VER=1.16.2
 REL=2
-SRCS="git::commit=tags/1.16.2::https://github.com/zerotier/ZeroTierOne"
+SRCS="git::commit=tags/$VER::https://github.com/zerotier/ZeroTierOne"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=zerotier/ZeroTierOne"

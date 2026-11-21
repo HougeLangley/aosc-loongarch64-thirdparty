@@ -1,5 +1,5 @@
 VER=0.10.10
 REL=1
-SRCS="git::commit=tags/v0.10.10::https://github.com/phiresky/ripgrep-all"
+SRCS="git::commit=tags/v$VER::https://github.com/phiresky/ripgrep-all"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=phiresky/ripgrep-all"

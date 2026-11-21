@@ -1,4 +1,4 @@
 VER=0.2.98
 REL=1
-SRCS="git::commit=tags/v0.2.98::https://github.com/nektos/act"
+SRCS="git::commit=tags/v$VER::https://github.com/nektos/act"
 CHKSUMS="SKIP"

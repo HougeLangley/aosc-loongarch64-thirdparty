@@ -1,5 +1,5 @@
 VER=1.17.0
 REL=1
-SRCS="git::commit=tags/v1.17.0::https://github.com/hatoo/oha"
+SRCS="git::commit=tags/v$VER::https://github.com/hatoo/oha"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=hatoo/oha"

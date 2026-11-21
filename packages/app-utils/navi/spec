@@ -1,5 +1,5 @@
 VER=2.24.0
 REL=1
-SRCS="git::commit=tags/v2.24.0::https://github.com/denisidoro/navi"
+SRCS="git::commit=tags/v$VER::https://github.com/denisidoro/navi"
 CHKSUMS="SKIP"
 CHKUPDATE="github::repo=denisidoro/navi"
