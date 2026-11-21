@@ -20,13 +20,34 @@ spec_rel() { sed -n 's/^REL=//p' "$1" | head -1; }
 legacy_recipe_fingerprint() {
   find "$1" -type f -print0 | sort -z | xargs -0 sha256sum 2>/dev/null | sha256sum | awk '{print $1}'
 }
+ab_dispatch_fingerprint() {
+  local p="$1"
+  awk -v pkg="$p" '
+    function dispatch_pkg(s, token) {
+      if (s !~ /^[[:space:]]*(if|elif)[[:space:]]+\[\[/) return ""
+      if (!match(s, /"\$p"[[:space:]]*==[[:space:]]*[A-Za-z0-9._-]+/)) return ""
+      token=substr(s,RSTART,RLENGTH)
+      sub(/.*==[[:space:]]*/,"",token)
+      return token
+    }
+    {
+      token=dispatch_pkg($0)
+      if (token != "") {
+        if (active) exit
+        if (token == pkg) active=1
+      }
+      if (active && $0 ~ /^[[:space:]]*(else|fi)([[:space:]]|$)/) exit
+      if (active) print
+    }
+  ' "$ROOT/scripts/auto-cycle.sh" | sha256sum | awk '{print $1}'
+}
 recipe_fingerprint() {
   local dir="$1" p="${2:-}"
   {
     legacy_recipe_fingerprint "$dir"
     if [[ -n "$p" && -f "$ROOT/scripts/ab-$p.sh" ]]; then
       sha256sum "$ROOT/scripts/ab-$p.sh"
-      sed -n '/③ 择优/,/^done$/p' "$ROOT/scripts/auto-cycle.sh" | sha256sum
+      ab_dispatch_fingerprint "$p"
     fi
   } | sha256sum | awk '{print $1}'
 }
