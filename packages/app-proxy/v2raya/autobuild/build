@@ -58,6 +58,17 @@ git tag -f "v${PKGVER%-*}" >/dev/null 2>&1 || true
 echo "[build] git describe: $(git describe --tags 2>/dev/null || echo 不可用)"
 ./build.sh "${PKGVER%-*}"
 
+# v2rayA 要求主程序与随包 core 来自同一版本。通用 smoke 的“输出含版本号”
+# 不足以发现混装，因此在安装前直接校验两个实际构建产物。
+_expected_version="${PKGVER%-*}"
+_main_version="$(./v2raya --version | awk 'NR == 1 { print $1 }')"
+_core_version="$(./v2raya_core --version | awk 'NR == 1 && $1 == "V2RAYA_CORE" { print $2 }')"
+if [[ "$_main_version" != "$_expected_version" || "$_core_version" != "$_expected_version" ]]; then
+    echo "[build] 错误：v2raya=${_main_version:-unknown} / v2raya_core=${_core_version:-unknown} / expected=${_expected_version}" >&2
+    exit 1
+fi
+echo "[build] 版本一致：v2raya=v2raya_core=${_expected_version}"
+
 echo "[build] 安装文件"
 install -Dvm755 v2raya      "$PKGDIR/usr/bin/v2raya"
 # 2.5.x 需要自带 core（xray 内核），上游 build.sh 会产出 v2raya_core
