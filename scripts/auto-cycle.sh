@@ -215,7 +215,7 @@ fi
 "$ROOT/scripts/sync-tree.sh" >/dev/null 2>&1 || { say "  同步 ABBS 树失败"; exit 1; }
 
 say "② 构建（串行，每包使用全部线程）"
-declare -a FAILED=() AB_FAILED=()
+declare -a FAILED=() AB_FAILED=() ROLLBACK_FAILED=()
 for p in "${QUEUE[@]}"; do
   say "  构建 $p"
   # mise 的 2026.11.12 全 workspace LTO 在 3600 秒仍活跃推进；预算与回收分开处理。
@@ -267,6 +267,10 @@ for p in "${QUEUE[@]}"; do
     AB_FAILED+=("$p")
     record_failure "$p" "${NEW_VER[$p]}" ab
     restore_spec "$p"
+    if ! "$ROOT/scripts/rollback-candidate.sh" "$p" "${OLD_VER[$p]}" "${OLD_REL[$p]:-1}" "${NEW_VER[$p]}" 1 >>"$LOG" 2>&1; then
+      ROLLBACK_FAILED+=("$p")
+      say "    $p 回滚安装态/产物失败；禁止把周期视为清洁完成"
+    fi
   fi
 done
 
@@ -296,5 +300,5 @@ else
   say "  配方提交失败"
   exit 1
 fi
-say "=== 周期结束：成功 ${#GOOD[@]} / 构建失败 ${#FAILED[@]} / A/B 阻断 ${#AB_FAILED[@]} / 其他阻断 ${#BLOCKED[@]} ==="
-(( ${#FAILED[@]} == 0 && ${#AB_FAILED[@]} == 0 ))
+say "=== 周期结束：成功 ${#GOOD[@]} / 构建失败 ${#FAILED[@]} / A/B 阻断 ${#AB_FAILED[@]} / 回滚失败 ${#ROLLBACK_FAILED[@]} / 其他阻断 ${#BLOCKED[@]} ==="
+(( ${#FAILED[@]} == 0 && ${#AB_FAILED[@]} == 0 && ${#ROLLBACK_FAILED[@]} == 0 ))
