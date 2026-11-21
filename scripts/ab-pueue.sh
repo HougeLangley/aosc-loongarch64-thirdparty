@@ -98,6 +98,24 @@ for round in $(seq 1 "$ROUNDS"); do
   else measure "$round" new; measure "$round" old; fi
 done
 
+# 即使任务状态全绿，也不能放过已经 panic 或变成 zombie 的 daemon。
+for side in old new; do
+  pid="$OLD_PID"; [[ "$side" == new ]] && pid="$NEW_PID"
+  stat="$(ps -o stat= -p "$pid" | tr -d ' ')"
+  [[ -n "$stat" && "$stat" != Z* ]] || { cat "$T/$side-daemon.log" >&2; exit 1; }
+  if python3 - "$T/$side-daemon.log" <<'PY'
+from pathlib import Path
+import sys
+s=Path(sys.argv[1]).read_text(errors='replace').lower()
+raise SystemExit(0 if 'panicked at' in s or 'thread \'main\' panicked' in s else 1)
+PY
+  then
+    echo "$side pueued panicked during A/B" >&2
+    cat "$T/$side-daemon.log" >&2
+    exit 1
+  fi
+done
+
 python3 - "$T/results.csv" "$OLD" "$NEW" "$ROUNDS" "$TASKS" "$PARALLEL" \
   "$ROOT/logs/pueue-version.ab.json" "$ROOT/reports/ab-pueue.md" <<'PY'
 import csv,json,statistics,sys

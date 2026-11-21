@@ -176,7 +176,10 @@ say "② 构建（串行，每包使用全部线程）"
 declare -a FAILED=() AB_FAILED=()
 for p in "${QUEUE[@]}"; do
   say "  构建 $p"
-  if timeout 3600 "$ROOT/scripts/build.sh" "$p" >>"$LOG" 2>&1; then
+  # mise 的 2026.11.12 全 workspace LTO 在 3600 秒仍活跃推进；预算与回收分开处理。
+  budget="${BUILD_TIMEOUT:-3600}"
+  [[ "$p" == mise ]] && budget="${BUILD_TIMEOUT_MISE:-7200}"
+  if timeout -k 15s "$budget" "$ROOT/scripts/build.sh" "$p" >>"$LOG" 2>&1; then
     say "    $p OK"
   else
     say "    $p 构建失败"
