@@ -17,8 +17,18 @@ in_array() { local needle="$1" x; shift; for x in "$@"; do [[ "$x" == "$needle" 
 find_recipe() { find "$TREE/packages" -mindepth 2 -maxdepth 2 -type d -name "$1" 2>/dev/null | head -1; }
 spec_ver() { sed -n 's/^VER=//p' "$1" | head -1; }
 spec_rel() { sed -n 's/^REL=//p' "$1" | head -1; }
-recipe_fingerprint() {
+legacy_recipe_fingerprint() {
   find "$1" -type f -print0 | sort -z | xargs -0 sha256sum 2>/dev/null | sha256sum | awk '{print $1}'
+}
+recipe_fingerprint() {
+  local dir="$1" p="${2:-}"
+  {
+    legacy_recipe_fingerprint "$dir"
+    if [[ -n "$p" && -f "$ROOT/scripts/ab-$p.sh" ]]; then
+      sha256sum "$ROOT/scripts/ab-$p.sh"
+      sed -n '/③ 择优/,/^done$/p' "$ROOT/scripts/auto-cycle.sh" | sha256sum
+    fi
+  } | sha256sum | awk '{print $1}'
 }
 restore_spec() {
   local p="$1"
@@ -33,7 +43,7 @@ restore_spec() {
 }
 record_failure() {
   local p="$1" up="$2" stage="$3" hash tmp
-  hash="$(recipe_fingerprint "$(dirname "${SPEC_BY[$p]}")")"
+  hash="$(recipe_fingerprint "$(dirname "${SPEC_BY[$p]}")" "$p")"
   tmp="$(mktemp "$STATE/failed-updates.XXXXXX")"
   awk -F'\t' -v p="$p" -v v="$up" '$1 != p || $2 != v' "$FAILED_STATE" > "$tmp"
   printf '%s\t%s\t%s\t%s\t%s\n' "$p" "$up" "$hash" "$(date -Is)" "$stage" >> "$tmp"
@@ -46,9 +56,22 @@ clear_failure() {
   mv "$tmp" "$FAILED_STATE"
 }
 known_unchanged_failure() {
-  local p="$1" up="$2" hash="$3"
-  awk -F'\t' -v p="$p" -v v="$up" -v h="$hash" \
-    '$1 == p && $2 == v && $3 == h && $5 != "publish" { found=1 } END { exit !found }' "$FAILED_STATE"
+  local p="$1" up="$2" hash="$3" legacy="$4"
+  local rp rv rh rt stage failed_at probe_mtime probe="$ROOT/scripts/ab-$p.sh"
+  while IFS=$'\t' read -r rp rv rh rt stage; do
+    [[ "$rp" == "$p" && "$rv" == "$up" && "$stage" != publish ]] || continue
+    [[ "$rh" == "$hash" ]] && return 0
+    if [[ "$rh" == "$legacy" ]]; then
+      # 旧记录没有探针指纹：只有探针在失败之后发生实质变化才重试。
+      if [[ -f "$probe" ]]; then
+        probe_mtime="$(stat -c %Y "$probe")"
+        failed_at="$(date -d "$rt" +%s)"
+        (( probe_mtime > failed_at )) && continue
+      fi
+      return 0
+    fi
+  done < "$FAILED_STATE"
+  return 1
 }
 commit_recipes() {
   local -a paths=()
@@ -129,8 +152,9 @@ while read -r line; do
     BLOCKED+=("$p")
     continue
   fi
-  hash="$(recipe_fingerprint "$recipe")"
-  if known_unchanged_failure "$p" "$up" "$hash"; then
+  hash="$(recipe_fingerprint "$recipe" "$p")"
+  legacy_hash="$(legacy_recipe_fingerprint "$recipe")"
+  if known_unchanged_failure "$p" "$up" "$hash" "$legacy_hash"; then
     say "    $p $up: 相同配方已有失败记录；等待配方修正，不重复空转"
     restore_spec "$p"
     BLOCKED+=("$p")
@@ -168,8 +192,8 @@ for p in "${QUEUE[@]}"; do
   in_array "$p" "${FAILED[@]}" && continue
   ok=0
   if [[ "$p" == valkey && -x "$ROOT/scripts/ab-valkey.sh" ]]; then
-    say "  $p: valkey-benchmark A/B"
-    AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-valkey.sh" >>"$LOG" 2>&1 && ok=1
+    say "  $p: valkey-benchmark A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
+    AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-valkey.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
   elif [[ "$p" == wowtype && -x "$ROOT/scripts/ab-wowtype.sh" ]]; then
     say "  $p: wowtype-bench ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     timeout 2400 "$ROOT/scripts/ab-wowtype.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
