@@ -1,7 +1,7 @@
 PKGNAME=bmake
 PKGSEC=devel
 PKGDES="Portable version of the NetBSD make(1) built on GNU make"
-PKGDEP="@AB_AUTO_SO_DEPS@"
+PKGDEP="@AB_AUTO_SO_DEPS@ python-3"
 BUILDDEP="make gcc"
 PKGHOMEPAGE="https://www.crufty.net/help/sjg/bmake.html"
 

@@ -18,6 +18,12 @@ abinfo "Verifying ..."
 [[ -x "$PKGDIR/usr/bin/bmake" ]] || abdie "missing usr/bin/bmake"
 [[ -f "$PKGDIR/usr/share/mk/sys.mk" ]] || abdie "missing usr/share/mk/sys.mk"
 
+abinfo "Fixing meta2deps.py interpreter to /usr/bin/python3 ..."
+[[ -f "$PKGDIR/usr/share/mk/meta2deps.py" ]] || abdie "missing usr/share/mk/meta2deps.py"
+sed -i '1s|^#!/usr/bin/env python$|#!/usr/bin/python3|' "$PKGDIR/usr/share/mk/meta2deps.py"
+[[ "$(head -n 1 "$PKGDIR/usr/share/mk/meta2deps.py")" == '#!/usr/bin/python3' ]] || \
+	abdie "meta2deps.py does not use /usr/bin/python3"
+
 # 直接用打好的二进制自检：能吃到自己的 sys.mk 才算真的可用
 if ! "$PKGDIR/usr/bin/bmake" -V MAKE_VERSION >/dev/null 2>&1; then
 	abdie "bmake cannot resolve its own sys.mk"
