@@ -17,29 +17,48 @@ cmake -S SPIRV-Cross -B SPIRV-Cross/build -DCMAKE_BUILD_TYPE=Release \
 cmake --build SPIRV-Cross/build -j4
 ```
 
-## 单个包
+## 逐包计划
+
+全部当前配方的版本、来源、真实依赖、CHKUPDATE、构建路线、验证命令及硬件边界见
+[PACKAGE-BUILD-PLANS.md](PACKAGE-BUILD-PLANS.md)。
+
+## 轻量 self 单包（受限）
 
 ```bash
 ./scripts/build-package.sh packages/graphics-drivers/vkgl-loonggpu
 ```
 
+只有逐包计划标为“轻量 self 可用”的配方才能走此路线：必须是 loongarch64、具有
+`autobuild/build` 的 `ABTYPE=self`，且不带 `EPOCH`、不是 `ABHOST=noarch`。
+
 脚本会：
 
-1. 读取 `spec` 的 `VER`；
-2. 在临时目录设置 `SRCDIR`（源码）与 `PKGDIR`（staging 根）；
-3. 执行 `autobuild/build`；
-4. 用 `autobuild/defines` 的元数据生成 `control` 并 `dpkg-deb --build`；
-5. 产物放在 `build/<pkgname>_<ver>-<rel>_loongarch64.deb`。
+1. **source** `spec` 与 `autobuild/defines`；
+2. 在临时目录设置 `SRCDIR` 与 `PKGDIR`；仅对 `dir::` 自动复制包内文件，其他
+   `SRCS` 的下载、校验和解包均由 `autobuild/build` 自己负责；
+3. 直接执行 `autobuild/build`，**不运行完整 Autobuild4 模板及 prepare/beyond 等生命周期**；
+4. 用 defines 元数据生成 `control`，硬编码 `Architecture: loongarch64`，版本只有
+   `${VER}-${REL}`，**不会保留 `EPOCH`**；
+5. 用 `dpkg-deb --build` 直接打包，产物放在 `build/<pkgname>_<ver>-<rel>_loongarch64.deb`。
 
-## 手工构建（abbs 兼容）
+因此它不是通用 fetcher 或完整 Autobuild4 替代品。带 EPOCH、noarch、模板 ABTYPE、
+缺少自定义 build 的配方必须走 Ciel-ACBS；内核使用独立流程。
 
-在 AOSC abbs 环境（`acbs-build` 或 `abbs`）中，把本仓库的 `packages/` 目录作为配方树即可。
-配方中的 `ABTYPE=self` 表示完全由 `autobuild/build` 负责构建与暂存。
+## Ciel-ACBS / Autobuild4（权威路线）
+
+在已更新的 BuildKit 中，把本仓库 `packages/` 作为配方树，从仓库根目录按包名构建：
+
+```bash
+ciel build -i main <PKGNAME>
+```
+
+该路线负责通用源码获取与校验、模板构建、EPOCH/noarch 和完整 Autobuild 生命周期。
+`ABTYPE=self` 也可在 Ciel-ACBS 中做权威复现；轻量构建器通过不代表可跳过安装测试。
 
 ## 注意事项
 
 - 架构字段必须是 `loongarch64`（不是 `loong64`），否则 apt 不认。
-- 依赖写 AOSC 包名（`glibc` 而非 `libc6`），在 `PKGDEP` 中以空格分隔；轻量构建器生成 Debian `Depends` 时统一转换成逗号分隔，不能直接写空格。
+- 依赖写 AOSC 包名（`glibc` 而非 `libc6`），在 `PKGDEP` 中以空格分隔，不要预先写成 Debian `Depends` 的逗号串；轻量构建器生成 Debian `Depends` 时统一转换成逗号分隔。
 - `plasma-loonggpu-compat` 的 KWin shim 用 `LD_PRELOAD` 注入。dmabuf 桥使用 KWin 6.7 私有 GraphicsBuffer ABI，重建时必须显式提供源码与生成头文件目录，不能依赖偶然的全局 `CPATH`：
 
   ```bash

@@ -122,7 +122,7 @@ def verify_item(root: Path, item: dict[str, object], area: str) -> Path:
 
 
 def apply_plan(plan: dict[str, object], repo: Path) -> None:
-    if plan.get("format") != 1 or plan.get("keep_old") != 1:
+    if plan.get("format") != 1 or plan.get("keep_old") not in (0, 1):
         raise ValueError("unsupported plan or retention policy")
     root = repo.resolve(strict=True)
     keep = plan["keep"]
@@ -130,6 +130,20 @@ def apply_plan(plan: dict[str, object], repo: Path) -> None:
     attic = plan["attic_delete"]
     if not isinstance(keep, list) or not isinstance(delete, list) or not isinstance(attic, list):
         raise ValueError("invalid plan arrays")
+    if plan["keep_old"] == 0:
+        latest: dict[tuple[str, str], str] = {}
+        for item in keep:
+            key = (str(item["package"]), str(item["architecture"]))
+            if key in latest:
+                raise ValueError(f"keep-old=0 requires one latest per package/architecture: {key}")
+            latest[key] = str(item["version"])
+        for item in delete:
+            key = (str(item["package"]), str(item["architecture"]))
+            if key not in latest:
+                raise ValueError(f"keep-old=0 deletion has no protected latest: {key}")
+            # compare_versions returns 1 only when the candidate is older.
+            if compare_versions(str(item["version"]), latest[key]) != 1:
+                raise ValueError(f"refusing to delete latest or newer version: {item['path']}")
     for item in keep:
         print(f"KEEP_VERIFIED {verify_item(root, item, 'pool/main')}")
     targets = [(item, "pool/main") for item in delete] + [(item, "pool/.attic") for item in attic]
@@ -157,8 +171,8 @@ def main() -> int:
             parser.error("--apply cannot be combined with planning options")
         apply_plan(json.loads(args.apply.read_text(encoding="utf-8")), args.repo)
         return 0
-    if not args.packages or args.keep_old != 1:
-        parser.error("planning requires Packages and exactly --keep-old=1")
+    if not args.packages or args.keep_old not in (0, 1):
+        parser.error("planning requires Packages and --keep-old=0 or 1")
     plan = make_plan(args.packages, args.repo, args.keep_old, args.prune_attic)
     payload = json.dumps(plan, indent=2, sort_keys=True) + "\n"
     if args.plan_out:

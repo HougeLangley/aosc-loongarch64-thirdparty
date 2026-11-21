@@ -1,9 +1,9 @@
 # WowType：文本输入构建（不含 voice/voicekey/Tencent 模型）
 
 export CARGO_NET_RETRY=5
-DATA_VER=2026.11.11.7
+DATA_VER=2026.11.11.8
 DATA_URL="https://github.com/Gloridust/WowType/releases/download/v${PKGVER}/wowtype-data-rime-ice-${DATA_VER}.tar.gz"
-DATA_SHA=b35a4af76573ebb1c7b402c5285d33bbb1ce2b3244770bef9e90826c3fcfc8aa
+DATA_SHA=b85d7c67de796d5f2d8dfacd75cea6e2d6d53c3352aa2e990b9aaa4a71055640
 
 cd "$SRCDIR"
 
@@ -27,7 +27,7 @@ fi
 echo "$DATA_SHA  $DATA_TAR" | sha256sum -c -
 rm -rf "$DATA_DIR/extracted"; mkdir -p "$DATA_DIR/extracted"
 tar -xzf "$DATA_TAR" -C "$DATA_DIR/extracted"
-for f in lexicon.tsv english.txt words.lm LICENSE SOURCE.txt; do
+for f in lexicon.tsv english.txt words.lm nnlm.bin wubi86.tsv LICENSE SOURCE.txt DATA-MANIFEST WUBI-AUTHORS WUBI-LICENSE WUBI-SOURCE.txt; do
   test -s "$DATA_DIR/extracted/$f"
 done
 
@@ -87,6 +87,9 @@ install -Dm755 target/release/wowtype-show  "$PKGDIR/usr/bin/wowtype-show"
 install -Dm644 "$DATA_DIR/extracted/lexicon.tsv" "$PKGDIR/usr/share/wowtype/lexicon.tsv"
 install -Dm644 "$DATA_DIR/extracted/english.txt" "$PKGDIR/usr/share/wowtype/english.txt"
 install -Dm644 "$DATA_DIR/extracted/words.lm"    "$PKGDIR/usr/share/wowtype/words.lm"
+install -Dm644 "$DATA_DIR/extracted/nnlm.bin"    "$PKGDIR/usr/share/wowtype/nnlm.bin"
+install -Dm644 "$DATA_DIR/extracted/wubi86.tsv"  "$PKGDIR/usr/share/wowtype/wubi86.tsv"
+install -Dm644 "$DATA_DIR/extracted/DATA-MANIFEST" "$PKGDIR/usr/share/wowtype/DATA-MANIFEST"
 
 # 与上游 end-user deb 一致：不带未拆分的开发头
 rm -rf "$PKGDIR/usr/include"
@@ -96,6 +99,9 @@ install -d "$PKGDIR/usr/share/doc/wowtype"
 install -Dm644 README.md "$PKGDIR/usr/share/doc/wowtype/README.md"
 install -Dm644 "$DATA_DIR/extracted/LICENSE"    "$PKGDIR/usr/share/doc/wowtype/LICENSE.rime-ice"
 install -Dm644 "$DATA_DIR/extracted/SOURCE.txt" "$PKGDIR/usr/share/doc/wowtype/DATA-SOURCE.txt"
+install -Dm644 "$DATA_DIR/extracted/WUBI-AUTHORS" "$PKGDIR/usr/share/doc/wowtype/WUBI-AUTHORS"
+install -Dm644 "$DATA_DIR/extracted/WUBI-LICENSE" "$PKGDIR/usr/share/doc/wowtype/WUBI-LICENSE"
+install -Dm644 "$DATA_DIR/extracted/WUBI-SOURCE.txt" "$PKGDIR/usr/share/doc/wowtype/WUBI-SOURCE.txt"
 cat > "$PKGDIR/usr/share/doc/wowtype/LICENSE.MIT" <<'EOF'
 MIT License
 
@@ -136,10 +142,16 @@ Copyright: rime-ice contributors
 License: GPL-3.0
  See LICENSE.rime-ice. Provenance in DATA-SOURCE.txt.
 
-Files: usr/share/wowtype/words.lm
+Files: usr/share/wowtype/words.lm, usr/share/wowtype/nnlm.bin
 License: CC-BY-SA-4.0
  Derived from LCCC (MIT) and Chinese Wikipedia (CC BY-SA 4.0);
- provenance in DATA-SOURCE.txt.
+ provenance and model hash in DATA-SOURCE.txt and DATA-MANIFEST.
+
+Files: usr/share/wowtype/wubi86.tsv
+Copyright: rime-wubi and ibus-table contributors
+License: LGPL-3.0
+ See WUBI-LICENSE; authors and reproducible source in WUBI-AUTHORS
+ and WUBI-SOURCE.txt.
 
 Files: usr/share/wowtype/s2t.tsv
 Copyright: OpenCC contributors

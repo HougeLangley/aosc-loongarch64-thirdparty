@@ -2,3 +2,4 @@ VER=0.75.0
 REL=1
 SRCS="git::commit=tags/v0.75.0::https://github.com/junegunn/fzf"
 CHKSUMS="SKIP"
+CHKUPDATE="github::repo=junegunn/fzf"

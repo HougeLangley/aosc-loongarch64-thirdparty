@@ -1,0 +1,29 @@
+# loongvpu-open source and license provenance
+
+## Fixed upstream and downstream MIT text
+
+The binary driver is built from `tsuibin/loongvpu-vaapi-loongarch64` commit `8d95205627f83f6b36d09a9263ac9f381959c6c3` plus only the approved `capability-truthfulness.diff` (SHA256 `f63846d8188238b73c4ecbed2d3c1614c3c2321aa5e5dfa677a7180dd23f252c`).
+
+The fixed upstream README declares the project `MIT-licensed`, and `src/loongvpu_drv_video.c` declares `This file is licensed under MIT`. That commit contains no standalone LICENSE/COPYING/COPYRIGHT file. Accordingly, `licenses/MIT.txt` is a **downstream full-text copy of the standard MIT terms based on those declarations**, not a claim that upstream already shipped this file. The identity `2026 tsuibin` is traceable to the fixed commit's author metadata; no unrelated copyright holder was invented.
+
+The exact upstream driver opening notice is preserved as `licenses/upstream-loongvpu_drv_video.notice`.
+
+## VC8000D-derived registers and work-buffer data
+
+Source provenance is `alphagocc/vc8000d` commit `c47951fab2cea8e79a0978d85ff504ca5bb048f0`, including `software/source/common/8170table.h`, H.264 ASIC/CABAC code, HEVC ASIC code, and register programming.
+
+The complete original BSD-3-Clause notices are preserved in `licenses/VC8000D-*.notice`, including all confidential/proprietary language, the requirement to reproduce the entire notice, copyright lines, conditions, and disclaimer. H.264 files retain VeriSilicon 2015-2017, Google 2011-2014, and Hantro OY 2007-2010. The HEVC notice retains only VeriSilicon and Google; no Hantro line was added.
+
+`8170table.h` itself has no license header. No header was fabricated for that file; its provenance is documented here and the related SDK source notices are retained.
+
+## Kernel ABI
+
+`src/loongvpu_abi.h` identifies its source as `AOSC-Tracking/loongvpu-kernel-dkms` tag `aosc/v0.1.0-lnd25.1-rc1.7`, resolved to commit `67d93157ec3878ac7fd8d47126dea1eaacfe67aa`.
+
+The exact notices from `include/hantro.h`, `include/hantrommu.h`, and `include/hantro_vcmd.h` are preserved as `licenses/kernel-*.notice`. They contain `SPDX-License-Identifier: GPL-2.0`, Copyright (c) 2017 VeriSilicon Inc., and GPL **version 2 only** terms. `licenses/GPL-2.0.txt` is the canonical full GNU GPL version 2 text referenced by those headers.
+
+## Original packaging and patch additions
+
+Only original REL6 packaging scripts, packaging documentation, and newly authored patch lines are offered under the dual **GPL-2.0-only OR BSD-3-Clause** downstream permission in `LICENSE-PACKAGING`. The complete license texts are installed as `licenses/GPL-2.0.txt` and `licenses/BSD-3-Clause-downstream.txt`. No individual or company copyright holder is asserted for those additions; the BSD option uses the real collective identifier `2026 loongvpu-open packaging contributors`. This permission does not relicense upstream code, patch context, VC8000D-derived material, or kernel ABI material.
+
+The exact patched source and complete recipe are in `source.tar.xz`; see `REBUILD.md`. **UNTESTED_ON_LG200**; no LS9A support or hardware decoding is claimed.

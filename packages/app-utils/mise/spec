@@ -2,3 +2,4 @@ VER=2026.11.9
 REL=1
 SRCS="git::commit=tags/v2026.11.9::https://github.com/jdx/mise"
 CHKSUMS="SKIP"
+CHKUPDATE="github::repo=jdx/mise"

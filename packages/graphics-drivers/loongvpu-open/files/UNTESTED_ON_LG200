@@ -1,0 +1,9 @@
+# UNTESTED_ON_LG200
+
+This package has **not been executed on LG200 hardware**. The user explicitly waived the LG200 hardware-validation gate for this experimental build; that waiver is not test evidence and does not turn libva soft-degrade loading into hardware decoding.
+
+- No successful LG200 hardware decode, picture correctness, performance, or stability claim is made.
+- No `ls9a_3b6600_vpu.so` implementation or symlink is included; LS9A/3B6000M support is not claimed.
+- Installing `loongvpu-open` is explicit opt-in and may replace the vendor `loongvpu` package.
+- The official vendor `loongvpu/prerm` removes `/usr/share/glvnd/egl_vendor.d/40_loonggpu.json`. Back up and restore this file where applicable before any replacement/rollback experiment.
+- Do not deploy before the independent verifier passes the REL6 evidence. This marker does not authorize publication or installation.

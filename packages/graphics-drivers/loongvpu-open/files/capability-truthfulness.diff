@@ -1,0 +1,422 @@
+diff --git a/Makefile b/Makefile
+index 593a365..3a2a759 100644
+--- a/Makefile
++++ b/Makefile
+@@ -32,6 +32,10 @@ $(TARGET): $(OBJS)
+ tests/load_test: tests/load_test.c
+ 	$(CC) $(CFLAGS) -o $@ $< $(shell pkg-config --libs libva) -ldl
+ 
++# Independent capability truthfulness test (no VPU hardware needed).
++tests/capability_test: tests/capability_test.c
++	$(CC) $(CFLAGS) -o $@ $< $(shell pkg-config --libs libva) -ldl
++
+ tests/cmd_test: tests/cmd_test.c src/vcmd.c src/loongvpu_abi.h src/vcmd.h
+ 	$(CC) $(CFLAGS) -Isrc -o $@ tests/cmd_test.c src/vcmd.c
+ 
+@@ -48,8 +52,9 @@ tests/probe_node: tests/probe_node.c
+ probe: tests/probe_node
+ 	./tests/probe_node
+ 
+-test: tests/load_test tests/cmd_test tests/workbuf_test tests/hevcwb_test $(TARGET)
++test: tests/load_test tests/capability_test tests/cmd_test tests/workbuf_test tests/hevcwb_test $(TARGET)
+ 	LD_LIBRARY_PATH=. ./tests/load_test ./$(TARGET)
++	LD_LIBRARY_PATH=. ./tests/capability_test ./$(TARGET)
+ 	./tests/cmd_test
+ 	./tests/workbuf_test
+ 	./tests/hevcwb_test
+@@ -62,4 +67,4 @@ install: $(TARGET)
+ 	@echo "  LIBVA_DRIVERS_PATH=$(DESTDIR)$(DRIVERDIR) LIBVA_DRIVER_NAME=loongvpu vainfo"
+ 
+ clean:
+-	rm -f $(OBJS) $(TARGET) tests/load_test tests/cmd_test tests/workbuf_test tests/hevcwb_test tests/probe_node
++	rm -f $(OBJS) $(TARGET) tests/load_test tests/capability_test tests/cmd_test tests/workbuf_test tests/hevcwb_test tests/probe_node
+diff --git a/src/loongvpu_drv_video.c b/src/loongvpu_drv_video.c
+index e43c0e1..03c1e3f 100644
+--- a/src/loongvpu_drv_video.c
++++ b/src/loongvpu_drv_video.c
+@@ -255,17 +255,33 @@ static VAStatus loongvpu_Terminate(VADriverContextP ctx)
+ 	return VA_STATUS_SUCCESS;
+ }
+ 
+-/* Profiles advertised to libva.  These mirror what the closed-source driver
+- * exposes and what the VPU silicon supports per the AOSC release notes. */
++/* Advertise only profiles with an implemented decode submission path. */
+ static const VAProfile supported_profiles[] = {
+ 	VAProfileH264ConstrainedBaseline,
+ 	VAProfileH264Main,
+ 	VAProfileH264High,
+ 	VAProfileHEVCMain,
+-	VAProfileHEVCMain10,
+-	VAProfileAV1Profile0,
+ };
+ 
++static int is_supported_decode_profile(VAProfile profile)
++{
++	unsigned int i;
++
++	for (i = 0; i < sizeof(supported_profiles)/sizeof(supported_profiles[0]); i++)
++		if (supported_profiles[i] == profile)
++			return 1;
++	return 0;
++}
++
++static VAStatus validate_decode_config(VAProfile profile, VAEntrypoint entrypoint)
++{
++	if (!is_supported_decode_profile(profile))
++		return VA_STATUS_ERROR_UNSUPPORTED_PROFILE;
++	if (entrypoint != VAEntrypointVLD)
++		return VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT;
++	return VA_STATUS_SUCCESS;
++}
++
+ static VAStatus loongvpu_QueryConfigProfiles(
+ 	VADriverContextP ctx,
+ 	VAProfile *profile_list,
+@@ -290,30 +306,15 @@ static VAStatus loongvpu_QueryConfigEntrypoints(
+ 	VAEntrypoint *entrypoint_list,
+ 	int *num_entrypoints)
+ {
+-	unsigned int i;
+-	int n = 0;
+-
+ 	(void)ctx;
+ 	if (!entrypoint_list || !num_entrypoints)
+ 		return VA_STATUS_ERROR_INVALID_PARAMETER;
+-
+-	/* Validate the profile is one we advertise. */
+-	for (i = 0; i < sizeof(supported_profiles)/sizeof(supported_profiles[0]); i++) {
+-		if (supported_profiles[i] == profile)
+-			break;
+-	}
+-	if (i == sizeof(supported_profiles)/sizeof(supported_profiles[0]))
++	if (!is_supported_decode_profile(profile))
+ 		return VA_STATUS_ERROR_UNSUPPORTED_PROFILE;
+ 
+-	entrypoint_list[n++] = VAEntrypointVLD;   /* hardware decode */
+-
+-	/* The VPU supports H.264/H.265 encode (not AV1 encode). */
+-	if (profile == VAProfileH264ConstrainedBaseline || profile == VAProfileH264Main ||
+-	    profile == VAProfileH264High || profile == VAProfileHEVCMain ||
+-	    profile == VAProfileHEVCMain10)
+-		entrypoint_list[n++] = VAEntrypointEncSlice;
+-
+-	*num_entrypoints = n;
++	/* Only the decode entrypoint has an implementation. */
++	entrypoint_list[0] = VAEntrypointVLD;
++	*num_entrypoints = 1;
+ 	return VA_STATUS_SUCCESS;
+ }
+ 
+@@ -325,10 +326,14 @@ static VAStatus loongvpu_GetConfigAttributes(
+ 	int num_attribs)
+ {
+ 	int i;
++	VAStatus st;
+ 
+-	(void)ctx; (void)profile; (void)entrypoint;
++	(void)ctx;
+ 	if (!attrib_list)
+ 		return VA_STATUS_ERROR_INVALID_PARAMETER;
++	st = validate_decode_config(profile, entrypoint);
++	if (st != VA_STATUS_SUCCESS)
++		return st;
+ 
+ 	for (i = 0; i < num_attribs; i++) {
+ 		switch (attrib_list[i].type) {
+@@ -366,11 +371,15 @@ static VAStatus loongvpu_CreateConfig(
+ 	VAConfigID *config_id)
+ {
+ 	struct loongvpu_driver_data *drv = ctx ? ctx->pDriverData : NULL;
++	VAStatus st;
+ 	int id;
+ 
+-	(void)entrypoint; (void)attrib_list; (void)num_attribs;
++	(void)attrib_list; (void)num_attribs;
+ 	if (!config_id || !drv)
+ 		return VA_STATUS_ERROR_INVALID_PARAMETER;
++	st = validate_decode_config(profile, entrypoint);
++	if (st != VA_STATUS_SUCCESS)
++		return st;
+ 	if (drv->config_count >= MAX_BUFFERS)
+ 		return VA_STATUS_ERROR_ALLOCATION_FAILED;
+ 
+diff --git a/tests/capability_test.c b/tests/capability_test.c
+new file mode 100644
+index 0000000..ac99945
+--- /dev/null
++++ b/tests/capability_test.c
+@@ -0,0 +1,202 @@
++/* Capability truthfulness test: no VPU hardware or decode is required. */
++#include <stdio.h>
++#include <string.h>
++#include <dlfcn.h>
++
++#include <va/va.h>
++#include <va/va_backend.h>
++
++typedef VAStatus (*driver_init_fn)(VADriverContextP);
++
++static const VAProfile supported[] = {
++	VAProfileH264ConstrainedBaseline,
++	VAProfileH264Main,
++	VAProfileH264High,
++	VAProfileHEVCMain,
++};
++
++static const VAProfile unsupported[] = {
++	VAProfileHEVCMain10,
++	VAProfileAV1Profile0,
++	VAProfileNone,
++};
++
++static int checks;
++static int failures;
++
++static void expect(int condition, const char *what, int actual)
++{
++	checks++;
++	if (!condition) {
++		fprintf(stderr, "FAIL: %s (actual=%d)\n", what, actual);
++		failures++;
++	}
++}
++
++static int supported_index(VAProfile profile)
++{
++	unsigned int i;
++
++	for (i = 0; i < sizeof(supported) / sizeof(supported[0]); i++)
++		if (supported[i] == profile)
++			return (int)i;
++	return -1;
++}
++
++static void check_profiles(VADriverContextP ctx)
++{
++	VAProfile profiles[16];
++	int seen[4] = {0};
++	int np = 0;
++	int i;
++	VAStatus st = ctx->vtable->vaQueryConfigProfiles(ctx, profiles, &np);
++
++	expect(st == VA_STATUS_SUCCESS, "QueryConfigProfiles status", st);
++	expect(np == 4, "exact advertised profile count", np);
++	if (st != VA_STATUS_SUCCESS || np < 0 || np > 16)
++		return;
++	for (i = 0; i < np; i++) {
++		int index = supported_index(profiles[i]);
++		expect(index >= 0, "advertised profile is supported decode", profiles[i]);
++		if (index >= 0) {
++			expect(!seen[index], "profile is not duplicated", profiles[i]);
++			seen[index] = 1;
++		}
++	}
++	for (i = 0; i < 4; i++)
++		expect(seen[i], "required decode profile is advertised", supported[i]);
++}
++
++static void check_entrypoints(VADriverContextP ctx)
++{
++	VAEntrypoint entries[8];
++	unsigned int i;
++	int ne;
++	VAStatus st;
++
++	for (i = 0; i < sizeof(supported) / sizeof(supported[0]); i++) {
++		ne = 0;
++		memset(entries, 0, sizeof(entries));
++		st = ctx->vtable->vaQueryConfigEntrypoints(ctx, supported[i], entries, &ne);
++		expect(st == VA_STATUS_SUCCESS, "supported profile entrypoint query", st);
++		expect(ne == 1, "supported profile has exactly one entrypoint", ne);
++		expect(ne == 1 && entries[0] == VAEntrypointVLD,
++		       "supported profile is VLD-only", ne == 1 ? (int)entries[0] : -1);
++	}
++	for (i = 0; i < sizeof(unsupported) / sizeof(unsupported[0]); i++) {
++		ne = -1;
++		st = ctx->vtable->vaQueryConfigEntrypoints(ctx, unsupported[i], entries, &ne);
++		expect(st == VA_STATUS_ERROR_UNSUPPORTED_PROFILE,
++		       "unsupported profile entrypoint query is rejected", st);
++		expect(ne == -1, "rejected entrypoint query emits no count", ne);
++	}
++}
++
++static void expect_create_rejected(VADriverContextP ctx, VAProfile profile,
++                                   VAEntrypoint entrypoint, VAStatus expected)
++{
++	VAConfigID config = (VAConfigID)0x7fffffff;
++	VAStatus st = ctx->vtable->vaCreateConfig(ctx, profile, entrypoint,
++	                                          NULL, 0, &config);
++	expect(st == expected, "CreateConfig rejects unsupported combination", st);
++	expect(config == (VAConfigID)0x7fffffff,
++	       "rejected CreateConfig leaves output untouched", config);
++}
++
++static void check_create_config(VADriverContextP ctx)
++{
++	unsigned int i;
++
++	for (i = 0; i < sizeof(supported) / sizeof(supported[0]); i++) {
++		VAConfigID config = (VAConfigID)0x7fffffff;
++		VAProfile actual_profile = VAProfileNone;
++		VAEntrypoint actual_entrypoint = (VAEntrypoint)0;
++		VAStatus st = ctx->vtable->vaCreateConfig(ctx, supported[i], VAEntrypointVLD,
++		                                          NULL, 0, &config);
++		expect(st == VA_STATUS_SUCCESS, "CreateConfig accepts real VLD capability", st);
++		expect(config != (VAConfigID)0x7fffffff, "valid config ID returned", config);
++		if (st == VA_STATUS_SUCCESS) {
++			st = ctx->vtable->vaQueryConfigAttributes(ctx, config, &actual_profile,
++			                                          &actual_entrypoint, NULL, NULL);
++			expect(st == VA_STATUS_SUCCESS, "QueryConfigAttributes on valid config", st);
++			expect(actual_profile == supported[i], "valid config retains profile", actual_profile);
++			expect(actual_entrypoint == VAEntrypointVLD, "valid config retains VLD", actual_entrypoint);
++			ctx->vtable->vaDestroyConfig(ctx, config);
++		}
++		expect_create_rejected(ctx, supported[i], VAEntrypointEncSlice,
++		                       VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT);
++	}
++	for (i = 0; i < sizeof(unsupported) / sizeof(unsupported[0]); i++) {
++		expect_create_rejected(ctx, unsupported[i], VAEntrypointVLD,
++		                       VA_STATUS_ERROR_UNSUPPORTED_PROFILE);
++		expect_create_rejected(ctx, unsupported[i], VAEntrypointEncSlice,
++		                       VA_STATUS_ERROR_UNSUPPORTED_PROFILE);
++	}
++}
++
++static void check_config_attributes(VADriverContextP ctx)
++{
++	VAConfigAttrib attrib;
++	VAStatus st;
++	unsigned int i;
++
++	attrib.type = VAConfigAttribRTFormat;
++	attrib.value = 0;
++	st = ctx->vtable->vaGetConfigAttributes(ctx, VAProfileHEVCMain, VAEntrypointVLD,
++	                                        &attrib, 1);
++	expect(st == VA_STATUS_SUCCESS, "GetConfigAttributes accepts real VLD capability", st);
++	expect(attrib.value == VA_RT_FORMAT_YUV420, "real VLD capability keeps YUV420", attrib.value);
++
++	attrib.value = 0;
++	st = ctx->vtable->vaGetConfigAttributes(ctx, VAProfileHEVCMain, VAEntrypointEncSlice,
++	                                        &attrib, 1);
++	expect(st == VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT,
++	       "GetConfigAttributes rejects encode", st);
++	for (i = 0; i < sizeof(unsupported) / sizeof(unsupported[0]); i++) {
++		st = ctx->vtable->vaGetConfigAttributes(ctx, unsupported[i], VAEntrypointVLD,
++		                                        &attrib, 1);
++		expect(st == VA_STATUS_ERROR_UNSUPPORTED_PROFILE,
++		       "GetConfigAttributes rejects unsupported profile", st);
++	}
++}
++
++int main(int argc, char **argv)
++{
++	const char *path = argc > 1 ? argv[1] : "./loongvpu_drv_video.so";
++	void *handle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
++	driver_init_fn init;
++	struct VADriverContext ctx;
++	VAStatus st;
++
++	if (!handle) {
++		fprintf(stderr, "dlopen failed: %s\n", dlerror());
++		return 1;
++	}
++	init = (driver_init_fn)dlsym(handle, "__vaDriverInit_1_15");
++	if (!init) {
++		fprintf(stderr, "dlsym(__vaDriverInit_1_15) failed: %s\n", dlerror());
++		dlclose(handle);
++		return 1;
++	}
++	memset(&ctx, 0, sizeof(ctx));
++	st = init(&ctx);
++	if (st != VA_STATUS_SUCCESS || !ctx.vtable || !ctx.pDriverData) {
++		fprintf(stderr, "driver init failed: %d\n", st);
++		dlclose(handle);
++		return 1;
++	}
++
++	check_profiles(&ctx);
++	check_entrypoints(&ctx);
++	check_create_config(&ctx);
++	check_config_attributes(&ctx);
++
++	ctx.vtable->vaTerminate(&ctx);
++	dlclose(handle);
++	if (failures) {
++		fprintf(stderr, "capability_test FAILED: %d/%d checks failed\n", failures, checks);
++		return 1;
++	}
++	printf("capability_test PASSED (%d checks; H264/HEVC Main VLD only)\n", checks);
++	return 0;
++}
+diff --git a/tests/load_test.c b/tests/load_test.c
+index 5f7a181..5ccf05d 100644
+--- a/tests/load_test.c
++++ b/tests/load_test.c
+@@ -66,53 +66,26 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	printf("driver loaded OK; advertised profiles (%d):\n", np);
+-	{
+-		int av1_advertised = 0;
+-		for (i = 0; i < np; i++) {
+-			ne = 0;
+-			ctx.vtable->vaQueryConfigEntrypoints(&ctx, profiles[i], eps, &ne);
+-			printf("  profile %2d: %d entrypoint(s)\n", profiles[i], ne);
+-			if (profiles[i] == VAProfileAV1Profile0)
+-				av1_advertised = 1;
+-		}
+-		if (!av1_advertised) {
+-			fprintf(stderr, "AV1 profile not advertised\n");
++	for (i = 0; i < np; i++) {
++		ne = 0;
++		st = ctx.vtable->vaQueryConfigEntrypoints(&ctx, profiles[i], eps, &ne);
++		if (st != VA_STATUS_SUCCESS || ne != 1 || eps[0] != VAEntrypointVLD) {
++			fprintf(stderr, "profile %d is not VLD-only (status=%d, entries=%d)\n",
++			        profiles[i], st, ne);
+ 			ctx.vtable->vaTerminate(&ctx);
+ 			dlclose(handle);
+ 			return 1;
+ 		}
+-
+-		/* Exercise the AV1 stub: create config + context + begin/end and
+-		 * assert decode is explicitly refused (not mis-routed to H.264). */
+-		{
+-			VAConfigID cid = 0;
+-			VAContextID ctxid = 0;
+-			VASurfaceID target = 1;
+-			st = ctx.vtable->vaCreateConfig(&ctx, VAProfileAV1Profile0,
+-			                                VAEntrypointVLD, NULL, 0, &cid);
+-			if (st != VA_STATUS_SUCCESS) {
+-				fprintf(stderr, "AV1 CreateConfig failed: %d\n", st);
+-				ctx.vtable->vaTerminate(&ctx); dlclose(handle); return 1;
+-			}
+-			st = ctx.vtable->vaCreateContext(&ctx, cid, 64, 64, 0,
+-			                                 &target, 1, &ctxid);
+-			if (st != VA_STATUS_SUCCESS) {
+-				fprintf(stderr, "AV1 CreateContext failed: %d\n", st);
+-				ctx.vtable->vaTerminate(&ctx); dlclose(handle); return 1;
+-			}
+-			st = ctx.vtable->vaBeginPicture(&ctx, ctxid, target);
+-			if (st != VA_STATUS_SUCCESS) {
+-				fprintf(stderr, "AV1 BeginPicture failed: %d\n", st);
+-				ctx.vtable->vaTerminate(&ctx); dlclose(handle); return 1;
+-			}
+-			st = ctx.vtable->vaEndPicture(&ctx, ctxid);
+-			if (st != VA_STATUS_ERROR_UNSUPPORTED_PROFILE) {
+-				fprintf(stderr, "AV1 EndPicture should be UNSUPPORTED_PROFILE, got %d\n", st);
+-				ctx.vtable->vaTerminate(&ctx); dlclose(handle); return 1;
+-			}
+-			printf("AV1 stub: decode correctly refused (UNSUPPORTED_PROFILE)\n");
++		if (profiles[i] == VAProfileAV1Profile0 ||
++		    profiles[i] == VAProfileHEVCMain10) {
++			fprintf(stderr, "unsupported profile %d is still advertised\n", profiles[i]);
++			ctx.vtable->vaTerminate(&ctx);
++			dlclose(handle);
++			return 1;
+ 		}
++		printf("  profile %2d: VLD only\n", profiles[i]);
+ 	}
++	printf("VLD-only capability smoke PASSED\n");
+ 
+ 	/* Tear down through the driver's own terminate hook. */
+ 	ctx.vtable->vaTerminate(&ctx);

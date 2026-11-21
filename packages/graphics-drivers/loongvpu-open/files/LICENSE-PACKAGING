@@ -1,0 +1,12 @@
+Downstream permission for original packaging additions only
+
+SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
+
+This dual permission applies only to original REL6 packaging scripts, packaging documentation, and newly authored patch lines. It does not apply to upstream source, patch context, VC8000D-derived material, kernel ABI material, or any other third-party code. No individual or company copyright holder is asserted for these additions; the BSD option uses the real collective identifier "2026 loongvpu-open packaging contributors". No transfer of upstream copyright is asserted.
+
+You may use, copy, modify, and/or distribute the original packaging additions under the terms of either, at your option:
+
+1. the GNU General Public License, version 2 only (GPL-2.0-only), whose complete text is installed as licenses/GPL-2.0.txt; or
+2. the BSD 3-Clause License (BSD-3-Clause), whose complete standard text with the collective contributors copyright notice is installed as licenses/BSD-3-Clause-downstream.txt.
+
+The GPL option is version 2 only, not "version 2 or any later version". This dual permission does not alter the upstream driver's MIT declaration, VC8000D BSD-3-Clause notices, or kernel GPL-2.0-only notices. No third-party source is relicensed as original packaging work.

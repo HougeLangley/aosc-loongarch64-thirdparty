@@ -1,0 +1,5 @@
+VER=0.0.0+git20261118.8d952056
+SRCS="git::commit=8d95205627f83f6b36d09a9263ac9f381959c6c3::https://github.com/tsuibin/loongvpu-vaapi-loongarch64"
+CHKSUMS="SKIP"
+# Fixed experimental source snapshot: do not auto-update this package.
+CHKUPDATE="none"

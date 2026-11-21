@@ -1,0 +1,68 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: loongvpu-vaapi-loongarch64
+Source: https://github.com/tsuibin/loongvpu-vaapi-loongarch64
+Comment:
+ REL6 is UNTESTED_ON_LG200 and has no LS9A support. This copyright file
+ records source provenance; it does not assert all-platform equivalence or
+ change any upstream license.
+
+Files: upstream driver implementation except separately identified VC8000D/kernel ABI material
+Copyright: 2026 tsuibin <1154966+tsuibin@users.noreply.github.com>
+License: MIT
+ The fixed upstream commit 8d95205627f83f6b36d09a9263ac9f381959c6c3
+ declares MIT in README.md and src/loongvpu_drv_video.c but contains no
+ standalone LICENSE file. The copyright identity above is recorded from the
+ fixed commit author metadata, not represented as a pre-existing upstream
+ copyright file. The full downstream standard MIT text supplied on the basis
+ of the upstream declaration is installed as licenses/MIT.txt. The exact
+ upstream opening notice is licenses/upstream-loongvpu_drv_video.notice.
+
+Files: VC8000D-derived H.264 register/work-buffer/CABAC material
+Copyright: 2015-2017 VeriSilicon Inc.; 2011-2014 Google Inc.; 2007-2010 Hantro OY
+License: BSD-3-Clause with complete upstream notice
+ Source: https://github.com/alphagocc/vc8000d at
+ c47951fab2cea8e79a0978d85ff504ca5bb048f0.
+ Complete verbatim notices from h264hwd_asic.c, h264hwd_cabac.c and regdrv.c
+ are installed as licenses/VC8000D-h264hwd_asic.BSD-3-Clause.notice,
+ licenses/VC8000D-h264hwd_cabac.BSD-3-Clause.notice and
+ licenses/VC8000D-regdrv.BSD-3-Clause.notice. They include the entire
+ confidential/proprietary language, reproduction requirement, three BSD
+ conditions and disclaimer; none of that text is removed.
+ .
+ 8170table.h has no header at this commit. No header is invented for it;
+ its factual register-table provenance is recorded here and in
+ SOURCE-AND-LICENSE.
+
+Files: VC8000D-derived HEVC register/work-buffer material
+Copyright: 2015-2017 VeriSilicon Inc.; 2011-2014 Google Inc.
+License: BSD-3-Clause with complete upstream notice
+ The exact hevc_asic.c notice is installed as
+ licenses/VC8000D-hevc_asic.BSD-3-Clause.notice. It has no Hantro OY line,
+ and no such line has been added.
+
+Files: kernel ABI definitions and src/loongvpu_abi.h provenance
+Copyright: 2017 VeriSilicon Inc.
+License: GPL-2.0-only
+ Source: https://github.com/AOSC-Tracking/loongvpu-kernel-dkms tag
+ aosc/v0.1.0-lnd25.1-rc1.7, commit
+ 67d93157ec3878ac7fd8d47126dea1eaacfe67aa.
+ The exact hantro.h, hantrommu.h and hantro_vcmd.h notices are installed as
+ licenses/kernel-hantro.GPL-2.0.notice,
+ licenses/kernel-hantrommu.GPL-2.0.notice and
+ licenses/kernel-hantro_vcmd.GPL-2.0.notice. Each states SPDX GPL-2.0 and
+ version 2 only. The canonical full GNU GPL version 2 text referenced by
+ those headers is installed as licenses/GPL-2.0.txt.
+
+Files: REL6 recipe, packaging documentation and newly authored patch additions only
+Copyright: 2026 loongvpu-open packaging contributors
+ No individual or company copyright holder is asserted; this is the real
+ collective contributor identifier used by the downstream BSD option.
+License: GPL-2.0-only OR BSD-3-Clause
+ Only original packaging scripts, packaging documentation and newly authored
+ patch lines are covered by the dual downstream permission in
+ LICENSE-PACKAGING. The complete GPL-2.0 text is installed as
+ licenses/GPL-2.0.txt; the complete BSD-3-Clause text with the collective
+ contributors copyright notice is installed as
+ licenses/BSD-3-Clause-downstream.txt. Patch context, upstream source,
+ VC8000D-derived material and kernel ABI material are excluded. No
+ third-party source is relicensed as packaging work.

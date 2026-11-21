@@ -1,0 +1,5 @@
+VER=0.1.0
+# Independent downstream Qt implementation. No separate versioned upstream
+# release endpoint exists; files/ is the authoritative reviewed source.
+DUMMYSRC=1
+CHKUPDATE="none"

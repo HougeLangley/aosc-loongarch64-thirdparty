@@ -2,3 +2,4 @@ VER=0.1.0
 REL=1
 SRCS="git::commit=tags/v0.1.0::https://github.com/ogham/dog"
 CHKSUMS="SKIP"
+CHKUPDATE="github::repo=ogham/dog"
