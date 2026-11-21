@@ -1,83 +1,107 @@
 #!/usr/bin/env bash
-# ab-valkey.sh —— valkey 的补丁 A/B 压测（任务②的具体实现）
-#
-# 补丁 `valkey-5.0-use-system-jemalloc.patch` 把内置 jemalloc 换成系统 libjemalloc，
-# 影响的是内存分配器路径——只有跑真实负载才测得出来。
-# valkey 自带 valkey-benchmark，用它做 A/B。
-#
-# 流程：
-#   ① 构建原始版（移走 patches）· ② 构建补丁版 · ③ 各自起 server 跑 benchmark
-#   ④ 取中位数比 ops/sec，>5% 才算显著
-set -uo pipefail
+# ab-valkey.sh OLD_VER NEW_VER [ROUNDS]
+# 直接比较两个已构建 deb 的 valkey-server；不在 A/B 内改配方或重建变体。
+set -euo pipefail
 ROOT="${BUILD_ROOT:-$HOME/build}"
-PKG=valkey
-PORTA=${AB_PORT_A:-7801}; PORTB=${AB_PORT_B:-7802}
-REQS="${AB_REQS:-200000}"; CLIENTS="${AB_CLIENTS:-50}"; ROUNDS="${AB_ROUNDS:-3}"
-TREE="$ROOT/tree/aosc-loongarch64-thirdparty/packages"
-DIR=$(find "$TREE" -mindepth 2 -maxdepth 2 -type d -name "$PKG" | head -1)
-STASH="$ROOT/state/ab-$PKG"; RESULT="$ROOT/reports/ab-$PKG.md"
-mkdir -p "$ROOT/reports" "$ROOT/state"
-
-build_variant() {   # $1=orig|patched  → 输出 deb 路径
-  local want="$1"
-  if [[ "$want" == orig ]]; then
-    mv "$DIR/autobuild/patches" "$STASH/patches-off" 2>/dev/null || true
-  else
-    mv "$STASH/patches-off" "$DIR/autobuild/patches" 2>/dev/null || true
-  fi
-  "$ROOT/scripts/sync-tree.sh" >/dev/null 2>&1
-  "$ROOT/scripts/build.sh" "$PKG" >/dev/null 2>&1
-  ls -1t "$ROOT/debs/${PKG}_"*.deb 2>/dev/null | head -1
-}
-
-bench_variant() {   # $1=deb $2=port  → 输出 ops/sec 中位数
-  local deb="$1" port="$2" work
-  work=$(mktemp -d); dpkg-deb -x "$deb" "$work"
-  "$work/usr/bin/valkey-server" --port "$port" --save '' --appendonly no \
-      --daemonize yes --logfile "$work/server.log" --dir "$work" >/dev/null 2>&1
-  sleep 2
-  # 预热一次
-  "$work/usr/bin/valkey-benchmark" -p "$port" -n 5000 -c "$CLIENTS" -t set,get -q >/dev/null 2>&1
-  local vals=()
-  for i in $(seq 1 "$ROUNDS"); do
-    local out ops
-    out=$("$work/usr/bin/valkey-benchmark" -p "$port" -n "$REQS" -c "$CLIENTS" -t set,get -q 2>/dev/null)
-    # 两行结果（SET / GET），取各自 ops/sec 的平均
-    ops=$(echo "$out" | grep -oE '[0-9]+(\.[0-9]+)? requests per second' | awk '{s+=$1;n++} END{if(n)printf "%d", s/n}')
-    [[ -n "$ops" ]] && vals+=("$ops")
-    sleep 1
+OLD="${1:?old version required}"
+NEW="${2:?new version required}"
+ROUNDS="${3:-${AB_ROUNDS:-3}}"
+REQS="${AB_REQS:-200000}"
+CLIENTS="${AB_CLIENTS:-50}"
+OLD_DEB="$ROOT/debs/valkey_${OLD}-1_loongarch64.deb"
+NEW_DEB="$ROOT/debs/valkey_${NEW}-1_loongarch64.deb"
+[[ -f "$OLD_DEB" && -f "$NEW_DEB" ]]
+exec 8>"${AB_VALKEY_LOCK:-/tmp/ab-valkey.lock}"
+flock -n 8 || { echo 'another valkey A/B is running' >&2; exit 2; }
+T="$(mktemp -d /tmp/valkey-version-ab.XXXXXX)"
+OLD_PID='' NEW_PID=''
+cleanup() {
+  [[ -n "$OLD_PID" ]] && "$T/old/usr/bin/valkey-cli" -p 7801 shutdown nosave >/dev/null 2>&1 || true
+  [[ -n "$NEW_PID" ]] && "$T/new/usr/bin/valkey-cli" -p 7802 shutdown nosave >/dev/null 2>&1 || true
+  for pid in "$OLD_PID" "$NEW_PID"; do
+    [[ -n "$pid" ]] && kill -TERM "$pid" 2>/dev/null || true
   done
-  "$work/usr/bin/valkey-cli" -p "$port" shutdown nosave >/dev/null 2>&1 || kill %1 2>/dev/null
-  rm -rf "$work"
-  (( ${#vals[@]} )) && printf '%s\n' "${vals[@]}" | sort -n | awk '{a[NR]=$1} END{print a[int((NR+1)/2)]}'
+  wait 2>/dev/null || true
+  rm -rf -- "$T"
 }
+trap cleanup EXIT
 
-echo "  === ① 构建原始版 ==="; ORIG=$(build_variant orig);   echo "  $(basename "${ORIG:-失败}")"
-echo "  === ② 构建补丁版 ==="; PATCHED=$(build_variant patched); echo "  $(basename "${PATCHED:-失败}")"
-[[ -z "$ORIG" || -z "$PATCHED" ]] && { echo "  构建失败，退出"; exit 1; }
+dpkg-deb -x "$OLD_DEB" "$T/old"
+dpkg-deb -x "$NEW_DEB" "$T/new"
+for side in old new; do
+  expected="$OLD"; [[ "$side" == new ]] && expected="$NEW"
+  "$T/$side/usr/bin/valkey-server" --version | grep -F "v=$expected" >/dev/null
+  "$T/$side/usr/bin/valkey-benchmark" --version | grep -Fx "valkey-benchmark $expected" >/dev/null
+done
 
-echo "  === ③ 压测（$REQS 请求 / $CLIENTS 并发 / $ROUNDS 轮）==="
-OA=$(bench_variant "$ORIG" "$PORTA")
-PA=$(bench_variant "$PATCHED" "$PORTB")
-echo "  原始版: ${OA:-N/A} ops/sec"
-echo "  补丁版: ${PA:-N/A} ops/sec"
+start_server() {
+  local side="$1" port="$2"
+  "$T/$side/usr/bin/valkey-server" --port "$port" --bind 127.0.0.1 \
+    --save '' --appendonly no --daemonize no --loglevel warning --dir "$T/$side" \
+    >"$T/$side-server.log" 2>&1 &
+  SERVER_PID=$!
+}
+start_server old 7801
+OLD_PID="$SERVER_PID"
+start_server new 7802
+NEW_PID="$SERVER_PID"
+for side in old new; do
+  port=7801; pid="$OLD_PID"; [[ "$side" == new ]] && { port=7802; pid="$NEW_PID"; }
+  ready=0
+  for _ in $(seq 1 100); do
+    if [[ "$("$T/$side/usr/bin/valkey-cli" -p "$port" ping 2>/dev/null)" == PONG ]]; then ready=1; break; fi
+    kill -0 "$pid" 2>/dev/null || { cat "$T/$side-server.log" >&2; exit 1; }
+    sleep 0.1
+  done
+  [[ $ready -eq 1 ]] || { cat "$T/$side-server.log" >&2; exit 1; }
+  [[ "$("$T/$side/usr/bin/valkey-cli" -p "$port" set ab-payload "$side-value")" == OK ]]
+  [[ "$("$T/$side/usr/bin/valkey-cli" -p "$port" get ab-payload)" == "$side-value" ]]
+  "$T/$side/usr/bin/valkey-benchmark" -p "$port" -n 5000 -c "$CLIENTS" -t set,get -q >/dev/null
+done
 
-{
-  echo "# valkey 补丁 A/B 压测"; echo ""; echo "生成: $(date -Is)"; echo ""
-  echo "补丁：\`use-system-jemalloc\`（内置 jemalloc → 系统 libjemalloc）"
-  echo ""
-  echo "| 版本 | 产物 | ops/sec（中位） |"
-  echo "| --- | --- | --- |"
-  echo "| 原始 | $(basename "$ORIG") | ${OA:-N/A} |"
-  echo "| 补丁 | $(basename "$PATCHED") | ${PA:-N/A} |"
-  echo ""
-} > "$RESULT"
+printf 'round,side,ops_per_second\n' > "$T/results.csv"
+measure() {
+  local round="$1" side="$2" port="$3" out ops
+  out="$("$T/$side/usr/bin/valkey-benchmark" -p "$port" -n "$REQS" -c "$CLIENTS" -t set,get -q 2>/dev/null)"
+  ops="$(python3 -c 'import re,sys; v=[float(x) for x in re.findall(r"([0-9]+(?:\.[0-9]+)?) requests per second",sys.stdin.read())]; assert len(v)==2,v; print(sum(v)/len(v))' <<<"$out")"
+  printf '%s,%s,%s\n' "$round" "$side" "$ops" >> "$T/results.csv"
+}
+for round in $(seq 1 "$ROUNDS"); do
+  if (( round % 2 )); then
+    measure "$round" old 7801
+    measure "$round" new 7802
+  else
+    measure "$round" new 7802
+    measure "$round" old 7801
+  fi
+done
 
-if [[ -n "$OA" && -n "$PA" ]]; then
-  if (( PA * 100 > OA * 105 )); then echo "  **结论：补丁版快 $(( (PA-OA)*100/OA ))% → 保留补丁**" | tee -a "$RESULT"
-  elif (( OA * 100 > PA * 105 )); then echo "  **结论：原始版快 $(( (OA-PA)*100/PA ))% → 撤补丁**" | tee -a "$RESULT"
-  else echo "  **结论：差异 <5%，无显著差别 → 保留补丁（默认跟随 Arch）**" | tee -a "$RESULT"; fi
-else
-  echo "  **结论：压测无有效数据，需人工排查**" | tee -a "$RESULT"
-fi
-echo "  报告: $RESULT"
+python3 - "$T/results.csv" "$OLD" "$NEW" "$ROUNDS" "$REQS" "$CLIENTS" \
+  "$ROOT/logs/valkey-version.ab.json" "$ROOT/reports/ab-valkey.md" <<'PY'
+import csv,json,statistics,sys
+from collections import defaultdict
+from pathlib import Path
+path,old,new,rounds,reqs,clients,json_out,report=sys.argv[1:]
+rounds=int(rounds)
+data=defaultdict(dict)
+with open(path,newline='') as f:
+    for row in csv.DictReader(f): data[row['side']][int(row['round'])]=float(row['ops_per_second'])
+assert set(data)=={'old','new'}
+for side in ('old','new'): assert set(data[side])==set(range(1,rounds+1))
+old_med=statistics.median(data['old'].values()); new_med=statistics.median(data['new'].values())
+result={'old':old,'new':new,'rounds':rounds,'requests_per_test':int(reqs),'clients':int(clients),
+        'old_ops_per_second':data['old'],'new_ops_per_second':data['new'],
+        'old_median_ops_per_second':old_med,'new_median_ops_per_second':new_med,
+        'speedup':new_med/old_med,'minimum_speedup':1.05,'accepted':new_med>old_med*1.05,
+        'set_get_verified':True,'versions_match':True}
+Path(json_out).write_text(json.dumps(result,indent=2)+'\n')
+lines=['# valkey version A/B','',f'- Old: {old}',f'- New: {new}',
+       f'- Requests per SET/GET test: {reqs}; clients: {clients}; rounds: {rounds}',
+       '', '| Round | Old ops/s | New ops/s |','| --- | ---: | ---: |']
+for r in range(1,rounds+1): lines.append(f"| {r} | {data['old'][r]:.0f} | {data['new'][r]:.0f} |")
+lines += ['',f'Median: **{old_med:.0f} → {new_med:.0f} ops/s**; speedup **{new_med/old_med:.3f}×**.',
+          f"Decision: **{'ACCEPT' if result['accepted'] else 'REJECT'}** (requires >1.05×).",'']
+Path(report).write_text('\n'.join(lines))
+print('\n'.join(lines))
+raise SystemExit(0 if result['accepted'] else 1)
+PY
