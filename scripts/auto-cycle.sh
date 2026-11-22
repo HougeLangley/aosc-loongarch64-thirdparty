@@ -46,7 +46,7 @@ recipe_fingerprint() {
   {
     legacy_recipe_fingerprint "$dir"
     if [[ -n "$p" && -f "$ROOT/scripts/ab-$p.sh" ]]; then
-      sha256sum "$ROOT/scripts/ab-$p.sh"
+      sha256sum "$ROOT/scripts/ab-$p.sh" | awk '{print $1}'
       ab_dispatch_fingerprint "$p"
     fi
   } | sha256sum | awk '{print $1}'
@@ -143,7 +143,7 @@ say "  发现 ${#STALE[@]} 个包有新版本：${STALE[*]}"
 say "①.5 写回新 VER"
 SKIPLIST="$ROOT/state/skip-auto.txt"
 declare -a QUEUE=() BLOCKED=()
-declare -A OLD_VER=() OLD_REL=() NEW_VER=() SPEC_BY=()
+declare -A OLD_VER=() OLD_REL=() OLD_INSTALLED=() NEW_VER=() SPEC_BY=()
 : > "$STATE/queue.txt"
 while read -r line; do
   p="$(sed -n 's/^ *\[陈旧\] \([^ ]*\).*/\1/p' <<<"$line")"
@@ -165,6 +165,7 @@ while read -r line; do
   [[ -n "$old" ]] || { BLOCKED+=("$p"); continue; }
   OLD_VER[$p]="$old"
   OLD_REL[$p]="$(spec_rel "$spec")"
+  OLD_INSTALLED[$p]="$(dpkg-query -W -f='${Version}' "$p" 2>/dev/null || true)"
   NEW_VER[$p]="$up"
   SPEC_BY[$p]="$spec"
   sed -i -E "s/^REL=.*/REL=1/" "$spec"
@@ -247,6 +248,9 @@ for p in "${QUEUE[@]}"; do
   elif [[ "$p" == jaq && -x "$ROOT/scripts/ab-jaq.sh" ]]; then
     say "  $p: JSON filter A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     timeout 600 "$ROOT/scripts/ab-jaq.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
+  elif [[ "$p" == superfile && -x "$ROOT/scripts/ab-superfile.sh" ]]; then
+    say "  $p: real-TUI first-frame A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
+    timeout 600 "$ROOT/scripts/ab-superfile.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
   elif [[ "$p" == valkey && -x "$ROOT/scripts/ab-valkey.sh" ]]; then
     say "  $p: valkey-benchmark A/B ${OLD_VER[$p]} -> ${NEW_VER[$p]}"
     AB_ROUNDS="$AB_ROUNDS" timeout 2400 "$ROOT/scripts/ab-valkey.sh" "${OLD_VER[$p]}" "${NEW_VER[$p]}" "$AB_ROUNDS" >>"$LOG" 2>&1 && ok=1
@@ -273,7 +277,11 @@ for p in "${QUEUE[@]}"; do
     AB_FAILED+=("$p")
     record_failure "$p" "${NEW_VER[$p]}" ab
     restore_spec "$p"
-    if ! "$ROOT/scripts/rollback-candidate.sh" "$p" "${OLD_VER[$p]}" "${OLD_REL[$p]:-1}" "${NEW_VER[$p]}" 1 >>"$LOG" 2>&1; then
+    rollback_rel="${OLD_REL[$p]:-1}"
+    if [[ "${OLD_INSTALLED[$p]}" == "${OLD_VER[$p]}-"* ]]; then
+      rollback_rel="${OLD_INSTALLED[$p]#"${OLD_VER[$p]}"-}"
+    fi
+    if ! "$ROOT/scripts/rollback-candidate.sh" "$p" "${OLD_VER[$p]}" "$rollback_rel" "${NEW_VER[$p]}" 1 >>"$LOG" 2>&1; then
       ROLLBACK_FAILED+=("$p")
       say "    $p 回滚安装态/产物失败；禁止把周期视为清洁完成"
     fi

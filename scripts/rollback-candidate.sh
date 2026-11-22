@@ -56,13 +56,19 @@ fi
 [[ -z "$MAIN_BEFORE" || "$(installed "$PKG")" == "$OLD_VER-$OLD_REL" ]]
 DBG_AFTER="$(installed "$DBG")"
 [[ -z "$DBG_AFTER" || "$DBG_AFTER" == "$OLD_VER-$OLD_REL" ]]
-python3 - "$ROOT/debs" "$PKG" "$NEW_VER" "$NEW_REL" <<'PY'
+python3 - "$ROOT/debs" "$PKG" "$NEW_VER" "$NEW_REL" /debs <<'PY'
 from pathlib import Path
-import sys
-root=Path(sys.argv[1]).resolve(); pkg,ver,rel=sys.argv[2:]
-for binary in (pkg,pkg+'-dbg'):
- for p in root.glob(f'{binary}_{ver}-{rel}_*.deb'):
-  rp=p.resolve(); assert rp.parent==root and rp.is_file(),rp
-  print('removed rejected artifact:',rp.name); rp.unlink()
+import subprocess,sys
+root=Path(sys.argv[1]).resolve(); pkg,ver,rel=sys.argv[2:5]; extra=Path(sys.argv[5])
+for base in (root,extra):
+ if not base.is_dir(): continue
+ allowed=base.resolve()
+ for binary in (pkg,pkg+'-dbg'):
+  paths=base.glob(f'{binary}_{ver}-{rel}_*.deb') if base==root else base.rglob(f'{binary}_{ver}-{rel}_*.deb')
+  for p in paths:
+   rp=p.resolve(); assert rp.is_file() and rp.is_relative_to(allowed),rp
+   print('removed rejected artifact:',rp)
+   try: p.unlink()
+   except PermissionError: subprocess.run(['sudo','-n','rm','--',str(p)],check=True)
 PY
 printf 'rollback PASS: %s installed=%s; rejected=%s-%s artifacts removed\n' "$PKG" "$(installed "$PKG")" "$NEW_VER" "$NEW_REL"
