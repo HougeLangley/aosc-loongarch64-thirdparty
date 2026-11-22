@@ -1,4 +1,4 @@
-VER=0.7.7
+VER=0.7.8
 REL=1
 SRCS="git::commit=tags/v$VER::https://github.com/Gloridust/WowType"
 CHKSUMS="SKIP"
