@@ -2,4 +2,5 @@ VER=26.06
 REL=1
 SRCS="git::commit=tags/$VER::https://github.com/ip7z/7zip"
 CHKSUMS="SKIP"
+CHKUPDATE="github::repo=ip7z/7zip"
 SUBDIR=.

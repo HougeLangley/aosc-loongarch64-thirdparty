@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${SRCDIR:?SRCDIR is required}"
+: "${PKGDIR:?PKGDIR is required}"
+RECIPE_FILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/../files" && pwd)"
+test -f "$RECIPE_FILES/CMakeLists.txt"
+cp -a "$RECIPE_FILES/." "$SRCDIR/"
+cd "$SRCDIR"
+
+# Keep the source README/build.log contract: Release, CTest, and GNUInstallDirs.
+cmake -S . -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr
+cmake --build build -j"${ABTHREADS:-$(nproc)}"
+ctest --test-dir build --output-on-failure
+
+DESTDIR="$PKGDIR" cmake --install build
+install -Dvm644 README.md LICENSE -t "$PKGDIR/usr/share/doc/brew-ui-linux"
+
+# Installation smoke only; never invoke brew or write to the host system.
+test -x "$PKGDIR/usr/bin/brew-ui-linux"
+test -f "$PKGDIR/usr/share/applications/brew-ui-linux.desktop"
+"$PKGDIR/usr/bin/brew-ui-linux" --version | grep -Fx 'brew-ui-linux 0.1.0'
+QT_QPA_PLATFORM=offscreen "$PKGDIR/usr/bin/brew-ui-linux" --smoke-test

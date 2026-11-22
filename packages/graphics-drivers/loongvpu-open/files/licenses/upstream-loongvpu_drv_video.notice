@@ -1,0 +1,13 @@
+/*
+ * loongvpu_drv_video.c -- open-source VA-API driver scaffold for LoongVPU.
+ *
+ * This is a WORKING SKELETON, not a complete hardware decoder.  It implements
+ * the libva entry point and the mandatory driver hooks so that the driver can
+ * be discovered and loaded by libva, advertises the codecs the LoongVPU VPU
+ * supports (H.264/H.265/AV1 decode, H.264/H.265 encode), establishes a DRM
+ * connection to the kernel driver, and provides object management stubs that
+ * can be filled in with real register-stream submission later.
+ *
+ * Kernel ABI: AOSC-Tracking/loongvpu-kernel-dkms (open source, GPL).
+ * This file is licensed under MIT so it can be freely reused.
+ */

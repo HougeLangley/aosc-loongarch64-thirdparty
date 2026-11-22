@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${SRCDIR:?builder must set SRCDIR}"
+: "${PKGDIR:?builder must set PKGDIR}"
+cd "$SRCDIR"
+
+UPSTREAM_URL=https://github.com/tsuibin/loongvpu-vaapi-loongarch64
+UPSTREAM_COMMIT=8d95205627f83f6b36d09a9263ac9f381959c6c3
+PATCH_SHA256=f63846d8188238b73c4ecbed2d3c1614c3c2321aa5e5dfa677a7180dd23f252c
+RECIPE_DIR="${PKGDIR_SRC:-/home/houge/infra/pkg/loongvpu-open}"
+PATCH_FILE="$RECIPE_DIR/files/capability-truthfulness.diff"
+LOCAL_SOURCE="${LOONGVPU_OPEN_SOURCE_REPO:-/tmp/loongvpu-upstream-aKo3Nqs2Ce/upstream}"
+
+if [[ ! -d .git ]]; then
+    if [[ -n "$LOCAL_SOURCE" && -d "$LOCAL_SOURCE/.git" ]]; then
+        echo "[source] cloning verified local cache without hardlinks: $LOCAL_SOURCE"
+        git clone --no-hardlinks --no-tags "$LOCAL_SOURCE" .
+    else
+        echo "[source] cloning upstream: $UPSTREAM_URL"
+        git clone --no-tags "$UPSTREAM_URL" .
+    fi
+fi
+git remote set-url origin "$UPSTREAM_URL"
+git checkout --detach "$UPSTREAM_COMMIT"
+test "$(git rev-parse HEAD)" = "$UPSTREAM_COMMIT"
+printf '[source] HEAD=%s\n' "$(git rev-parse HEAD)"
+
+if git ls-tree -r --name-only HEAD | grep -Eiq '(^|/)(LICENSE|COPYING|COPYRIGHT)(\.|$|/)'; then
+    echo '[source] unexpected license file present; inspect before packaging' >&2
+    exit 1
+fi
+printf '%s  %s\n' "$PATCH_SHA256" "$PATCH_FILE" | sha256sum -c -
+git apply --check "$PATCH_FILE"
+git apply "$PATCH_FILE"
+git diff --check
+printf '[patch] applied %s\n' "$PATCH_FILE"
+
+# Export a clean, patched source snapshot before compiling anything. Keep this
+# outside the upstream repository so no packaging file is misrepresented as an
+# upstream license change and no build artifact enters source.tar.xz.
+SOURCE_WORK="${SRCDIR}.rel6-source"
+SOURCE_EXPORT="$SOURCE_WORK/loongvpu-open-source"
+test ! -e "$SOURCE_WORK"
+mkdir -p "$SOURCE_EXPORT/upstream"
+git archive --format=tar HEAD | tar -xf - -C "$SOURCE_EXPORT/upstream"
+(
+    cd "$SOURCE_EXPORT/upstream"
+    patch --silent --no-backup-if-mismatch -p1 < "$PATCH_FILE"
+)
+cp -a "$RECIPE_DIR" "$SOURCE_EXPORT/recipe"
+cp -a "$RECIPE_DIR/files/licenses" "$SOURCE_EXPORT/licensing"
+install -m644 "$RECIPE_DIR/files/REBUILD.md" "$SOURCE_EXPORT/REBUILD.md"
+install -m644 "$RECIPE_DIR/files/SOURCE-AND-LICENSE" "$SOURCE_EXPORT/SOURCE-AND-LICENSE"
+install -m644 "$RECIPE_DIR/files/copyright" "$SOURCE_EXPORT/copyright"
+install -m644 "$RECIPE_DIR/files/LICENSE-PACKAGING" "$SOURCE_EXPORT/LICENSE-PACKAGING"
+install -m644 "$RECIPE_DIR/files/UNTESTED_ON_LG200" "$SOURCE_EXPORT/UNTESTED_ON_LG200"
+(
+    cd "$SOURCE_EXPORT"
+    shopt -s globstar dotglob nullglob
+    for f in **/*; do
+        [[ -f "$f" ]] || continue
+        [[ "$f" = SOURCE-MANIFEST.sha256 ]] && continue
+        sha256sum -- "$f"
+    done | LC_ALL=C sort -k2 > SOURCE-MANIFEST.sha256
+)
+SOURCE_EPOCH="${SOURCE_DATE_EPOCH:-$(git show -s --format=%ct HEAD)}"
+DOCDIR="$PKGDIR/usr/share/doc/loongvpu-open"
+install -d "$DOCDIR"
+XZ_OPT='-9e -T1' tar --sort=name --format=gnu --owner=0 --group=0 \
+    --numeric-owner --mtime="@$SOURCE_EPOCH" \
+    -cJf "$DOCDIR/source.tar.xz" -C "$SOURCE_WORK" loongvpu-open-source
+printf '[source] embedded deterministic source.tar.xz\n'
+
+make -j"${ABTHREADS:-$(nproc)}"
+make test
+
+# Stage only. DESTDIR is mandatory and no system installation is performed.
+test -n "$PKGDIR"
+test "$PKGDIR" != /
+make DESTDIR="$PKGDIR" DRIVERDIR=/usr/lib/dri install
+ln -s loongvpu_drv_video.so "$PKGDIR/usr/lib/dri/loonggpu_drv_video.so"
+test "$(readlink "$PKGDIR/usr/lib/dri/loonggpu_drv_video.so")" = loongvpu_drv_video.so
+
+install -m644 \
+    "$RECIPE_DIR/files/README.AOSC" \
+    "$RECIPE_DIR/files/SOURCE-AND-LICENSE" \
+    "$RECIPE_DIR/files/copyright" \
+    "$RECIPE_DIR/files/LICENSE-PACKAGING" \
+    "$RECIPE_DIR/files/REBUILD.md" \
+    "$RECIPE_DIR/files/UNTESTED_ON_LG200" \
+    "$RECIPE_DIR/files/PAGE-DRAFT.md" \
+    "$DOCDIR/"
+install -m644 "$PATCH_FILE" "$DOCDIR/capability-truthfulness.diff"
+install -d "$DOCDIR/licenses"
+install -m644 "$RECIPE_DIR"/files/licenses/* "$DOCDIR/licenses/"
+
+printf '[stage] drivers and embedded source:\n'
+ls -l "$PKGDIR/usr/lib/dri/loongvpu_drv_video.so" \
+      "$PKGDIR/usr/lib/dri/loonggpu_drv_video.so" \
+      "$DOCDIR/source.tar.xz"

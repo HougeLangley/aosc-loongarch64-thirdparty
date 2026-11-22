@@ -1,0 +1,10 @@
+PKGNAME=ansible
+PKGSEC=admin
+PKGDEP="python-3 ansible-core"
+BUILDDEP="python-build python-installer"
+PKGDES="Ansible collections in addition to ansible-core"
+
+NOPYTHON2=1
+ABHOST=noarch
+ABSPLITDBG=0
+ABTYPE=pep517

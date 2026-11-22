@@ -1,0 +1,31 @@
+# UNTESTED_ON_LG200
+
+**No LG200 hardware execution has been performed. The user explicitly waived the LG200 validation gate for this experimental build; no hardware decoding, picture correctness, performance, or stability claim is made.**
+
+This package contains the source-built LoongVPU VA-API driver at fixed upstream commit 8d95205627f83f6b36d09a9263ac9f381959c6c3, with only the reviewed capability-truthfulness patch applied.
+
+It is an explicit opt-in experiment, not a silent upgrade of the vendor loongvpu package. It Provides, Conflicts with, and Replaces loongvpu so that installing loongvpu-open is a deliberate package-manager transaction.
+
+The files loongvpu_drv_video.so and loonggpu_drv_video.so select the same open driver. The second name is a relative symbolic link for libva compatibility. No other vendor driver name is claimed.
+
+## No LS9A support or all-platform equivalence
+
+The vendor loongvpu package also installs ls9a_3b6600_vpu.so. Explicitly replacing that package can therefore remove this vendor file; this experiment does not provide an ls9a_3b6600_vpu.so symlink or equivalent implementation. Default driver selection and functionality on 3B6000M/LS9A are unverified. Any future release gate must test that machine class or explicitly restrict the supported scope.
+
+## Runtime and vendor prerm risk
+
+Runtime dependencies preserve the vendor package's minimum LoongGPU driver, LoongVPU kernel DKMS, and libva requirements. The open userspace driver still requires the corresponding kernel and GPU stack; a successful isolated libva load does not remove those prerequisites.
+
+The official loongvpu prerm removes `/usr/share/glvnd/egl_vendor.d/40_loonggpu.json`. A package transaction that replaces or removes the vendor package can run that script and delete this EGL vendor JSON on a target system. This experiment neither owns nor restores that file. It is absent and not dpkg-owned on the packaging LG110, but target systems must back it up and verify/restage it during rollback as applicable.
+
+## Source, copyright and rebuild
+
+The exact patched upstream source, complete REL6 recipe, license notices, and rebuild instructions are embedded at `/usr/share/doc/loongvpu-open/source.tar.xz`. See `REBUILD.md`, `copyright`, `SOURCE-AND-LICENSE`, `LICENSE-PACKAGING`, and `licenses/` in the same documentation directory.
+
+The fixed upstream commit declares MIT but has no standalone LICENSE file. The included MIT full text is explicitly a downstream standard-text copy based on that declaration. VC8000D BSD-3-Clause and kernel GPL-2.0-only notices are reproduced from the pinned corresponding sources; no third-party code is relicensed as original packaging work.
+
+## Validation boundary
+
+Validation on the packaging LG110 host is limited to compilation, unit and capability tests, package inspection, isolated libva loading, and source-archive rebuild comparison. This host has no LoongVPU render node. Soft-degrade vainfo is not hardware decode evidence.
+
+Do not install this package for ordinary production use. Independent verifier PASS is required before any deploy. See the accompanying external REPORT.md and ROLLBACK.md for exact evidence and reversal steps.

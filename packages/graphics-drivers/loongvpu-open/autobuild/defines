@@ -1,0 +1,13 @@
+PKGNAME=loongvpu-open
+PKGSEC=libs
+PKGDEP="glibc loonggpu-driver(>=2:1.0.2+lnd25.1) loongvpu-kernel-dkms(>=1.0.1+lnd25.1~pre20260926T123109Z) libva(>=2.23.0)"
+BUILDDEP="gcc git make libva-dev libdrm-dev pkg-config"
+PKGDES="UNTESTED_ON_LG200: experimental LoongVPU VA-API driver; no LS9A support"
+PKGHOMEPAGE="https://github.com/tsuibin/loongvpu-vaapi-loongarch64"
+ABTYPE=self
+REL=6
+PKGPROV="loongvpu"
+PKGCONFL="loongvpu"
+PKGREP="loongvpu"
+FAIL_ARCH="!(loongarch64)"
+ABSPLITDBG=0

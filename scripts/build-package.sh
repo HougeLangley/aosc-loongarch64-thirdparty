@@ -12,12 +12,12 @@ source "$PKGDIR_SRC/spec"
 # shellcheck disable=SC1090
 source "$PKGDIR_SRC/autobuild/defines"
 
-OUT="$ROOT/build"
-STAGE="$ROOT/build/stage/$NAME"
+OUT="${OUT:-$ROOT/build}"
+STAGE="${STAGE:-$ROOT/build/stage/$NAME}"
 SRCDIR="${SRCDIR:-$ROOT/build/src/$NAME}"
 PKGDIR="$STAGE"
 ABTHREADS="${ABTHREADS:-$(nproc)}"
-export SRCDIR PKGDIR ABTHREADS VER REL PKGNAME
+export SRCDIR PKGDIR ABTHREADS VER REL PKGNAME PKGDIR_SRC
 
 rm -rf "$STAGE" "$SRCDIR"
 mkdir -p "$STAGE" "$SRCDIR"
@@ -50,6 +50,15 @@ Priority: optional
 Depends: ${PKGDEP// /, }
 Description: ${PKGDES}
 CTL
+if [[ -n "${PKGPROV:-}" ]]; then
+  printf 'Provides: %s\n' "${PKGPROV// /, }" >> "$STAGE/DEBIAN/control"
+fi
+if [[ -n "${PKGCONFL:-}" ]]; then
+  printf 'Conflicts: %s\n' "${PKGCONFL// /, }" >> "$STAGE/DEBIAN/control"
+fi
+if [[ -n "${PKGREP:-}" ]]; then
+  printf 'Replaces: %s\n' "${PKGREP// /, }" >> "$STAGE/DEBIAN/control"
+fi
 DEB="$OUT/${PKGNAME}_${VER}-${REL}_loongarch64.deb"
 mkdir -p "$OUT"
 dpkg-deb --build --root-owner-group "$STAGE" "$DEB" >/dev/null

@@ -4,3 +4,4 @@ REL=2
 # 官方仍指向 cabextract.org.uk 的 0.10.1alpha 快照，1.x 在 GitHub。
 SRCS="tbl::https://github.com/kyz/libmspack/archive/refs/tags/v$VER.tar.gz"
 CHKSUMS="sha256::e9941cbfdab991af2afdd16ac746d3e194012838d81c80ce14d6a61bc69f78ce"
+CHKUPDATE="github::repo=kyz/libmspack"

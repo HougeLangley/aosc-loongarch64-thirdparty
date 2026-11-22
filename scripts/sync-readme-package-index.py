@@ -91,7 +91,7 @@ def render(rows: list[dict[str, str]], indexed_total: int) -> str:
         "以下清单由 `scripts/sync-readme-package-index.py` 从实际发布的",
         "`dists/stable/main/binary-loongarch64/Packages` 生成，**只列每个包的最新版本**。",
         f"当前列出 **{len(rows)} 个最新 deb 条目、{names} 个不同包名**；索引共保留 {indexed_total} 个 deb。",
-        "旧版本只保留有限的回滚副本，不在 README 罗列。APT 默认选择可安装的最新版本。",
+        "旧版本不保留、不备份，也不在 README 罗列。APT 默认选择可安装的最新版本。",
         "`mesa-vulkan-loonggpu` 仍只是已废弃的 RADV 存档，不代表 LG110 可用原生 Vulkan。",
         "",
         "| 软件包 | 版本 | 架构 | SHA-256 | deb |",
