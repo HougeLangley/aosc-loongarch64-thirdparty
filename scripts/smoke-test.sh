@@ -37,6 +37,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$DEB" && -f "$DEB" ]] || { echo "找不到 deb: ${DEB:-<空>}" >&2; exit 2; }
+if [[ -n "$PKGSRC" ]]; then
+  PKGSRC="$(readlink -f "$PKGSRC")"
+  [[ -d "$PKGSRC" ]] || { echo "找不到配方目录: $PKGSRC" >&2; exit 2; }
+fi
 
 PKG=$(dpkg-deb -f "$DEB" Package)
 VER=$(dpkg-deb -f "$DEB" Version)
@@ -193,6 +197,18 @@ echo "[3.5/4] 版本一致性"
 # 但用户看不到版本信息。这类缺陷只有跑一次 --version 才能发现，
 # 而"跑一次并比对版本号"完全可以自动化。
 PKGVER=$(dpkg-deb -f "$DEB" Version | sed 's/-[0-9]*$//')
+declare -A VERSION_ALLOW=()
+if [[ -n "${PKGSRC:-}" && -f "$PKGSRC/tests/version-allow" ]]; then
+  while IFS= read -r line; do
+    line="${line%%#*}"; line="${line#"${line%%[![:space:]]*}"}"; line="${line%"${line##*[![:space:]]}"}"
+    [[ -n "$line" ]] || continue
+    if [[ "$line" =~ ^[A-Za-z0-9_.+-]+=[0-9][0-9A-Za-z.+-]*$ ]]; then
+      VERSION_ALLOW[${line%%=*}]="${line#*=}"
+    else
+      echo "  [FAIL] tests/version-allow 格式错误: $line"; FAIL=$((FAIL+1))
+    fi
+  done < "$PKGSRC/tests/version-allow"
+fi
 VERHIT=0
 if [[ ${#BINS[@]} -gt 0 && -n "$PKGVER" ]]; then
     for b in "${BINS[@]}"; do
@@ -218,7 +234,9 @@ if [[ ${#BINS[@]} -gt 0 && -n "$PKGVER" ]]; then
                 fail "$base: 版本未正确注入（输出含 (devel) 或整体为空）"
             else
                 _seen=$(echo "$out" | grep -oE '[0-9]+(\.[0-9]+)+([.-][0-9A-Za-z]+)*' | head -1)
-                if [[ -n "$_seen" ]]; then
+                if [[ -n "${VERSION_ALLOW[$base]:-}" && "$_seen" == "${VERSION_ALLOW[$base]}" ]]; then
+                    pass "$base: 独立组件版本 $_seen 与上游清单一致"
+                elif [[ -n "$_seen" ]]; then
                     fail "$base: 实际版本 $_seen 与包版本 $PKGVER 不一致"
                 else
                     warn "$base: 版本输出未包含 $PKGVER，需人工确认"

@@ -187,7 +187,19 @@ for PKG in "$@"; do
   PARITY="$ROOT/logs/${PKG}.parity.txt"
   # 传入 --pkg-src，让闸门能读到配方里的 tests/parity-allow（预期差异申明）
   _PSRC=$(find "$TREE" -mindepth 2 -maxdepth 2 -type d -name "$PKG" 2>/dev/null | head -1)
-  "$ROOT/scripts/parity-check.sh" "$FIRST_DEB" ${_PSRC:+--pkg-src "$_PSRC"} > "$PARITY" 2>&1
+  _PARITY_ARGS=()
+  if [[ -n "${PARITY_REFERENCE_DEB:-}" ]]; then
+    _REFVER=$(dpkg-deb -f "$PARITY_REFERENCE_DEB" Version 2>/dev/null | sed 's/-[0-9]*$//')
+    _NEWVER=$(dpkg-deb -f "$FIRST_DEB" Version | sed 's/-[0-9]*$//')
+    if [[ -f "$PARITY_REFERENCE_DEB" && "$_REFVER" == "$_NEWVER" ]]; then
+      _PARITY_ARGS=(--official "$PARITY_REFERENCE_DEB")
+    else
+      echo "  [fail] PARITY_REFERENCE_DEB 必须是同上游 VER 的已接受旧 deb"
+      status_set fail "$START_ISO" "$DUR" "$(basename "$FIRST_DEB")" "parity-reference-invalid"
+      continue
+    fi
+  fi
+  "$ROOT/scripts/parity-check.sh" "$FIRST_DEB" ${_PSRC:+--pkg-src "$_PSRC"} "${_PARITY_ARGS[@]}" > "$PARITY" 2>&1
   PRC=$?
   if [[ $PRC -eq 0 ]]; then
     if grep -q '属新增型包' "$PARITY" 2>/dev/null; then

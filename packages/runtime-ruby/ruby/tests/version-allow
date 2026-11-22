@@ -1,0 +1,16 @@
+# Ruby 4.0.9 ships these independently versioned default/bundled tools.
+# The main ruby binary is deliberately absent and must still match 4.0.9.
+bundle=4.0.20
+bundler=4.0.20
+erb=6.0.7
+gem=4.0.20
+irb=1.16.0
+minitest=6.0.0
+racc=1.8.1
+rake=13.3.1
+rbs=3.10.0
+rdbg=1.11.1
+rdoc=7.0.4
+ri=7.0.4
+syntax_suggest=2.0.3
+typeprof=0.31.1
